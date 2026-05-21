@@ -19,7 +19,7 @@ vision/
 └── README.md         Ce fichier
 ```
 
-> L'app actuelle est **`index.html`** (anciennement `miroir-v8.html`). Les dossiers `extension/`, `pwa/`, `demo/` sont d'anciennes versions conservées pour archive.
+> L'app actuelle est **`index.html`** (anciennement `miroir-v8.html`).
 
 ---
 
