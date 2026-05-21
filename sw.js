@@ -1,11 +1,10 @@
 /* Service worker — Vision (PWA)
-   Cache "app shell" pour fonctionnement hors-ligne.
-   Stratégie : cache-first avec mise à jour réseau en arrière-plan. */
-const CACHE = 'vision-v3';
+   - manifest.json + navigations HTML : network-first (toujours à jour)
+   - autres ressources (images, svg…) : cache-first avec mise à jour en arrière-plan */
+const CACHE = 'vision-v4';
 const CORE = [
   './',
-  'index.html',
-  'manifest.json'
+  'index.html'
 ];
 
 self.addEventListener('install', event => {
@@ -26,11 +25,30 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   const req = event.request;
   if (req.method !== 'GET') return;
+
+  const url = new URL(req.url);
+  const isManifest = url.pathname.endsWith('manifest.json');
+  const isDoc = req.mode === 'navigate' || req.destination === 'document';
+
+  // network-first pour le manifest et les pages (mises à jour immédiates)
+  if (isManifest || isDoc) {
+    event.respondWith(
+      fetch(req).then(res => {
+        if (res && res.status === 200 && url.origin === self.location.origin) {
+          const copy = res.clone();
+          caches.open(CACHE).then(c => c.put(req, copy)).catch(() => {});
+        }
+        return res;
+      }).catch(() => caches.match(req))
+    );
+    return;
+  }
+
+  // cache-first pour le reste (images, svg, polices…)
   event.respondWith(
     caches.match(req).then(cached => {
       const network = fetch(req).then(res => {
-        // Met en cache les ressources same-origin (HTML, assets…)
-        if (res && res.status === 200 && req.url.startsWith(self.location.origin)) {
+        if (res && res.status === 200 && url.origin === self.location.origin) {
           const copy = res.clone();
           caches.open(CACHE).then(c => c.put(req, copy)).catch(() => {});
         }
