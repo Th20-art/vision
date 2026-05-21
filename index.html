@@ -77,7 +77,7 @@
     }
   }
   /* Mode app installée (PWA plein écran) */
-  @media (display-mode: standalone) {
+  @media (display-mode: standalone), (display-mode: fullscreen) {
     html, body { height: 100%; overflow: hidden; overscroll-behavior: none; }
     body { background: var(--bg); position: fixed; inset: 0; }
     .phone { width: 100vw; height: 100dvh; border-radius: 0; box-shadow: none; overflow: hidden; }
