@@ -5973,6 +5973,28 @@
     renderPlaybackUI();
   }
 
+  /* ─── Plein écran immersif (cache la barre d'état/navigation) ─── */
+  function enterImmersive(){
+    const el = document.documentElement;
+    const req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+    if (req) { try { req.call(el, { navigationUI: 'hide' }); } catch(e) { try { req.call(el); } catch(_){} } }
+  }
+  // Déclenche au tout premier geste de l'utilisateur (requis par les navigateurs)
+  function bindImmersiveOnce(){
+    const fire = () => { enterImmersive(); cleanup(); };
+    const cleanup = () => {
+      document.removeEventListener('click', fire);
+      document.removeEventListener('touchend', fire);
+    };
+    document.addEventListener('click', fire, { once: true });
+    document.addEventListener('touchend', fire, { once: true });
+  }
+  bindImmersiveOnce();
+  // Re-tente le plein écran si l'utilisateur en sort (sauf action volontaire)
+  document.addEventListener('fullscreenchange', () => {
+    if (!document.fullscreenElement) { bindImmersiveOnce(); }
+  });
+
   /* ─── PWA : enregistrement du service worker (offline + installable) ─── */
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
