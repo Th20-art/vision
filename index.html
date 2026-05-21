@@ -6,7 +6,7 @@
 <title>Vision</title>
 <!-- PWA -->
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#ff7e00">
+<meta name="theme-color" content="#ffffff">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -55,19 +55,32 @@
 
   /* ─── MOBILE : la maquette remplit tout l'écran (plus de cadre/marges) ─── */
   @media (max-width: 480px) {
-    body { background: var(--bg); display: block; min-height: 100dvh; }
+    /* Verrouille le scroll de la page : seules les zones internes défilent */
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      overscroll-behavior: none;
+    }
+    body {
+      background: var(--bg);
+      display: block;
+      position: fixed;
+      inset: 0;
+    }
     .phone {
       width: 100vw;
       height: 100vh;            /* fallback */
       height: 100dvh;           /* hauteur réelle visible (barres navigateur incluses) */
       border-radius: 0;
       box-shadow: none;
+      overflow: hidden;
     }
   }
   /* Mode app installée (PWA plein écran) */
   @media (display-mode: standalone) {
-    body { background: var(--bg); }
-    .phone { width: 100vw; height: 100dvh; border-radius: 0; box-shadow: none; }
+    html, body { height: 100%; overflow: hidden; overscroll-behavior: none; }
+    body { background: var(--bg); position: fixed; inset: 0; }
+    .phone { width: 100vw; height: 100dvh; border-radius: 0; box-shadow: none; overflow: hidden; }
   }
 
   .screen {

@@ -1,7 +1,7 @@
 /* Service worker — Vision (PWA)
    Cache "app shell" pour fonctionnement hors-ligne.
    Stratégie : cache-first avec mise à jour réseau en arrière-plan. */
-const CACHE = 'vision-v1';
+const CACHE = 'vision-v2';
 const CORE = [
   './',
   'index.html',
