@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#08060F">
+<title>Miroir — Démo mobile</title>
+<style>
+/* ═══════════════════════════════════════════
+   RESET + VARIABLES
+   ═══════════════════════════════════════════ */
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#08060F;--c2:#100E1A;--ink:#EDE9E0;--muted:#6B6475;
+  --line:rgba(255,255,255,.08);--fox:#E8563A;--green:#42C47E;--red:#E85070;
+  --gold:#F5C842;--purple:#A78BFA;--teal:#38BDF8;
+  --serif:Georgia,serif;
+}
+html,body{height:100%;overflow:hidden;font-family:'DM Sans','Inter',system-ui,-apple-system,sans-serif;color:var(--ink)}
+body{background:radial-gradient(ellipse at center,#15111F 0%,#08060F 60%);display:flex;align-items:center;justify-content:center;padding:20px}
+
+/* ═══════════════════════════════════════════
+   STAGE (desktop)
+   ═══════════════════════════════════════════ */
+.stage{display:flex;align-items:center;justify-content:center;gap:40px;width:100%;max-width:1280px;height:calc(100vh - 40px)}
+
+/* ═══════════════════════════════════════════
+   CADRE GALAXY S24 (format android moderne)
+   ═══════════════════════════════════════════ */
+.phone{
+  position:relative;
+  width:384px;
+  height:832px;
+  max-height:calc(100vh - 60px);
+  background:#000;
+  border-radius:42px;
+  padding:8px;
+  box-shadow:
+    0 0 0 2px #1a1a1e,
+    0 0 0 6px #0a0a0c,
+    0 30px 80px rgba(0,0,0,.6),
+    inset 0 0 0 1px rgba(255,255,255,.03);
+  flex-shrink:0;
+  scale:clamp(.5, calc((100vh - 80px) / 832), 1);
+  transform-origin:center center;
+}
+.phone::before{
+  /* Bouton power/bixby droit */
+  content:'';position:absolute;right:-3px;top:180px;width:3px;height:80px;background:#1a1a1e;border-radius:0 2px 2px 0;
+}
+.phone::after{
+  /* Volume gauche (2 boutons superposés) */
+  content:'';position:absolute;left:-3px;top:155px;width:3px;height:50px;background:#1a1a1e;border-radius:2px 0 0 2px;box-shadow:0 72px 0 0 #1a1a1e;
+}
+
+/* Écran Galaxy — coins moins arrondis que iPhone */
+.screen{
+  position:relative;
+  width:100%;
+  height:100%;
+  background:#000;
+  border-radius:34px;
+  overflow:hidden;
+}
+
+/* Punch-hole caméra (centré, petit) */
+.island{
+  position:absolute;
+  top:10px;
+  left:50%;
+  transform:translateX(-50%);
+  width:10px;
+  height:10px;
+  background:#000;
+  border:1px solid #1a1a1e;
+  border-radius:50%;
+  z-index:9999;
+  pointer-events:none;
+}
+
+/* Status bar Android (plus fine que iOS) */
+.statusbar{
+  position:absolute;top:0;left:0;right:0;height:30px;z-index:9998;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:6px 20px 0;font-size:13px;font-weight:600;color:#fff;
+  pointer-events:none;
+}
+.statusbar .time{font-feature-settings:"tnum"}
+.statusbar .icons{display:flex;align-items:center;gap:4px;font-size:11px}
+.statusbar.dark{color:#000}
+
+/* Pas de home indicator sur Android (gesture bar très fine) */
+.home-indicator{
+  position:absolute;bottom:4px;left:50%;transform:translateX(-50%);
+  width:100px;height:3px;background:rgba(255,255,255,.5);border-radius:2px;z-index:9999;
+}
+.statusbar.dark ~ .home-indicator,
+.dark-gesture{background:rgba(0,0,0,.3) !important}
+
+/* ═══════════════════════════════════════════
+   SIDEBAR NAVIGATION (desktop)
+   ═══════════════════════════════════════════ */
+.sidebar{
+  width:200px;background:rgba(16,14,26,.6);backdrop-filter:blur(20px);
+  border:1px solid var(--line);border-radius:18px;padding:16px;
+  display:flex;flex-direction:column;gap:10px;flex-shrink:0;
+  max-height:calc(100vh - 60px);overflow-y:auto;
+}
+.sidebar::-webkit-scrollbar{display:none}
+.sb-title{font-family:var(--serif);font-size:17px;font-weight:700;margin-bottom:-2px}
+.sb-sub{font-size:10px;color:var(--muted);margin-bottom:8px;line-height:1.4}
+.sb-lbl{font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.scene-btn{
+  padding:10px 11px;background:rgba(255,255,255,.03);border:1.5px solid var(--line);
+  border-radius:10px;cursor:pointer;text-align:left;color:var(--ink);
+  font-family:inherit;font-size:12px;transition:all .2s;
+  display:flex;align-items:center;gap:9px;
+}
+.scene-btn:hover{border-color:rgba(232,86,58,.3);background:rgba(232,86,58,.04)}
+.scene-btn.active{border-color:var(--fox);background:rgba(232,86,58,.1)}
+.scene-btn-ico{font-size:18px;flex-shrink:0}
+.scene-btn-body{flex:1;min-width:0}
+.scene-btn-name{font-weight:700;margin-bottom:1px;font-size:12px}
+.scene-btn-desc{font-size:9px;color:var(--muted);line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.sb-util{display:flex;gap:5px;margin-top:8px}
+.sb-util-btn{
+  flex:1;padding:8px 8px;background:transparent;border:1px solid var(--line);
+  border-radius:8px;color:var(--muted);font-family:inherit;font-size:10px;cursor:pointer;
+  transition:color .15s,border-color .15s;
+}
+.sb-util-btn:hover{color:var(--ink);border-color:rgba(255,255,255,.2)}
+.sb-util-btn.primary{background:var(--fox);border-color:var(--fox);color:#fff}
+.sb-util-btn.primary:hover{background:#d14a30;border-color:#d14a30}
+
+.sb-foot{font-size:10px;color:var(--muted);line-height:1.6;padding-top:10px;border-top:1px solid var(--line);margin-top:auto}
+
+/* Contenu scène : border-radius aligné sur screen Galaxy */
+.scene{position:absolute;inset:0;overflow:hidden;border-radius:34px}
+
+/* ═══════════════════════════════════════════
+   SCÈNE 1 — SHEIN (fake product page)
+   ═══════════════════════════════════════════ */
+.shein-wrap{width:100%;height:100%;background:#fff;overflow-y:auto;-webkit-overflow-scrolling:touch;color:#000}
+.shein-wrap::-webkit-scrollbar{display:none}
+.shein-header{
+  position:sticky;top:0;z-index:10;background:#fff;padding:40px 14px 8px;
+  display:flex;align-items:center;gap:10px;border-bottom:1px solid #eee;
+}
+.shein-logo{font-family:'Impact','Arial Black',sans-serif;font-size:22px;letter-spacing:-1px;color:#000;flex:1}
+.shein-icons{display:flex;gap:16px;font-size:20px;color:#555}
+.shein-search{padding:10px 14px;background:#f5f5f5;margin:10px 14px;border-radius:8px;font-size:13px;color:#888}
+.shein-banner{padding:8px 14px;background:#000;color:#fff;font-size:11px;text-align:center;font-weight:700;letter-spacing:1px}
+.shein-imagery{width:100%;aspect-ratio:1;background:linear-gradient(135deg,#f0c3d3 0%,#b388d9 100%);position:relative;display:flex;align-items:center;justify-content:center}
+.shein-imagery-emoji{font-size:140px;filter:drop-shadow(0 4px 12px rgba(0,0,0,.1))}
+.shein-thumbs{display:flex;gap:6px;padding:10px 14px;overflow-x:auto}
+.shein-thumbs::-webkit-scrollbar{display:none}
+.shein-thumb{width:60px;height:60px;border-radius:6px;background:linear-gradient(135deg,#f0c3d3 0%,#b388d9 100%);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:30px}
+.shein-thumb.alt{background:linear-gradient(135deg,#c5e7d0,#96c9e8)}
+.shein-thumb.alt2{background:linear-gradient(135deg,#ffe0b3,#ffb8b8)}
+.shein-info{padding:14px}
+.shein-title{font-size:15px;font-weight:500;line-height:1.4;color:#000;margin-bottom:8px}
+.shein-rating{display:flex;align-items:center;gap:6px;margin-bottom:12px;font-size:12px;color:#555}
+.shein-star{color:#ff9500}
+.shein-price-row{display:flex;align-items:baseline;gap:8px;margin-bottom:12px}
+.shein-price{font-size:26px;font-weight:700;color:#000}
+.shein-price-old{font-size:14px;color:#999;text-decoration:line-through}
+.shein-price-off{padding:2px 6px;background:#000;color:#fff;font-size:10px;font-weight:700;border-radius:3px}
+.shein-timer{padding:10px 12px;background:linear-gradient(90deg,#ffe0e0,#ffc8c8);border-radius:8px;font-size:12px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.shein-timer-ico{font-size:16px}
+.shein-timer-txt{flex:1;font-weight:600;color:#c00}
+.shein-sizes-lbl{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#666;margin-bottom:8px}
+.shein-sizes{display:flex;gap:7px;margin-bottom:16px;flex-wrap:wrap}
+.shein-size{width:42px;height:42px;border:1.5px solid #ddd;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;background:#fff;color:#000}
+.shein-size.sel{border-color:#000;background:#000;color:#fff}
+.shein-cta-wrap{position:sticky;bottom:0;background:#fff;padding:12px 14px 32px;border-top:1px solid #eee;display:flex;gap:8px}
+.shein-cta-heart{width:46px;height:46px;border:1.5px solid #ddd;border-radius:23px;display:flex;align-items:center;justify-content:center;font-size:20px;background:#fff}
+.shein-cta{flex:1;padding:13px;background:#000;color:#fff;border-radius:24px;font-size:14px;font-weight:700;border:none;cursor:pointer;text-align:center}
+.shein-cta.buy{background:#ff4747}
+.shein-desc{padding:0 14px 20px;font-size:12px;color:#666;line-height:1.6}
+.shein-desc-title{font-size:13px;font-weight:700;color:#000;margin:20px 0 8px}
+
+/* ═══════════════════════════════════════════
+   SCÈNE 2 — FAUX FEED TIKTOK
+   ═══════════════════════════════════════════ */
+.tk-wrap{width:100%;height:100%;background:#000;color:#fff;overflow-y:scroll;scroll-snap-type:y mandatory;scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
+.tk-wrap::-webkit-scrollbar{display:none}
+.tk-vid{position:relative;width:100%;height:100%;scroll-snap-align:start;scroll-snap-stop:always;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden}
+.tk-bg{position:absolute;inset:0;z-index:0}
+/* Gradients par vidéo pour simuler des contenus différents */
+.tk-bg-1{background:linear-gradient(135deg,#8b3a1a 0%,#d97849 50%,#2a1008 100%)}
+.tk-bg-2{background:linear-gradient(180deg,#3a2860 0%,#1a0d2e 100%)}
+.tk-bg-3{background:linear-gradient(135deg,#1d3a5f 0%,#0a1830 100%)}
+.tk-bg-4{background:linear-gradient(180deg,#8b6f2a 0%,#2d2410 100%)}
+.tk-bg-5{background:linear-gradient(135deg,#d14a8a 0%,#6a1d45 100%)}
+.tk-bg-emoji{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:120px;opacity:.3;filter:blur(1px)}
+
+/* Overlay sombre bas (pour lisibilité texte) */
+.tk-overlay{position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.7) 100%);z-index:1;pointer-events:none}
+
+/* UI TikTok (topbar + actions à droite) */
+.tk-top{position:absolute;top:36px;left:0;right:0;z-index:5;display:flex;justify-content:center;gap:20px;font-size:13px;font-weight:600;color:#fff;opacity:.9}
+.tk-top span{opacity:.6}
+.tk-top span.on{opacity:1;border-bottom:2px solid #fff;padding-bottom:2px}
+
+.tk-right{position:absolute;right:10px;bottom:80px;z-index:5;display:flex;flex-direction:column;gap:18px;align-items:center}
+.tk-avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#f06,#f90);border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:18px;position:relative}
+.tk-avatar::after{content:'+';position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);width:16px;height:16px;background:#f06;border-radius:50%;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.tk-act{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer}
+.tk-act-ico{font-size:28px;text-shadow:0 1px 2px rgba(0,0,0,.5)}
+.tk-act-lbl{font-size:10px;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.5)}
+
+/* Bottom info vidéo */
+.tk-info{position:relative;z-index:4;padding:0 60px 110px 14px}
+.tk-creator{font-size:14px;font-weight:700;margin-bottom:5px}
+.tk-desc{font-size:12px;line-height:1.45;margin-bottom:5px;color:#f0f0f0}
+.tk-tags{font-size:11px;color:#dadada;font-weight:600;margin-bottom:5px}
+.tk-music{display:flex;align-items:center;gap:6px;font-size:11px;color:#dadada;margin-top:6px}
+.tk-music-ico{font-size:12px;animation:tkSpin 3s linear infinite}
+@keyframes tkSpin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+
+/* Badge #AD pour pubs */
+.tk-ad-badge{display:inline-block;padding:2px 6px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:4px;font-size:9px;font-weight:700;letter-spacing:1px;margin-bottom:6px;backdrop-filter:blur(4px)}
+
+/* Bottom nav TikTok */
+.tk-nav{position:absolute;bottom:0;left:0;right:0;height:55px;background:rgba(0,0,0,.92);backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:space-around;z-index:6;border-top:1px solid rgba(255,255,255,.05)}
+.tk-nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9px;color:rgba(255,255,255,.5)}
+.tk-nav-item.on{color:#fff}
+.tk-nav-ico{font-size:18px}
+
+/* Pill timer Miroir (pour la scène TikTok) */
+.mrr-pill{
+  position:absolute;bottom:68px;right:10px;z-index:50;
+  background:rgba(8,6,15,.92);backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,.12);border-radius:20px;
+  padding:7px 12px 7px 10px;font-size:11px;color:#EDE9E0;
+  display:flex;align-items:center;gap:7px;font-weight:600;
+  box-shadow:0 4px 16px rgba(0,0,0,.4);
+  transition:all .3s;
+}
+.mrr-cat-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#6B6475;transition:background .4s}
+.mrr-pill-time{font-variant-numeric:tabular-nums}
+
+.shein-desc-title{font-size:13px;font-weight:700;color:#000;margin:20px 0 8px}
+
+/* ═══════════════════════════════════════════
+   MIROIR AVATAR + PANEL (réplique de l'extension)
+   ═══════════════════════════════════════════ */
+.mrr-root{position:absolute;inset:0;z-index:100;pointer-events:none}
+.mrr-root *{pointer-events:auto}
+.mrr-avatar{
+  position:absolute;bottom:72px;right:12px;
+  width:52px;height:52px;border-radius:50%;
+  background:radial-gradient(circle at 30% 30%,#F5C842 0%,#E8563A 80%);
+  border:2.5px solid rgba(255,255,255,.9);
+  box-shadow:0 8px 24px rgba(232,86,58,.4),inset 0 0 0 2px rgba(255,255,255,.15);
+  display:flex;align-items:center;justify-content:center;font-size:26px;
+  transition:transform .3s,opacity .3s;cursor:pointer;
+  animation:mrrFloat 3s ease-in-out infinite;
+}
+.mrr-avatar.scanning{animation:mrrSpin 1.2s linear infinite}
+@keyframes mrrFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes mrrSpin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+
+.mrr-bubble{
+  position:absolute;bottom:132px;right:12px;max-width:240px;
+  background:rgba(8,6,15,.96);backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,.12);border-radius:12px;
+  padding:8px 11px;color:#EDE9E0;font-size:11px;line-height:1.4;
+  box-shadow:0 10px 30px rgba(0,0,0,.5);
+  opacity:0;transform:translateY(6px);transition:opacity .25s,transform .25s;pointer-events:none;
+}
+.mrr-bubble.show{opacity:1;transform:translateY(0)}
+.mrr-bubble-lbl{font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--fox);margin-bottom:2px}
+
+.mrr-panels{
+  position:absolute;bottom:132px;right:12px;
+  display:none;flex-direction:column;gap:6px;
+  width:calc(100% - 24px);max-width:320px;max-height:72%;
+  overflow-y:auto;z-index:101;
+}
+.mrr-panels.show{display:flex}
+.mrr-panels::-webkit-scrollbar{display:none}
+
+.mrr-panel{
+  background:rgba(8,6,15,.97);backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,.1);border-radius:14px;
+  box-shadow:0 8px 32px rgba(0,0,0,.4);padding:9px 11px;
+  color:#EDE9E0;
+}
+.mrr-panel-hdr{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.mrr-panel-hdr-ico{font-size:18px;line-height:1}
+.mrr-panel-hdr-title{font-size:12px;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mrr-panel-hdr-verdict{padding:2px 8px;border-radius:8px;font-size:8px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;flex-shrink:0}
+.mrr-panel-hdr-verdict.danger{background:rgba(232,86,58,.2);color:var(--fox)}
+.mrr-panel-hdr-verdict.attention{background:rgba(245,200,66,.18);color:var(--gold)}
+.mrr-panel-hdr-verdict.good{background:rgba(66,196,126,.18);color:var(--green)}
+
+.mrr-score-row{display:flex;align-items:center;gap:7px;margin-bottom:7px}
+.mrr-score-bar{flex:1;height:4px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden}
+.mrr-score-fill{height:100%;background:linear-gradient(90deg,var(--fox),var(--gold),var(--green));width:30%;transition:width .6s}
+.mrr-score-txt{font-size:10px;font-weight:700;font-variant-numeric:tabular-nums}
+
+.mrr-sig{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-top:1px solid rgba(255,255,255,.05)}
+.mrr-sig:first-of-type{border-top:none;padding-top:2px}
+.mrr-sig-ico{font-size:13px;flex-shrink:0;margin-top:1px}
+.mrr-sig-body{flex:1}
+.mrr-sig-title{font-size:10px;font-weight:700;color:#EDE9E0}
+.mrr-sig-detail{font-size:9px;color:#8A8494;line-height:1.4;margin-top:1px}
+
+/* Carrousel alts — 3 slides */
+.mrr-carousel{position:relative;overflow:hidden;width:100%;box-sizing:border-box;border-radius:8px;margin-top:1px}
+.mrr-track{display:flex;transition:transform .4s cubic-bezier(.4,0,.2,1);align-items:stretch}
+.mrr-slide{flex-shrink:0;padding:0 2px;box-sizing:border-box}
+.mrr-alt{
+  background:rgba(8,6,15,.72);border-radius:9px;padding:8px 10px;
+  border:1px solid rgba(255,255,255,.09);backdrop-filter:blur(4px);
+  transition:border-color .15s;cursor:pointer;display:block;text-decoration:none;color:inherit;
+}
+.mrr-alt:hover{border-color:rgba(255,255,255,.25)}
+.mrr-kind-badge{
+  display:inline-flex;align-items:center;gap:3px;font-size:8px;font-weight:700;letter-spacing:.5px;
+  padding:2px 7px;border-radius:5px;margin-bottom:5px;width:fit-content;
+}
+.mrr-kind-badge.smart{background:rgba(232,86,58,.15);color:var(--fox)}
+.mrr-kind-badge.you{background:rgba(167,139,250,.15);color:var(--purple)}
+.mrr-kind-badge.free{background:rgba(66,196,126,.15);color:var(--green)}
+.mrr-alt-row1{display:flex;align-items:center;gap:6px;margin-bottom:3px}
+.mrr-alt-ico{font-size:14px;line-height:1}
+.mrr-alt-name{font-size:11px;font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mrr-alt-badge{font-size:8px;font-weight:700;padding:1px 6px;border-radius:4px;flex-shrink:0;background:#2a2438;color:#EDE9E0}
+.mrr-alt-desc{font-size:9px;color:#8A8494;line-height:1.4;margin-bottom:4px}
+.mrr-alt-foot{display:flex;align-items:center;font-size:9px}
+.mrr-alt-save{font-weight:700;color:var(--green);flex:1}
+.mrr-alt-dom{font-size:8px;color:#4A4456}
+.mrr-dots{display:flex;justify-content:center;gap:5px;padding:6px 0 0}
+.mrr-dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.2);cursor:pointer;transition:background .2s}
+.mrr-dot.on{background:#EDE9E0}
+
+.mrr-panel-q{padding:9px 12px;background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.25);border-radius:12px;font-style:italic;font-size:11px;color:#C6BDE7;line-height:1.4}
+.mrr-panel-q-ico{margin-right:5px}
+
+/* ═══════════════════════════════════════════
+   INTERCEPT OVERLAY (full screen, compact)
+   ═══════════════════════════════════════════ */
+.mrr-intercept{
+  position:absolute;inset:0;background:rgba(8,6,15,.96);backdrop-filter:blur(14px);
+  z-index:200;display:flex;flex-direction:column;
+  opacity:0;pointer-events:none;transition:opacity .35s;
+  padding:50px 20px 24px;color:#EDE9E0;overflow-y:auto;
+}
+.mrr-intercept.show{opacity:1;pointer-events:auto}
+.mrr-intercept::-webkit-scrollbar{display:none}
+.mrr-i-kicker{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--fox);margin-bottom:8px}
+.mrr-i-title{font-family:var(--serif);font-size:22px;font-weight:700;line-height:1.2;margin-bottom:6px}
+.mrr-i-sub{font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.45}
+.mrr-i-conflicts{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+.mrr-ic{display:flex;align-items:flex-start;gap:9px;padding:8px 10px;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:10px}
+.mrr-ic-ico{font-size:14px;margin-top:1px;flex-shrink:0}
+.mrr-ic-lbl{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:1px}
+.mrr-ic-txt{font-size:11px;line-height:1.4}
+.mrr-time-cost{margin:6px 0 12px;padding:8px 10px;background:rgba(245,200,66,.08);border:1px solid rgba(245,200,66,.25);border-radius:10px}
+.mrr-tc-head{font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:5px}
+.mrr-tc-pills{display:flex;flex-wrap:wrap;gap:4px}
+.mrr-tc-pill{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;background:rgba(245,200,66,.12);border-radius:10px;font-size:10px}
+.mrr-i-phrase{margin:auto 0 12px;padding:12px;background:rgba(167,139,250,.08);border:1.5px solid rgba(167,139,250,.25);border-radius:12px;font-style:italic;font-size:12px;line-height:1.45;text-align:center;color:#C6BDE7}
+.mrr-i-actions{display:flex;flex-direction:column;gap:7px}
+.mrr-ibtn{width:100%;padding:12px;border:none;border-radius:11px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:opacity .15s}
+.mrr-ibtn:active{opacity:.8}
+.mrr-ibtn-r{background:var(--fox);color:#fff}
+.mrr-ibtn-g{background:rgba(66,196,126,.15);border:1.5px solid var(--green);color:var(--green)}
+
+/* ═══════════════════════════════════════════
+   MODAL TIRELIRE (compact)
+   ═══════════════════════════════════════════ */
+.piggy-overlay{
+  position:absolute;inset:0;z-index:300;
+  background:rgba(8,6,15,.8);backdrop-filter:blur(10px);
+  display:none;align-items:flex-end;justify-content:center;
+  opacity:0;transition:opacity .3s;
+}
+.piggy-overlay.show{display:flex;opacity:1}
+.piggy-sheet{
+  width:100%;max-height:92%;overflow-y:auto;
+  background:#100E1A;border:1px solid rgba(255,255,255,.1);
+  border-radius:20px 20px 0 0;padding:20px 20px 28px;color:#EDE9E0;
+  transform:translateY(30px);transition:transform .3s;position:relative;
+}
+.piggy-overlay.show .piggy-sheet{transform:translateY(0)}
+.piggy-sheet::-webkit-scrollbar{display:none}
+.piggy-close{position:absolute;top:12px;right:12px;width:26px;height:26px;border-radius:50%;border:none;background:rgba(255,255,255,.08);color:#EDE9E0;cursor:pointer;font-size:14px;line-height:1}
+.piggy-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 9px;background:rgba(66,196,126,.15);border:1px solid rgba(66,196,126,.35);border-radius:16px;font-size:10px;font-weight:700;color:var(--green);margin-bottom:10px}
+.piggy-amt{font-family:var(--serif);font-size:36px;font-weight:700;color:var(--green);line-height:1}
+.piggy-amt-lbl{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-top:3px;margin-bottom:14px}
+.piggy-title{font-family:var(--serif);font-size:18px;font-weight:700;margin-bottom:4px;line-height:1.25}
+.piggy-sub{font-size:11px;color:var(--muted);line-height:1.45;margin-bottom:12px}
+
+/* Mini-cards empilées (45px de hauteur au lieu de 70px) */
+.piggy-choice{display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(255,255,255,.03);border:1.5px solid rgba(255,255,255,.08);border-radius:10px;cursor:pointer;margin-bottom:6px;transition:all .15s;min-height:0}
+.piggy-choice:hover{border-color:rgba(232,86,58,.5);background:rgba(232,86,58,.05)}
+.piggy-choice-ico{font-size:18px;flex-shrink:0;width:26px;text-align:center;line-height:1}
+.piggy-choice-body{flex:1;min-width:0}
+.piggy-choice-title{font-size:12px;font-weight:700;line-height:1.25}
+.piggy-choice-desc{font-size:10px;color:var(--muted);line-height:1.3;margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.piggy-choice-arrow{color:var(--muted);font-size:14px;flex-shrink:0}
+
+.piggy-qr-wrap{background:#fff;border-radius:12px;padding:10px;text-align:center;margin:8px 0}
+.piggy-qr-wrap img{display:block;margin:0 auto;max-width:180px;height:auto}
+.piggy-btn-done{width:100%;padding:12px;background:var(--green);color:#fff;border:none;border-radius:11px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px}
+
+/* Toast */
+.toast{
+  position:absolute;bottom:34px;left:50%;transform:translate(-50%,20px);
+  background:rgba(8,6,15,.96);border:1px solid rgba(66,196,126,.35);
+  border-radius:10px;padding:8px 14px;font-size:11px;color:var(--green);font-weight:600;
+  z-index:400;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;
+  backdrop-filter:blur(12px);max-width:80%;text-align:center;
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* Confettis */
+.confetti{position:absolute;inset:0;pointer-events:none;z-index:350;overflow:hidden}
+.confetti-p{position:absolute;width:7px;height:7px;top:50%;left:50%;border-radius:2px}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE — mobile : cache sidebar, phone plein écran sans cadre
+   ═══════════════════════════════════════════ */
+@media (max-width:768px){
+  body{padding:0;background:#000}
+  .stage{gap:0;height:100vh}
+  .sidebar{display:none}
+  .phone{
+    width:100vw;height:100vh;max-height:100vh;
+    border-radius:0;padding:0;box-shadow:none;scale:1;
+  }
+  .phone::before,.phone::after{display:none}
+  .screen{border-radius:0}
+  .scene{border-radius:0}
+  .island{display:none}
+  .home-indicator{display:none}
+  .statusbar{padding-top:12px}
+  /* Shein header : remonter le padding car statusbar plus fin */
+  .shein-header{padding-top:40px}
+}
+
+/* Mode plein écran desktop (touche F) : cache sidebar */
+body.fullscreen .sidebar{display:none}
+body.fullscreen .stage{gap:0}
+body.fullscreen .phone{scale:clamp(.7, calc((100vh - 60px) / 832), 1.15)}
+
+/* Sidebar sur mobile landscape — bouton toggle */
+.sb-toggle{display:none;position:fixed;top:12px;right:12px;z-index:500;width:40px;height:40px;border-radius:20px;background:rgba(8,6,15,.8);border:1px solid var(--line);color:#EDE9E0;font-size:18px;cursor:pointer;align-items:center;justify-content:center}
+@media (max-width:768px){.sb-toggle{display:flex}}
+</style>
+</head>
+
+<body>
+
+<div class="stage">
+
+  <!-- CADRE IPHONE -->
+  <div class="phone" id="phone">
+    <div class="screen" id="screen">
+      <div class="island"></div>
+      <div class="statusbar" id="statusbar">
+        <span class="time">22:47</span>
+        <span class="icons">●●● 🛜 ▮</span>
+      </div>
+      <div class="home-indicator"></div>
+
+      <!-- Contenu de scène injecté ici -->
+      <div class="scene" id="scene"></div>
+
+      <!-- Miroir avatar + overlays (globaux) -->
+      <div class="mrr-root" id="mrrRoot">
+        <div class="mrr-avatar" id="mrrAvatar" onclick="DEMO.toggleManual()" style="display:none">🦊</div>
+        <div class="mrr-bubble" id="mrrBubble"></div>
+        <div class="mrr-panels" id="mrrPanels"></div>
+      </div>
+
+      <!-- Intercept overlay -->
+      <div class="mrr-intercept" id="mrrIntercept"></div>
+
+      <!-- Modal tirelire -->
+      <div class="piggy-overlay" id="piggyOverlay">
+        <div class="piggy-sheet" id="piggySheet"></div>
+      </div>
+
+      <!-- Toast -->
+      <div class="toast" id="toast"></div>
+
+      <!-- Confettis -->
+      <div class="confetti" id="confetti"></div>
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <div class="sb-title">🪞 Miroir</div>
+    <div class="sb-sub">Démo mobile · Galaxy S24</div>
+
+    <div class="sb-lbl">Scènes</div>
+
+    <button class="scene-btn active" id="btnScene1" onclick="DEMO.loadScene(1)">
+      <div class="scene-btn-ico">🛒</div>
+      <div class="scene-btn-body">
+        <div class="scene-btn-name">Shein</div>
+        <div class="scene-btn-desc">Intercept · tirelire SEPA</div>
+      </div>
+    </button>
+
+    <button class="scene-btn" id="btnScene2" onclick="DEMO.loadScene(2)">
+      <div class="scene-btn-ico">📺</div>
+      <div class="scene-btn-body">
+        <div class="scene-btn-name">TikTok</div>
+        <div class="scene-btn-desc">Analyse IA · dérive · passion</div>
+      </div>
+    </button>
+
+    <div class="sb-util">
+      <button class="sb-util-btn primary" onclick="DEMO.nextStep()" id="btnNext">Suivant →</button>
+      <button class="sb-util-btn" onclick="DEMO.reset()">Reset</button>
+    </div>
+
+    <div class="sb-foot">
+      <kbd style="background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:4px;padding:1px 5px;font-family:monospace;font-size:10px">F</kbd> plein écran<br>
+      <kbd style="background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:4px;padding:1px 5px;font-family:monospace;font-size:10px">→</kbd> étape suivante
+    </div>
+  </div>
+
+</div>
+
+<!-- Bouton sidebar mobile -->
+<button class="sb-toggle" onclick="document.getElementById('sidebar').style.display=document.getElementById('sidebar').style.display==='flex'?'none':'flex'">☰</button>
+
+<script>
+'use strict';
+
+// ═══════════════════════════════════════════
+// PROFIL SIMULÉ (fixe pour la démo)
+// ═══════════════════════════════════════════
+const PROFILE = {
+  ambitions: ["epargne", "ecologie"],
+  passions: ["Cuisine asiatique", "Randonnée", "Photo argentique"],
+  lifePhrase: "Je veux construire une vie qui me ressemble.",
+  hourlyRate: 15, // €/h
+  goals: { epargne: 500, voyage: 1500 }
+};
+
+// ═══════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════
+function $(id) { return document.getElementById(id); }
+function showToast(msg, duration = 2500) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), duration);
+}
+function burstConfetti() {
+  const c = $('confetti');
+  c.innerHTML = '';
+  const colors = ['#42C47E', '#F5C842', '#A78BFA', '#E8563A'];
+  for (let i = 0; i < 30; i++) {
+    const p = document.createElement('div');
+    p.className = 'confetti-p';
+    p.style.background = colors[i % colors.length];
+    p.style.left = (40 + Math.random() * 20) + '%';
+    p.style.top = (40 + Math.random() * 20) + '%';
+    const dx = (Math.random() - 0.5) * 400;
+    const dy = -200 - Math.random() * 200;
+    const rot = Math.random() * 720;
+    p.animate([
+      { transform: 'translate(0,0) rotate(0)', opacity: 1 },
+      { transform: `translate(${dx}px, ${dy}px) rotate(${rot}deg)`, opacity: 0 }
+    ], { duration: 1400, easing: 'cubic-bezier(.2,.6,.3,1)' });
+    c.appendChild(p);
+  }
+  setTimeout(() => c.innerHTML = '', 1500);
+}
+
+// ═══════════════════════════════════════════
+// MIROIR COMPONENTS (répliques)
+// ═══════════════════════════════════════════
+function showBubble(label, msg, duration = 4500) {
+  const b = $('mrrBubble');
+  b.innerHTML = `<div class="mrr-bubble-lbl">${label}</div><div>${msg}</div>`;
+  b.classList.add('show');
+  clearTimeout(b._timer);
+  b._timer = setTimeout(() => b.classList.remove('show'), duration);
+}
+function hideBubble() {
+  $('mrrBubble').classList.remove('show');
+  clearTimeout($('mrrBubble')._timer);
+}
+function showAvatar(scanning = false) {
+  const a = $('mrrAvatar');
+  a.style.display = 'flex';
+  if (scanning) a.classList.add('scanning');
+  else a.classList.remove('scanning');
+}
+function hideAvatar() { $('mrrAvatar').style.display = 'none'; }
+function hidePanels() { $('mrrPanels').classList.remove('show'); $('mrrPanels').innerHTML = ''; }
+
+// Panel principal : score + signals + carrousel d'alternatives
+function showAnalysisPanel(analysis) {
+  const P = $('mrrPanels');
+  P.innerHTML = '';
+
+  // Panel 1 — Signals
+  const p1 = document.createElement('div');
+  p1.className = 'mrr-panel';
+  const verdictClass = analysis.verdict === 'danger' ? 'danger' : analysis.verdict === 'attention' ? 'attention' : 'good';
+  const verdictLabel = analysis.verdict === 'danger' ? 'Danger' : analysis.verdict === 'attention' ? 'Attention' : 'Bon';
+  p1.innerHTML = `
+    <div class="mrr-panel-hdr">
+      <div class="mrr-panel-hdr-ico">🪞</div>
+      <div class="mrr-panel-hdr-title">${analysis.productName}</div>
+      <div class="mrr-panel-hdr-verdict ${verdictClass}">${verdictLabel}</div>
+    </div>
+    <div class="mrr-score-row">
+      <div class="mrr-score-bar"><div class="mrr-score-fill" style="width:${analysis.score * 10}%"></div></div>
+      <div class="mrr-score-txt">${analysis.score}/10</div>
+    </div>
+    ${analysis.signals.map(s => `
+      <div class="mrr-sig">
+        <div class="mrr-sig-ico">${s.icon}</div>
+        <div class="mrr-sig-body">
+          <div class="mrr-sig-title">${s.title}</div>
+          <div class="mrr-sig-detail">${s.detail}</div>
+        </div>
+      </div>
+    `).join('')}
+  `;
+  P.appendChild(p1);
+
+  // Panel 2 — Carrousel 3 alternatives
+  const p2 = document.createElement('div');
+  p2.className = 'mrr-panel';
+  p2.style.padding = '10px 6px';
+  p2.innerHTML = `
+    <div class="mrr-carousel" id="carousel">
+      <div class="mrr-track" id="track" style="width:${analysis.crossAlts.length * 100}%">
+        ${analysis.crossAlts.map(alt => `
+          <div class="mrr-slide" style="width:${100 / analysis.crossAlts.length}%">
+            <div class="mrr-alt">
+              <div class="mrr-kind-badge ${alt.kind}">
+                ${alt.kind === 'smart' ? '🔄' : alt.kind === 'you' ? '✨' : '🌿'}
+                ${alt.kind === 'smart' ? 'Plus malin' : alt.kind === 'you' ? 'Plus toi' : 'Plus libre'}
+              </div>
+              <div class="mrr-alt-row1">
+                <span class="mrr-alt-ico">${alt.ico}</span>
+                <span class="mrr-alt-name">${alt.name}</span>
+                ${alt.badge ? `<span class="mrr-alt-badge">${alt.badge}</span>` : ''}
+              </div>
+              <div class="mrr-alt-desc">${alt.desc}</div>
+              <div class="mrr-alt-foot">
+                <span class="mrr-alt-save">${alt.save}</span>
+                ${alt.dom ? `<span class="mrr-alt-dom">↗ ${alt.dom}</span>` : ''}
+              </div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="mrr-dots" id="dots">
+        ${analysis.crossAlts.map((_, i) => `<div class="mrr-dot ${i === 0 ? 'on' : ''}" onclick="DEMO.goSlide(${i})"></div>`).join('')}
+      </div>
+    </div>
+  `;
+  P.appendChild(p2);
+
+  // Panel 3 — Question miroir
+  const p3 = document.createElement('div');
+  p3.className = 'mrr-panel mrr-panel-q';
+  p3.innerHTML = `<span class="mrr-panel-q-ico">💭</span>${analysis.mirrorQuestion}`;
+  P.appendChild(p3);
+
+  P.classList.add('show');
+
+  // Auto-carrousel
+  startCarousel(analysis.crossAlts.length);
+}
+
+let carouselState = { idx: 0, timer: null, total: 0 };
+function startCarousel(total) {
+  carouselState.total = total;
+  carouselState.idx = 0;
+  clearInterval(carouselState.timer);
+  carouselState.timer = setInterval(() => {
+    goSlide((carouselState.idx + 1) % total);
+  }, 5000);
+}
+function goSlide(idx) {
+  const track = $('track');
+  if (!track) return;
+  carouselState.idx = idx;
+  const pct = (idx * 100) / carouselState.total;
+  track.style.transform = `translateX(-${pct}%)`;
+  document.querySelectorAll('.mrr-dot').forEach((d, i) => {
+    d.classList.toggle('on', i === idx);
+  });
+}
+
+// ═══════════════════════════════════════════
+// INTERCEPT
+// ═══════════════════════════════════════════
+function showIntercept(opts) {
+  const I = $('mrrIntercept');
+  hideBubble();
+  hidePanels();
+  const price = opts.price || 0;
+  const hoursOfWork = (price / PROFILE.hourlyRate).toFixed(1);
+  const daysGrocery = Math.round(price / 15);
+  const cafes = Math.round(price / 3);
+  I.innerHTML = `
+    <div class="mrr-i-kicker">${opts.kicker || 'Tentation détectée'}</div>
+    <div class="mrr-i-title">${opts.title}</div>
+    <div class="mrr-i-sub">${opts.sub}</div>
+
+    <div class="mrr-i-conflicts">
+      ${(opts.conflicts || []).map(c => `
+        <div class="mrr-ic">
+          <div class="mrr-ic-ico">${c.ico}</div>
+          <div>
+            <div class="mrr-ic-lbl">${c.label}</div>
+            <div class="mrr-ic-txt">${c.txt}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    ${price > 0 ? `
+      <div class="mrr-time-cost">
+        <div class="mrr-tc-head">${price} € — COÛT RÉEL</div>
+        <div class="mrr-tc-pills">
+          <span class="mrr-tc-pill">⏱️ ${hoursOfWork} h de salaire</span>
+          <span class="mrr-tc-pill">🛒 ${daysGrocery} jours d'épicerie</span>
+          <span class="mrr-tc-pill">☕ ${cafes} cafés</span>
+        </div>
+      </div>
+    ` : ''}
+
+    <div class="mrr-i-phrase">"${PROFILE.lifePhrase}"</div>
+
+    <div class="mrr-i-actions">
+      <button class="mrr-ibtn mrr-ibtn-r" onclick="DEMO.onContinue()">Voir ce que ça représente →</button>
+      <button class="mrr-ibtn mrr-ibtn-g" onclick="DEMO.onResist(${price})">✓ Fermer sans regarder — je résiste</button>
+    </div>
+  `;
+  I.classList.add('show');
+}
+function hideIntercept() {
+  $('mrrIntercept').classList.remove('show');
+}
+
+// ═══════════════════════════════════════════
+// MODAL TIRELIRE
+// ═══════════════════════════════════════════
+function showPiggyChoice(amount) {
+  const O = $('piggyOverlay');
+  const S = $('piggySheet');
+  S.innerHTML = `
+    <button class="piggy-close" onclick="DEMO.closePiggy()">×</button>
+    <div class="piggy-badge">✓ Résisté</div>
+    <div class="piggy-amt">${amount.toFixed(0)} €</div>
+    <div class="piggy-amt-lbl">Épargne</div>
+    <div class="piggy-title">Que fait-on avec ces ${amount.toFixed(0)} € ?</div>
+    <div class="piggy-sub">Choisis la façon qui te convient. Tu peux changer à tout moment.</div>
+
+    <div class="piggy-choice" onclick="DEMO.piggyGo('qr', ${amount})">
+      <div class="piggy-choice-ico">🔳</div>
+      <div class="piggy-choice-body">
+        <div class="piggy-choice-title">Virement prérempli (QR SEPA)</div>
+        <div class="piggy-choice-desc">Scanne avec ton app bancaire — montant déjà rempli.</div>
+      </div>
+      <div class="piggy-choice-arrow">→</div>
+    </div>
+
+    <div class="piggy-choice" onclick="DEMO.piggyGo('manual', ${amount})">
+      <div class="piggy-choice-ico">✋</div>
+      <div class="piggy-choice-body">
+        <div class="piggy-choice-title">Je le fais moi-même</div>
+        <div class="piggy-choice-desc">Pas d'IBAN à saisir. Tu ouvres ton app et tu confirmes.</div>
+      </div>
+      <div class="piggy-choice-arrow">→</div>
+    </div>
+
+    <div class="piggy-choice" onclick="DEMO.piggyGo('tirelire', ${amount})">
+      <div class="piggy-choice-ico">🐷</div>
+      <div class="piggy-choice-body">
+        <div class="piggy-choice-title">Juste noter en tirelire</div>
+        <div class="piggy-choice-desc">Ajoute le montant à ton compteur Miroir.</div>
+      </div>
+      <div class="piggy-choice-arrow">→</div>
+    </div>
+  `;
+  O.classList.add('show');
+}
+function showPiggyQR(amount) {
+  const S = $('piggySheet');
+  const epc = `BCD\n002\n1\nSCT\n\nTheo Demo\nFR7630001007941234567890185\nEUR${amount.toFixed(2)}\n\n\nMiroir — Epargne`;
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=4&data=${encodeURIComponent(epc)}`;
+  S.innerHTML = `
+    <button class="piggy-close" onclick="DEMO.closePiggy()">×</button>
+    <div class="piggy-badge">✓ Résisté</div>
+    <div class="piggy-amt">${amount.toFixed(0)} €</div>
+    <div class="piggy-amt-lbl">Vers ton livret</div>
+    <div class="piggy-title">Scanne et transfère.</div>
+    <div class="piggy-sub">Scanne ce QR code avec ton app bancaire. Le virement est prérempli. Tu confirmes dans ton app.</div>
+    <div class="piggy-qr-wrap">
+      <img src="${qrUrl}" alt="QR SEPA">
+    </div>
+    <div style="font-family:monospace;font-size:11px;color:#EDE9E0;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:8px;padding:8px 10px;margin-top:8px">→ FR76 •••• •••• •••• 0185</div>
+    <button class="piggy-btn-done" onclick="DEMO.piggyDone(${amount})">✓ C'est fait — virement envoyé</button>
+  `;
+}
+function closePiggy() { $('piggyOverlay').classList.remove('show'); }
+
+// ═══════════════════════════════════════════
+// DEMO CONTROLLER
+// ═══════════════════════════════════════════
+const DEMO = {
+  currentScene: 1,
+  step: 0,
+
+  loadScene(n) {
+    this.currentScene = n;
+    this.step = 0;
+    this.updateSidebar();
+    hideAvatar(); hideBubble(); hidePanels(); hideIntercept(); closePiggy();
+    if (n === 1) this.renderShein();
+    else if (n === 2) this.renderTiktok();
+  },
+
+  updateSidebar() {
+    document.querySelectorAll('.scene-btn').forEach((b, i) => {
+      b.classList.toggle('active', (i + 1) === this.currentScene);
+    });
+  },
+
+  nextStep() {
+    this.step++;
+    this.updateSidebar();
+    if (this.currentScene === 1) this.runShein(this.step);
+    else if (this.currentScene === 2) this.runTiktok(this.step);
+  },
+
+  reset() {
+    this.loadScene(this.currentScene);
+  },
+
+  // ── SCÈNE 1 — SHEIN ────────────────────────
+  renderShein() {
+    $('statusbar').classList.add('dark');
+    $('scene').innerHTML = `
+      <div class="shein-wrap">
+        <div class="shein-header">
+          <div class="shein-logo">SHEIN</div>
+          <div class="shein-icons">🔍 🛒 ♡</div>
+        </div>
+        <div class="shein-banner">⚡ MEGA SALE — 70% OFF — Aujourd'hui seulement</div>
+        <div class="shein-imagery">
+          <div class="shein-imagery-emoji">👗</div>
+        </div>
+        <div class="shein-thumbs">
+          <div class="shein-thumb">👗</div>
+          <div class="shein-thumb alt">👗</div>
+          <div class="shein-thumb alt2">👗</div>
+          <div class="shein-thumb">👗</div>
+          <div class="shein-thumb alt">👗</div>
+        </div>
+        <div class="shein-info">
+          <div class="shein-title">Robe Midi Fleurs Boho — Manches Bouffantes, Col V, Parfaite Pour Printemps Été</div>
+          <div class="shein-rating">
+            <span class="shein-star">★★★★☆</span> 4.3 · 2847 avis · 12k vendus
+          </div>
+          <div class="shein-price-row">
+            <div class="shein-price">17,99 €</div>
+            <div class="shein-price-old">59,99 €</div>
+            <div class="shein-price-off">-70%</div>
+          </div>
+          <div class="shein-timer">
+            <span class="shein-timer-ico">⏰</span>
+            <span class="shein-timer-txt">Offre flash : 00:14:23</span>
+          </div>
+          <div class="shein-sizes-lbl">Taille</div>
+          <div class="shein-sizes">
+            <div class="shein-size">XS</div>
+            <div class="shein-size">S</div>
+            <div class="shein-size sel">M</div>
+            <div class="shein-size">L</div>
+            <div class="shein-size">XL</div>
+          </div>
+          <div class="shein-desc-title">Description</div>
+          <div class="shein-desc">Robe légère en polyester, coupe ample, motif floral digital. Livraison 7-15 jours ouvrés. Production à la demande. Voir détails produit pour composition et entretien.</div>
+        </div>
+        <div class="shein-cta-wrap">
+          <div class="shein-cta-heart">♡</div>
+          <button class="shein-cta">+ Panier</button>
+          <button class="shein-cta buy" onclick="DEMO.onBuy()">Acheter</button>
+        </div>
+      </div>
+    `;
+    // Après 2s, avatar apparaît en scan
+    setTimeout(() => {
+      showAvatar(true);
+      showBubble('ANALYSE IA', 'Miroir scanne cette page…', 3000);
+    }, 2000);
+    // Après 5s, résultat d'analyse
+    setTimeout(() => {
+      showAvatar(false);
+      showAnalysisPanel(ANALYSES.shein);
+      showBubble('ANALYSE IA', '⚠️ Attention à cet achat. Score 3/10.', 5000);
+    }, 5000);
+  },
+
+  runShein(step) {
+    // Plus de scripting manuel dans la scène 1 : l'essentiel se déclenche au "Acheter"
+    if (step === 1) this.onBuy();
+    else if (step === 2) this.onResist(17.99);
+    else if (step === 3) this.piggyGo('qr', 17.99);
+    else if (step === 4) this.piggyDone(17.99);
+  },
+
+  // ── SCÈNE 1 - Handlers ─────────────────────
+  onBuy() {
+    // L'utilisateur clique "Acheter" → Miroir intervient
+    showIntercept({
+      kicker: 'Avant d\'acheter…',
+      title: 'Cette robe vaut 17,99 €. Et toi, que vaut-elle pour toi ?',
+      sub: 'Shein · Analyse IA active · Ça vaut vraiment le coup ?',
+      price: 17.99,
+      conflicts: [
+        { ico: '🌱', label: 'Écologie', txt: 'Polyester neuf, livraison longue distance, production à la demande = empreinte carbone élevée.' },
+        { ico: '💰', label: 'Épargne', txt: 'Même petit prix, ça gratte ton objectif : 17,99€ × 3 commandes/mois = 54€.' },
+        { ico: '⚖️', label: 'Éthique', txt: 'Shein est régulièrement pointé pour conditions de travail et impact textile.' }
+      ]
+    });
+  },
+
+  onContinue() {
+    hideIntercept();
+    showToast('Tu sors de la démo — tu peux cliquer « je résiste ».', 3500);
+    setTimeout(() => this.onBuy(), 3800);
+  },
+
+  onResist(price) {
+    hideIntercept();
+    showBubble('✓ RÉSISTANCE', 'Bien joué. Maintenant, que fait-on des ' + price.toFixed(0) + '€ ?', 3000);
+    setTimeout(() => showPiggyChoice(price), 800);
+  },
+
+  piggyGo(method, amount) {
+    if (method === 'qr') {
+      showPiggyQR(amount);
+    } else if (method === 'manual') {
+      showToast('Ouvre ton app bancaire — retour ici pour confirmer.', 3500);
+      closePiggy();
+    } else {
+      closePiggy();
+      showToast('✓ ' + amount.toFixed(0) + '€ ajoutés à ta tirelire', 3500);
+      burstConfetti();
+    }
+  },
+
+  piggyDone(amount) {
+    closePiggy();
+    showToast('✓ ' + amount.toFixed(0) + '€ transférés vers ton livret', 3500);
+    burstConfetti();
+  },
+
+  closePiggy() { closePiggy(); },
+
+  goSlide(i) { goSlide(i); },
+  toggleManual() {
+    const p = $('mrrPanels');
+    if (p.classList.contains('show')) hidePanels();
+    else if (this.currentScene === 1) showAnalysisPanel(ANALYSES.shein);
+  },
+
+  // ── SCÈNE 2 — FAUX FEED TIKTOK ─────────────
+  renderTiktok() {
+    $('statusbar').classList.remove('dark');
+    // Les 5 vidéos, dans l'ordre
+    const vids = TIKTOK_VIDEOS;
+    $('scene').innerHTML = `
+      <div class="tk-wrap" id="tkWrap">
+        ${vids.map((v, i) => `
+          <div class="tk-vid" data-i="${i}">
+            <div class="tk-bg tk-bg-${i+1}"></div>
+            <div class="tk-bg-emoji">${v.emoji}</div>
+            <div class="tk-overlay"></div>
+
+            <div class="tk-top">
+              <span>Abonnements</span><span class="on">Pour toi</span>
+            </div>
+
+            <div class="tk-right">
+              <div class="tk-avatar">${v.avatar || '😊'}</div>
+              <div class="tk-act"><div class="tk-act-ico">🤍</div><div class="tk-act-lbl">${v.likes}</div></div>
+              <div class="tk-act"><div class="tk-act-ico">💬</div><div class="tk-act-lbl">${v.comments}</div></div>
+              <div class="tk-act"><div class="tk-act-ico">🔖</div><div class="tk-act-lbl">${v.saves || '2k'}</div></div>
+              <div class="tk-act"><div class="tk-act-ico">↗</div><div class="tk-act-lbl">Partager</div></div>
+            </div>
+
+            <div class="tk-info">
+              ${v.category === 'ads' || v.category === 'manipulation' ? '<div class="tk-ad-badge">#AD · SPONSORISÉ</div>' : ''}
+              <div class="tk-creator">${v.creator}</div>
+              <div class="tk-desc">${v.desc}</div>
+              <div class="tk-tags">${v.tags}</div>
+              <div class="tk-music"><span class="tk-music-ico">🎵</span><span>${v.music}</span></div>
+            </div>
+          </div>
+        `).join('')}
+        <div class="tk-nav">
+          <div class="tk-nav-item on"><div class="tk-nav-ico">🏠</div>Accueil</div>
+          <div class="tk-nav-item"><div class="tk-nav-ico">🔍</div>Recherche</div>
+          <div class="tk-nav-item"><div class="tk-nav-ico">➕</div></div>
+          <div class="tk-nav-item"><div class="tk-nav-ico">📥</div>Boîte</div>
+          <div class="tk-nav-item"><div class="tk-nav-ico">👤</div>Profil</div>
+        </div>
+        <div class="mrr-pill" id="mrrPill">
+          <span class="mrr-cat-dot" id="pillDot"></span>
+          <span class="mrr-pill-time" id="pillTime">00:12</span>
+        </div>
+      </div>
+    `;
+
+    // Démarrer la session média fake
+    this.tkState = { currentVid: 0, pillSeconds: 0, consecAds: 0, passionStreak: 0, lowAlignStart: null };
+    this.tkStartTimer();
+
+    // Analyse immédiate de la vidéo 1
+    setTimeout(() => this.tkAnalyzeVideo(0), 800);
+
+    // Observer le scroll pour détecter les changements de vidéo
+    const wrap = $('tkWrap');
+    let lastIdx = 0;
+    wrap.addEventListener('scroll', () => {
+      const newIdx = Math.round(wrap.scrollTop / wrap.clientHeight);
+      if (newIdx !== lastIdx && newIdx < TIKTOK_VIDEOS.length) {
+        lastIdx = newIdx;
+        this.tkState.currentVid = newIdx;
+        setTimeout(() => this.tkAnalyzeVideo(newIdx), 600);
+      }
+    }, { passive: true });
+  },
+
+  runTiktok(step) {
+    // Scroll programmatique pour la démo (bouton "Suivant")
+    const wrap = $('tkWrap');
+    if (!wrap) return;
+    const next = Math.min(this.tkState?.currentVid + 1 || 1, TIKTOK_VIDEOS.length - 1);
+    wrap.scrollTo({ top: next * wrap.clientHeight, behavior: 'smooth' });
+  },
+
+  tkStartTimer() {
+    clearInterval(this._tkTimer);
+    this._tkTimer = setInterval(() => {
+      if (this.currentScene !== 2) { clearInterval(this._tkTimer); return; }
+      this.tkState.pillSeconds++;
+      const m = Math.floor(this.tkState.pillSeconds / 60);
+      const s = this.tkState.pillSeconds % 60;
+      const t = $('pillTime');
+      if (t) t.textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+    }, 1000);
+  },
+
+  tkAnalyzeVideo(idx) {
+    const v = TIKTOK_VIDEOS[idx];
+    if (!v) return;
+
+    // Mettre à jour le dot de catégorie
+    const dot = $('pillDot');
+    const CAT_COLORS = {
+      learning: '#42C47E',
+      info: '#F5C842',
+      entertainment: '#8A8494',
+      ads: '#E8563A',
+      manipulation: '#E85070',
+      inspiration: '#A78BFA'
+    };
+    if (dot) dot.style.background = CAT_COLORS[v.category] || '#6B6475';
+
+    // Triggers
+    const st = this.tkState;
+
+    // Trigger D : passion nourrie
+    if (v.passionMatch && v.alignment >= 7) {
+      st.passionStreak++;
+      if (st.passionStreak === 1) {
+        setTimeout(() => showBubble('🎯 PASSION NOURRIE', 'Tu nourris ta passion ' + v.passionMatch + '. Continue comme ça.', 4500), 2000);
+      }
+    } else if (v.alignment < 5) {
+      st.passionStreak = 0;
+    }
+
+    // Trigger C1 : cascade pub
+    if (v.category === 'ads' || v.category === 'manipulation') {
+      st.consecAds++;
+      if (st.consecAds === 2) {
+        setTimeout(() => showBubble('⚠️ ALGO AGRESSIF', '2 contenus sponsorisés à la suite. L\'algo pousse fort.', 4500), 1500);
+      }
+      if (st.consecAds >= 3) {
+        setTimeout(() => showBubble('⚠️ CASCADE PUB', '3 pubs à la suite. Attention à ce que tu absorbes.', 5000), 1500);
+        st.consecAds = 0;
+      }
+    } else {
+      st.consecAds = 0;
+    }
+
+    // Trigger C2 : dérive (alignement < 3 pendant plusieurs vidéos)
+    if (v.alignment < 3) {
+      if (!st.lowAlignStart) st.lowAlignStart = idx;
+      else if (idx - st.lowAlignStart >= 2) {
+        setTimeout(() => this.showDrift(v), 2500);
+        st.lowAlignStart = null;
+      }
+    } else {
+      st.lowAlignStart = null;
+    }
+  },
+
+  showDrift(v) {
+    const I = $('mrrIntercept');
+    const passion = PROFILE.passions[0];
+    I.innerHTML = `
+      <div class="mrr-i-kicker">Dérive détectée</div>
+      <div class="mrr-i-title">L'algo t'a emmené loin de "${passion}".</div>
+      <div class="mrr-i-sub">3 vidéos de contenu mal aligné d'affilée. Tu voulais apprendre — il t'a donné de la pub.</div>
+
+      <div class="mrr-i-conflicts">
+        <div class="mrr-ic">
+          <div class="mrr-ic-ico">📉</div>
+          <div>
+            <div class="mrr-ic-lbl">Dernière vidéo</div>
+            <div class="mrr-ic-txt">${v.desc.slice(0, 80)} — alignement ${v.alignment}/10</div>
+          </div>
+        </div>
+        <div class="mrr-ic">
+          <div class="mrr-ic-ico">⏱️</div>
+          <div>
+            <div class="mrr-ic-lbl">Temps perdu</div>
+            <div class="mrr-ic-txt">${Math.floor(this.tkState.pillSeconds / 60)} min qui n'étaient pas pour toi.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mrr-i-phrase">"${PROFILE.lifePhrase}"</div>
+
+      <div class="mrr-i-actions">
+        <button class="mrr-ibtn mrr-ibtn-g" onclick="DEMO.closeDrift(true)">✓ Je ferme TikTok</button>
+        <button class="mrr-ibtn" style="background:transparent;border:1.5px solid var(--line);color:var(--muted)" onclick="DEMO.closeDrift(false)">Continuer 5 min max</button>
+      </div>
+    `;
+    I.classList.add('show');
+  },
+
+  closeDrift(resist) {
+    hideIntercept();
+    if (resist) {
+      showToast('✓ Bien joué — tu es sorti du scroll', 3500);
+      burstConfetti();
+    } else {
+      showToast('OK — 5 min maximum', 2500);
+    }
+  }
+};
+
+// ═══════════════════════════════════════════
+// DONNÉES VIDÉOS TIKTOK (simulées)
+// ═══════════════════════════════════════════
+const TIKTOK_VIDEOS = [
+  {
+    creator: "@chef_osaka",
+    avatar: "🍜",
+    desc: "Le vrai ramen tonkotsu — 18h de bouillon — la technique à connaître absolument",
+    tags: "#ramen #cuisinejaponaise #tonkotsu #asianfood",
+    music: "♬ son original - chef_osaka",
+    emoji: "🍜",
+    likes: "127k", comments: "3.2k", saves: "18k",
+    category: "learning", alignment: 9, passionMatch: "Cuisine asiatique"
+  },
+  {
+    creator: "@lifecoach_transform",
+    avatar: "💪",
+    desc: "Comment j'ai perdu 10 kilos en 2 semaines 🔥 Lien dans la bio pour le programme (SOLDES 70%)",
+    tags: "#perdredupoids #transformation #motivation #coaching",
+    music: "♬ Epic Motivation - viral sound",
+    emoji: "💸",
+    likes: "2.1M", comments: "45k", saves: "120k",
+    category: "manipulation", alignment: 2
+  },
+  {
+    creator: "@techdeals_fr",
+    avatar: "📱",
+    desc: "TOP 5 iPhone à acheter AVANT Noël — promo exclusive -40% — code MIROIR5",
+    tags: "#iphone #promo #techdeals #bonsplans",
+    music: "♬ Shop Now - trending",
+    emoji: "📱",
+    likes: "89k", comments: "1.8k", saves: "4.3k",
+    category: "ads", alignment: 1
+  },
+  {
+    creator: "@luxdaily_official",
+    avatar: "🏎️",
+    desc: "TOP 10 des voitures de luxe 2026 — la #1 va te choquer 💰💎",
+    tags: "#luxe #voiture #ferrari #richesse #rolls",
+    music: "♬ Money Flex - trending",
+    emoji: "🏎️",
+    likes: "340k", comments: "8.7k", saves: "12k",
+    category: "entertainment", alignment: 2
+  },
+  {
+    creator: "@shein_official",
+    avatar: "👗",
+    desc: "SHEIN HAUL — 30 pièces pour 50€ seulement 🛍️ Lien dans bio + code -15%",
+    tags: "#shein #haul #fashion #shopping #ootd",
+    music: "♬ haul music - trending",
+    emoji: "🛍️",
+    likes: "520k", comments: "22k", saves: "67k",
+    category: "ads", alignment: 1
+  }
+];
+
+// ═══════════════════════════════════════════
+// DONNÉES D'ANALYSE (mock IA)
+// ═══════════════════════════════════════════
+const ANALYSES = {
+  shein: {
+    productName: "Robe Midi Fleurs Boho",
+    verdict: "danger",
+    score: 3,
+    signals: [
+      { type: "ecologie", icon: "🌱", title: "Fast fashion agressive", detail: "Polyester neuf, livraison longue distance — empreinte carbone élevée par unité." },
+      { type: "epargne", icon: "💰", title: "Effet cumulatif", detail: "17,99€ × 3 achats/mois = 54€/mois qui n'atteignent pas ton objectif épargne." },
+      { type: "ethique", icon: "⚖️", title: "Conditions de production", detail: "Shein est régulièrement pointé pour conditions de travail et transparence insuffisante." }
+    ],
+    mirrorQuestion: "Est-ce que cette robe te rapproche de la personne que tu veux être ?",
+    crossAlts: [
+      {
+        kind: "smart", ico: "👗", name: "Vinted — robe boho similaire",
+        desc: "Robes boho d'occasion en M à partir de 8€. Moins cher, sans production neuve.",
+        save: "−60% · seconde main",
+        badge: "Seconde main", url: "https://www.vinted.fr/", dom: "vinted.fr"
+      },
+      {
+        kind: "you", ico: "📷", name: "2 pellicules photo argentique",
+        desc: "Budget équivalent (18€) → 2 pellicules Kodak + développement = nouvelle série.",
+        save: "18€ → passion",
+        badge: "Photo argentique", url: "", dom: "lomography.com"
+      },
+      {
+        kind: "free", ico: "🥾", name: "Rando au bois de Vincennes",
+        desc: "2h de balade gratuite — tu voulais bouger plus, le soleil est là aujourd'hui.",
+        save: "0€ · 2h d'air",
+        badge: "Gratuit", url: "", dom: ""
+      }
+    ]
+  }
+};
+
+// ═══════════════════════════════════════════
+// RACCOURCIS CLAVIER
+// ═══════════════════════════════════════════
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.key === 'f' || e.key === 'F') {
+    document.body.classList.toggle('fullscreen');
+    e.preventDefault();
+  } else if (e.key === 'ArrowRight') {
+    DEMO.nextStep();
+    e.preventDefault();
+  } else if (e.key === 'r' || e.key === 'R') {
+    DEMO.reset();
+    e.preventDefault();
+  } else if (e.key === '1') {
+    DEMO.loadScene(1);
+    e.preventDefault();
+  } else if (e.key === '2') {
+    DEMO.loadScene(2);
+    e.preventDefault();
+  }
+});
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+DEMO.loadScene(1);
+</script>
+
+</body>
+</html>

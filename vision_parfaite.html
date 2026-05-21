@@ -1,0 +1,1210 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Vision — Toile des intercroissements</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Work+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     VISION — vision_parfaite.html
+     Webapp navigable reproduisant les 16 frames Figma
+     "Miroir — Toile des intercroissements"
+     Cadre canonique : Samsung S24 — 360 × 780 px
+     ============================================================ */
+  *,*::before,*::after { box-sizing:border-box; }
+  html,body { margin:0; padding:0; height:100%; overflow:hidden; }
+  body {
+    background:
+      radial-gradient(1200px 600px at 50% 0%, #2a1f1a 0%, #0c0a09 50%, #000 100%);
+    font-family:"Inter", system-ui, sans-serif;
+    color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    min-height:100vh;
+  }
+
+  /* ---------- DEVICE FRAME (Samsung S24 silhouette) ---------- */
+  .device {
+    position:relative;
+    width: 384px;       /* phone bezel */
+    height: 808px;
+    border-radius: 44px;
+    background: #0a0a0a;
+    padding: 12px;
+    box-shadow:
+      0 0 0 2px #2a2a2a,
+      0 60px 120px rgba(0,0,0,.7),
+      0 24px 40px rgba(232,86,58,.15);
+  }
+  .device::before {
+    /* Selfie camera "punch hole" */
+    content:"";
+    position:absolute; left:50%; top:24px; transform:translateX(-50%);
+    width:9px; height:9px; border-radius:50%;
+    background:#1a1a1a;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.05);
+    z-index:1000;
+  }
+
+  /* The actual app viewport */
+  .viewport {
+    position:relative;
+    width: 360px;
+    height: 780px;
+    overflow:hidden;
+    border-radius: 32px;
+    background: #fff;
+    color:#111;
+    font-family:"Inter", sans-serif;
+  }
+
+  /* ---------- SCREEN ROUTER ---------- */
+  .screen {
+    position:absolute; inset:0;
+    overflow:hidden;
+    opacity:0;
+    pointer-events:none;
+    transition: opacity .35s ease;
+  }
+  .screen.active {
+    opacity:1;
+    pointer-events:auto;
+    z-index:5;
+  }
+
+  /* ---------- BACKGROUNDS ---------- */
+  .bg-white  { background:#ffffff; }
+  .bg-fafafa { background:#fafafa; }
+  .bg-orange {
+    background:
+      url("./assets/figma/welcome-image14.png") center/cover no-repeat,
+      linear-gradient(160deg, #ff7e00 0%, #ff5c1a 45%, #e8563a 100%);
+    background-blend-mode: overlay, normal;
+  }
+  .bg-orange::after {
+    content:"";
+    position:absolute; inset:0;
+    background: linear-gradient(160deg, rgba(255,126,0,.55), rgba(232,86,58,.45));
+    pointer-events:none;
+  }
+
+  /* ---------- DOT GRID (ambient on light) ---------- */
+  .dots {
+    position:absolute; inset:0;
+    pointer-events:none;
+    background-image: radial-gradient(rgba(0,0,0,.15) 1.4px, transparent 1.6px);
+    background-size: 36px 36px;
+    background-position: 30px 26px;
+    -webkit-mask-image: linear-gradient(180deg, #000 0 320px, transparent 320px),
+                        linear-gradient(180deg, transparent 440px, #000 440px 770px);
+            mask-image: linear-gradient(180deg, #000 0 320px, transparent 320px),
+                        linear-gradient(180deg, transparent 440px, #000 440px 770px);
+  }
+
+  /* ---------- ANDROID NAV BAR (bottom pill) ---------- */
+  .android-bar {
+    position:absolute; left:50%; bottom:5px; transform:translateX(-50%);
+    width:126px; height:5px;
+    background:#1a1a1a; border-radius:99px; opacity:.6;
+    z-index:30;
+  }
+  .bg-orange .android-bar,
+  #scr-welcome .android-bar { background:#fff; opacity:.55; }
+
+  /* ---------- PIXEL TILES (32.34px squares — Figma exact) ---------- */
+  .tile { position:absolute; width:32.34px; height:32.34px; z-index:1; }
+
+  /* ---------- FOXY MASCOT (sprite from Figma PNG) ---------- */
+  .foxy {
+    width:93.629px; height:82.963px;
+    border-radius:14px;
+    overflow:hidden;
+    position:relative;
+    background:#ff7e1a;
+  }
+  .foxy::before {
+    content:"";
+    position:absolute;
+    width:576.09%; height:650.16%;
+    left:-183.26%; top:-369.37%;
+    background: url("./assets/figma/foxy.png") top left/100% 100% no-repeat;
+    image-rendering:pixelated;
+  }
+  .foxy.faded { opacity:.25; }
+  .foxy.sm { width:46px; height:42px; border-radius:8px; }
+  .foxy.md { width:68px; height:61px; border-radius:14px; }
+
+  /* ---------- BUTTONS ---------- */
+  .btn-primary {
+    background: linear-gradient(90deg,#ff7e00,#e8563a);
+    color:#fff; font-family:"Inter",sans-serif; font-weight:700;
+    border:none; border-radius:12px;
+    height:45px; padding:0 28px;
+    display:inline-flex; align-items:center; justify-content:center;
+    font-size:16px; cursor:pointer;
+    box-shadow: 0 6px 14px rgba(232,86,58,.35);
+    transition: transform .12s ease;
+  }
+  .btn-primary:active { transform: translateY(1px) scale(.99); }
+  .btn-ghost {
+    background:#f5f5f5; color:#000;
+    border:1px solid #e8e8e8;
+    font-family:"Inter",sans-serif; font-weight:700;
+    border-radius:12px;
+    height:45px; padding:0 28px;
+    display:inline-flex; align-items:center; justify-content:center;
+    font-size:16px; cursor:pointer;
+  }
+
+  /* ---------- TYPOGRAPHY ---------- */
+  .h-title { font-family:"Work Sans",sans-serif; font-weight:700; font-size:36px; line-height:1.05; color:#fff; margin:0; }
+  .h-title-dark { font-family:"Work Sans",sans-serif; font-weight:400; font-size:24px; color:#000; line-height:1.15; margin:0; }
+  .step-label { font-family:"Work Sans",sans-serif; font-weight:400; font-size:14px; color:#fff; }
+  .pill-step { font-family:"Work Sans",sans-serif; font-weight:700; font-size:12px; color:#e8563a; letter-spacing:.04em; }
+
+  /* progress bar segments (top of onboarding light screens) */
+  .progress { position:absolute; left:24px; right:24px; top:36px; height:6px; display:flex; gap:8px; z-index:20; }
+  .progress span { flex:1; height:6px; background:#d9d9d9; border-radius:8px; overflow:hidden; }
+  .progress span.fill { background: linear-gradient(90deg,#ff7e00,#e8563a); }
+
+  /* ---------- STATUS BAR ---------- */
+  .status-bar {
+    position:absolute; left:0; right:0; top:0; height:28px;
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 0 22px;
+    font: 600 12px "Inter";
+    color:#1a1a1a;
+    z-index:25;
+  }
+  .bg-orange .status-bar, #scr-welcome .status-bar { color:#fff; }
+  .status-bar .right { display:flex; gap:4px; align-items:center; }
+  .status-bar .dot { width:4px;height:4px;border-radius:50%;background:currentColor; }
+
+  /* ---------- NAVBAR ---------- */
+  .navbar {
+    position:absolute; left:0; right:0; bottom:0;
+    height:80px;
+    background:#fff;
+    box-shadow: 0 -8px 24px rgba(0,0,0,.06);
+    display:flex;
+    z-index:20;
+  }
+  .navbar .row {
+    width:100%; height:64px; align-self:flex-start;
+    display:grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    align-items:center;
+  }
+  .navbar .item {
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:4px; font-size:11px; color:#888; font-family:"Inter",sans-serif;
+    cursor:pointer;
+    border:none; background:none; padding:0;
+    height:64px;
+  }
+  .navbar .item.active {
+    background: linear-gradient(90deg,#ff7e00,#e8563a);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    font-weight:700;
+  }
+  .navbar .item .ico {
+    width:20px; height:20px; display:inline-flex; align-items:center; justify-content:center;
+    color:#888;
+  }
+  .navbar .item.active .ico { color:#e8563a; }
+  .navbar .fab {
+    position:absolute; left:50%; top:-22px; transform:translateX(-50%);
+    width:64px; height:64px; border-radius:50%;
+    background: linear-gradient(135deg,#ff7e00,#e8563a);
+    box-shadow: 0 10px 22px rgba(232,86,58,.45), inset 0 2px 0 rgba(255,255,255,.3);
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; font-size:30px; font-weight:300;
+    cursor:pointer;
+    border:none;
+  }
+  .navbar .fab::after { content:"+"; line-height:1; margin-top:-3px; }
+
+  /* ---------- OBJECTIVE BANNER ---------- */
+  .obj-banner {
+    position:absolute; left:50%; transform:translateX(-50%);
+    top:99px; width:321px; height:64px; border-radius:14px;
+    background: linear-gradient(90deg,#ff7e00,#e8563a);
+    overflow:hidden;
+    padding: 14px 25px;
+  }
+  .obj-banner .tag { color:#f6bbb0; font:400 9px "Inter"; letter-spacing:.04em; margin-bottom:6px; }
+  .obj-banner .obj { color:#fff; font:400 13px "Inter"; }
+
+  /* ---------- WIDGET ---------- */
+  .widget {
+    position:absolute; left:24px; width:312px;
+    background:#fff; border-radius:14px;
+    padding:14px 18px;
+    box-shadow: 0 4px 14px rgba(0,0,0,.04);
+  }
+  .widget .eyebrow { font:400 13px/1 "Work Sans"; color:#000; margin:0 0 12px; letter-spacing:.02em; }
+  .widget .big { font:700 22px/1 "Work Sans"; }
+  .widget .sub { font:400 10px/1.2 "Inter"; color:#000; margin-top:8px; }
+  .widget .footnote { font:400 10px/1.2 "Inter"; color:#363636; margin-top:8px; }
+  .widget .bar-track { margin-top:8px; height:7px; background:#eee; border-radius:8px; overflow:hidden; }
+  .widget .bar-fill  { height:100%; background:#63993d; border-radius:8px; }
+
+  /* ---------- JOURNAL ROW ---------- */
+  .jrow {
+    position:relative; padding:8px 0 8px 14px;
+    border-radius:12px;
+  }
+  .jrow .bar { position:absolute; left:0; top:10px; width:3px; height:20px; border-radius:2px; }
+  .jrow .when { font:700 9px/1.2 "Inter"; color:#6b6475; margin:0 0 4px; }
+  .jrow .what { font:700 11px/1.2 "Inter"; color:#6b6475; margin:0; }
+  .jrow.good .bar { background:#42c47e; }
+  .jrow.good .what { color:#42c47e; }
+  .jrow.bad .bar  { background:#e8563a; }
+
+  /* ---------- SELECTION CHIP ---------- */
+  .chip {
+    display:inline-flex; align-items:center;
+    height:24px; padding:0 16px;
+    border-radius:64px;
+    background:#f5f5f5; border:1px solid #e8e8e8;
+    font:400 12px/1 "Inter"; color:#000;
+    cursor:pointer;
+    user-select:none;
+    transition: all .15s ease;
+  }
+  .chip.active {
+    background: linear-gradient(90deg,#ff7e00,#e8563a);
+    color:#fff; border:none;
+  }
+  .chip.plus { padding:0 12px; }
+
+  /* ---------- VISION CARD (étape 3) ---------- */
+  .vcard {
+    width:170px; height:168px; border-radius:14px;
+    background:#fff; border:1px solid rgba(136,136,136,.25);
+    position:relative; overflow:hidden;
+    cursor:pointer;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .vcard:hover { border-color:#ff7e00; box-shadow:0 4px 12px rgba(255,126,0,.15); }
+  .vcard.selected { border-color:#ff7e00; box-shadow:0 4px 12px rgba(255,126,0,.25); }
+  .vcard .title-vc { position:absolute; top:14px; left:0; right:0; text-align:center; font:700 16px/1.1 "Inter"; color:#000; padding:0 8px; }
+  .vcard .mini-foxy {
+    position:absolute; right:14px; top:62px; width:46px; height:42px;
+    border-radius:8px;
+    background: linear-gradient(180deg,#ff9b2e,#ff7a14);
+    opacity:.35;
+    overflow:hidden;
+  }
+  .vcard.selected .mini-foxy { opacity:1; }
+  .vcard .input-vc {
+    position:absolute; left:12px; right:12px; bottom:10px; height:28px;
+    background:#30302e; border-radius:14px;
+    color: rgba(255,255,255,.5);
+    font:400 10px/28px "Inter"; padding:0 12px;
+    overflow:hidden; white-space:nowrap; text-overflow:ellipsis;
+  }
+
+  /* ---------- PARAMETER ROW ---------- */
+  .prow {
+    background:#fff; border-radius:14px;
+    height:62px; display:flex; align-items:center; justify-content:space-between;
+    padding: 0 18px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.03);
+    cursor:pointer;
+  }
+  .prow .lbl { font:400 14px/1.1 "Work Sans"; color:#000; }
+  .prow .val { font:400 12px/1.1 "Inter"; color:#4b4b4b; margin-top:6px; }
+  .prow .col { display:flex; flex-direction:column; gap:2px; }
+  .prow .chev { color:#bbb; font-size:20px; font-weight:300; }
+
+  /* ---------- TOGGLE SWITCH ---------- */
+  .toggle {
+    width:45px; height:24px; border-radius:99px;
+    background:#ddd; position:relative; cursor:pointer;
+    transition: background .2s;
+  }
+  .toggle::after {
+    content:""; position:absolute; left:3px; top:3px;
+    width:18px; height:18px; border-radius:50%; background:#fff;
+    transition: left .2s;
+  }
+  .toggle.on { background: linear-gradient(90deg,#ff7e00,#e8563a); }
+  .toggle.on::after { left:24px; }
+
+  /* ---------- INPUT FIELDS ---------- */
+  .field-name {
+    width:100%; height:36px;
+    background:#40403e; border-radius:8px;
+    border:none; outline:none;
+    color:#fff;
+    font:400 13px "Inter";
+    padding: 0 16px;
+  }
+  .field-name::placeholder { color: rgba(255,255,255,.4); }
+
+  /* ---------- DEV CONTROLS (utility) ---------- */
+  .dev-toggle {
+    position:fixed; right:18px; top:18px; z-index:1000;
+    background:#1a1a1a; color:#aaa; border:1px solid #333;
+    padding:8px 12px; border-radius:8px;
+    font:500 11px "Inter"; cursor:pointer;
+    transition: color .15s;
+  }
+  .dev-toggle:hover { color:#fff; }
+  .dev-panel {
+    position:fixed; right:18px; top:60px; z-index:1000;
+    background:#1a1a1a; border:1px solid #333; border-radius:10px;
+    padding:8px; width:240px;
+    max-height:80vh; overflow-y:auto;
+    display:none;
+  }
+  .dev-panel.show { display:block; }
+  .dev-panel h4 { font:600 11px "Inter"; color:#888; margin:8px 8px 4px; letter-spacing:.06em; text-transform:uppercase; }
+  .dev-panel button {
+    width:100%; text-align:left;
+    background:none; border:none; color:#ccc;
+    padding:7px 10px; border-radius:6px; cursor:pointer;
+    font:400 12px "Inter";
+    display:flex; gap:8px; align-items:center;
+  }
+  .dev-panel button:hover { background:#252525; color:#fff; }
+  .dev-panel button.active { background:linear-gradient(90deg,#ff7e00,#e8563a); color:#fff; }
+  .dev-panel button .num { display:inline-block; width:24px; color:#666; font:500 10px "IBM Plex Mono"; }
+  .dev-panel button.active .num { color:#fff; }
+
+  /* ============================================================
+     SCREEN-SPECIFIC STYLES
+     ============================================================ */
+
+  /* ---------- #1 Home mobile (launcher) ---------- */
+  #scr-home-mobile {
+    background: url("./assets/figma/home-android.png") center/cover no-repeat;
+  }
+  #scr-home-mobile::before {
+    content:""; position:absolute; inset:0;
+    background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.15) 80%);
+  }
+  .launcher-icon {
+    position:absolute; left:50%; top:352px; transform:translateX(-50%);
+    width:54px; height:54px; border-radius:14px;
+    background: linear-gradient(135deg,#ff7e00,#e8563a);
+    cursor:pointer;
+    box-shadow:0 8px 20px rgba(232,86,58,.5);
+    display:flex; align-items:center; justify-content:center;
+    transition: transform .12s ease;
+  }
+  .launcher-icon:active { transform:translateX(-50%) scale(.94); }
+  .launcher-icon::before {
+    content:""; width:32px; height:32px; border-radius:50%;
+    background: rgba(255,255,255,.95);
+  }
+  .launcher-icon::after {
+    content:""; position:absolute; width:9px; height:9px; border-radius:50%;
+    background: linear-gradient(135deg,#ff7e00,#e8563a);
+  }
+  .launcher-label {
+    position:absolute; left:50%; top:412px; transform:translateX(-50%);
+    color:#fff; font:400 12px "Work Sans"; text-shadow:0 1px 4px rgba(0,0,0,.5);
+  }
+  .home-clock {
+    position:absolute; left:0; right:0; top:60px; text-align:center;
+    font:200 64px/1 "Work Sans"; color:#fff;
+    text-shadow:0 2px 12px rgba(0,0,0,.4);
+  }
+  .home-date {
+    position:absolute; left:0; right:0; top:140px; text-align:center;
+    font:400 14px "Inter"; color:#fff;
+    text-shadow:0 1px 4px rgba(0,0,0,.5);
+  }
+  .impact-widget {
+    position:absolute; left:24px; top:243px;
+    width:312px; height:91px;
+    background:#fff; border-radius:14px;
+    padding:13px 18px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.15);
+  }
+  .impact-widget .eyebrow { font:400 13px/1 "Work Sans"; color:#000; margin:0 0 6px; }
+  .impact-widget .kg { font:700 22px/1 "Work Sans"; color:#63993d; }
+  .impact-widget .sub { font:400 10px/1.2 "Inter"; color:#000; margin-top:6px; }
+  .impact-widget .footnote { font:400 10px/1.2 "Inter"; color:#363636; margin-top:6px; }
+  .impact-widget .foxy {
+    position:absolute; right:14px; top:14px;
+    width:68px; height:61px;
+  }
+
+  /* ---------- #2 Welcome ---------- */
+  #scr-welcome {
+    position:absolute; inset:0;
+    background: #ff7e00;
+    overflow:hidden;
+  }
+  #scr-welcome .image14 {
+    position:absolute; inset:0;
+    background: url("./assets/figma/welcome-image14.png") center/cover no-repeat;
+    opacity:.53;
+  }
+  #scr-welcome .ellipse-bg {
+    position:absolute; left:-160px; top:-100px;
+    width:680px; height:560px;
+    background: radial-gradient(closest-side, rgba(255,170,50,.55), transparent 65%);
+  }
+  #scr-welcome .ellipse-fg {
+    position:absolute; left:50%; top:270px; transform:translateX(-50%);
+    width:108px; height:108px; border-radius:50%;
+    border: 9px solid rgba(255,255,255,.55);
+    box-shadow: 0 0 40px rgba(255,255,255,.3);
+  }
+  #scr-welcome .foxy { position:absolute; left:50%; top:288px; transform:translateX(-50%); z-index:5; }
+  #scr-welcome h1 {
+    position:absolute; left:0; right:0; top:415px;
+    text-align:center; color:#fff;
+    font:700 32px "Work Sans"; margin:0;
+  }
+  #scr-welcome .tagline {
+    position:absolute; left:0; right:0; top:495px;
+    text-align:center; color:#fff;
+    font:400 16px/1.4 "Inter";
+    padding:0 50px;
+    font-style:italic;
+  }
+  #scr-welcome .btn-create {
+    position:absolute; left:37px; top:640px; width:286px;
+  }
+  #scr-welcome .login {
+    position:absolute; left:0; right:0; top:698px;
+    background:none; border:none;
+    color:#fff; font:700 16px "Inter";
+    cursor:pointer;
+  }
+
+  /* ============================================================ */
+  .annotation {
+    position:absolute; left:0; right:0; bottom:96px;
+    text-align:center; font:500 9px "IBM Plex Mono"; color: rgba(0,0,0,.3);
+    letter-spacing:.08em; pointer-events:none;
+  }
+  .bg-orange .annotation, #scr-welcome .annotation { color: rgba(255,255,255,.4); }
+
+  /* sub-screen back nav */
+  .back-nav {
+    position:absolute; left:24px; top:50px;
+    cursor:pointer; background:none; border:none; padding:0;
+    z-index:30;
+  }
+  .back-nav .arr { font:700 22px "Work Sans"; color:#000; }
+  .back-nav .lbl { font:400 10px "Work Sans"; color:#9f9f9f; display:block; }
+</style>
+</head>
+<body>
+
+<button class="dev-toggle" onclick="document.getElementById('devp').classList.toggle('show')">▣ écrans (16)</button>
+<aside class="dev-panel" id="devp">
+  <h4>Découverte</h4>
+  <button data-go="home-mobile"><span class="num">01</span> Home mobile</button>
+  <button data-go="welcome"><span class="num">02</span> Bienvenue Vision</button>
+  <h4>Onboarding · 4 étapes</h4>
+  <button data-go="step1-intro"><span class="num">03</span> 01 — Partenaire</button>
+  <button data-go="step1-form"><span class="num">04</span> Choix partenaire</button>
+  <button data-go="step2-intro"><span class="num">05</span> 02 — Passion</button>
+  <button data-go="step2-form"><span class="num">06</span> Tes passions</button>
+  <button data-go="step3-intro"><span class="num">07</span> 03 — Vision</button>
+  <button data-go="step3-form"><span class="num">08</span> Que veux-tu construire</button>
+  <button data-go="surveillance"><span class="num">09</span> Surveillance sites</button>
+  <button data-go="step4-intro"><span class="num">10</span> 04 — Ta capsule</button>
+  <button data-go="step4-form"><span class="num">11</span> Capsule caméra</button>
+  <h4>App principale · navbar</h4>
+  <button data-go="dashboard"><span class="num">12</span> Home dashboard</button>
+  <button data-go="historique"><span class="num">13</span> Historique</button>
+  <button data-go="compagnon"><span class="num">14</span> Compagnon</button>
+  <button data-go="profil"><span class="num">15</span> Profil</button>
+  <button data-go="ambitions"><span class="num">16</span> Mes ambitions</button>
+</aside>
+
+<div class="device">
+  <div class="viewport" id="vp">
+
+    <!-- ============================================================
+         #1  Home mobile (launcher)
+         ============================================================ -->
+    <section class="screen active" id="scr-home-mobile">
+      <div class="status-bar" style="color:#fff;">
+        <span>18:42</span>
+        <span class="right"><span>●●●</span><span>📶</span><span>🔋</span></span>
+      </div>
+      <div class="home-clock">18:42</div>
+      <div class="home-date">Vendredi 8 mai</div>
+
+      <!-- Impact widget at top center -->
+      <div class="impact-widget">
+        <p class="eyebrow">IMPACT ÉCOLOGIQUE</p>
+        <div class="kg">36KG</div>
+        <p class="sub">CO₂ évités cette semaine</p>
+        <p class="footnote">Soit 288 km en voiture non parcourus.</p>
+        <div class="foxy"></div>
+      </div>
+
+      <!-- Vision app icon -->
+      <button class="launcher-icon" data-go="welcome" aria-label="Ouvrir Vision"></button>
+      <div class="launcher-label">Vision</div>
+
+      <div class="android-bar"></div>
+    </section>
+
+    <!-- ============================================================
+         #2  Welcome (Bienvenue sur Vision)
+         ============================================================ -->
+    <section class="screen" id="scr-welcome">
+      <div class="image14"></div>
+      <div class="ellipse-bg"></div>
+      <div class="status-bar">
+        <span>09:24</span>
+        <span class="right"><span>●●●</span><span>📶</span><span>🔋</span></span>
+      </div>
+      <div class="ellipse-fg"></div>
+      <div class="foxy"></div>
+      <h1>Bienvenue sur Vision</h1>
+      <p class="tagline">L'impulsion passe. Mais tes ambitions restent.</p>
+      <button class="btn-ghost btn-create" data-go="step1-intro">Create account</button>
+      <button class="login" data-go="dashboard">Login</button>
+      <div class="android-bar"></div>
+    </section>
+
+    <!-- ============================================================
+         #3  01 — Partenaire intro
+         ============================================================ -->
+    <section class="screen bg-orange" id="scr-step1-intro">
+      <div class="status-bar"><span>09:24</span><span class="right">📶 🔋</span></div>
+      <!-- top-left tiles -->
+      <div class="tile" style="left:0;top:0;background:#f25023;"></div>
+      <div class="tile" style="left:0;top:32px;background:#ff6338;"></div>
+      <div class="tile" style="left:32px;top:0;background:#f0662c;"></div>
+      <div class="tile" style="left:32px;top:80px;background:#f87d4a;"></div>
+      <div class="tile" style="left:2px;top:135px;background:#fb750d;"></div>
+      <div class="tile" style="left:65px;top:32px;background:#e66b0b;"></div>
+      <div class="tile" style="left:127px;top:0;background:#fe9e41;"></div>
+      <div class="tile" style="left:97px;top:32px;background:#fd8a23;"></div>
+      <div class="tile" style="left:170px;top:59px;background:#fc760f;"></div>
+      <div class="tile" style="left:159px;top:0;background:#fd8a23;"></div>
+      <div class="tile" style="left:170px;top:91px;background:#fc7e15;"></div>
+      <div class="tile" style="left:232px;top:32px;background:#fda754;"></div>
+      <div class="tile" style="left:101px;top:88px;background:#fd8a23;"></div>
+      <!-- bottom-right tiles -->
+      <div class="tile" style="left:96px;top:716px;background:#f47f41;"></div>
+      <div class="tile" style="left:158px;top:690px;background:#fc760f;"></div>
+      <div class="tile" style="left:158px;top:658px;background:#fc7e15;"></div>
+      <div class="tile" style="left:169px;top:748px;background:#fd8a23;"></div>
+      <div class="tile" style="left:201px;top:748px;background:#f37741;"></div>
+      <div class="tile" style="left:227px;top:660px;background:#f46f28;"></div>
+      <div class="tile" style="left:231px;top:716px;background:#f4813a;"></div>
+      <div class="tile" style="left:263px;top:716px;background:#f49047;"></div>
+      <div class="tile" style="left:295px;top:668px;background:#f35b26;"></div>
+      <div class="tile" style="left:328px;top:716px;background:#ff6338;"></div>
+      <div class="tile" style="left:328px;top:748px;background:#f49d77;"></div>
+
+      <p class="step-label" style="position:absolute;left:23px;top:357px;z-index:5;">01 — PARTENAIRE</p>
+      <h1 class="h-title" style="position:absolute;left:24px;top:390px;width:230px;z-index:5;">Choisis ton partenaire</h1>
+      <p style="position:absolute;left:24px;top:484px;width:255px;color:#fff;font:400 16px/1.4 'Inter';z-index:5;">Ton compagnon t'accompagne chaque jour. Il évolue en fonction de tes actions et t'aide à rester aligné avec tes objectifs.</p>
+      <button class="btn-ghost" style="position:absolute;left:149px;top:691px;width:188px;z-index:5;" data-go="step1-form">Continuer →</button>
+      <div class="android-bar"></div>
+    </section>
+
+    <!-- ============================================================
+         #4  Étape 1 — Choix partenaire
+         ============================================================ -->
+    <section class="screen bg-fafafa" id="scr-step1-form">
+      <div class="status-bar"><span>09:24</span><span class="right">📶 🔋</span></div>
+      <div class="dots"></div>
+      <div class="progress">
+        <span class="fill"></span><span></span><span></span><span></span>
+      </div>
+      <p class="pill-step" style="position:absolute;left:24px;top:62px;">ÉTAPE 1 · TON PARTENAIRE</p>
+      <h2 class="h-title-dark" style="position:absolute;left:27px;top:100px;">Choisis ton partenaire</h2>
+      <p style="position:absolute;left:29px;top:130px;font:400 14px 'Work Sans';color:#000;margin:0;">Plus facile ensemble.</p>
+
+      <div style="position:absolute;left:62px;top:184px;display:grid;grid-template-columns:repeat(2,93px);grid-gap:42px 49px;">
+        <div style="text-align:center;cursor:pointer;" class="companion-pick" data-name="Foxy">
+          <div class="foxy"></div>
+          <p style="margin:6px 0 0;font:400 14px 'Inter';color:#000;">Foxy</p>
+        </div>
+        <div style="text-align:center;cursor:pointer;" class="companion-pick faded" data-name="Malo">
+          <div class="foxy faded"></div>
+          <p style="margin:6px 0 0;font:400 14px 'Inter';color:#000;opacity:.4;">Malo</p>
+        </div>
+        <div style="text-align:center;cursor:pointer;" class="companion-pick faded" data-name="Élio">
+          <div class="foxy faded"></div>
+          <p style="margin:6px 0 0;font:400 14px 'Inter';color:#000;opacity:.4;">Élio</p>
+        </div>
+        <div style="text-align:center;cursor:pointer;" class="companion-pick faded" data-name="Ryo">
+          <div class="foxy faded"></div>
+          <p style="margin:6px 0 0;font:400 14px 'Inter';color:#000;opacity:.4;">Ryo</p>
+        </div>
+      </div>
+
+      <div style="position:absolute;left:20px;top:464px;width:317px;background:#2a2a28;border-radius:14px;padding:18px;">
+        <p style="margin:0;font:400 14px/1.4 'Inter';color:#fff;">Ce renard est stratège. Toujours un coup d'avance, il sera toujours là pour te réorienter en cas de coup dur.</p>
+        <input class="field-name" id="companion-name" placeholder="Donne-lui ton prénom" style="margin-top:14px;" value="Renardo"/>
+      </div>
+
+      <button class="btn-primary" style="position:absolute;left:190px;top:697px;width:133px;" data-go="step2-intro">Continuer →</button>
+      <div class="android-bar"></div>
+    </section>
+
+    <!-- ============================================================
+         #5  02 — Passion intro
+         ============================================================ -->
+    <section class="screen bg-orange" id="scr-step2-intro">
+      <div class="status-bar"><span>09:25</span><span class="right">📶 🔋</span></div>
+      <!-- top-right tiles -->
+      <div class="tile" style="right:0;top:0;background:#f49d77;"></div>
+      <div class="tile" style="right:0;top:32px;background:#ff6338;"></div>
+      <div class="tile" style="right:33px;top:80px;background:#f35b26;"></div>
+      <div class="tile" style="right:65px;top:32px;background:#f49047;"></div>
+      <div class="tile" style="right:127px;top:0;background:#f37741;"></div>
+      <div class="tile" style="right:97px;top:32px;background:#f4813a;"></div>
+      <div class="tile" style="right:170px;top:59px;background:#fc760f;"></div>
+      <div class="tile" style="right:159px;top:0;background:#fd8a23;"></div>
+      <div class="tile" style="right:170px;top:91px;background:#fc7e15;"></div>
+      <div class="tile" style="right:232px;top:32px;background:#f47f41;"></div>
+      <div class="tile" style="right:101px;top:88px;background:#f46f28;"></div>
+      <!-- bottom-left tiles -->
+      <div class="tile" style="left:0;top:716px;background:#ff6338;"></div>
+      <div class="tile" style="left:0;top:748px;background:#f25023;"></div>
+      <div class="tile" style="left:32px;top:668px;background:#f87d4a;"></div>
+      <div class="tile" style="left:32px;top:748px;background:#f0662c;"></div>
+      <div class="tile" style="left:2px;top:614px;background:#fb750d;"></div>
+      <div class="tile" style="left:65px;top:716px;background:#e66b0b;"></div>
+      <div class="tile" style="left:97px;top:716px;background:#fd8a23;"></div>
+      <div class="tile" style="left:127px;top:748px;background:#fe9e41;"></div>
+      <div class="tile" style="left:159px;top:748px;background:#fd8a23;"></div>
+      <div class="tile" style="left:170px;top:658px;background:#fc7e15;"></div>
+      <div class="tile" style="left:170px;top:690px;background:#fc760f;"></div>
+      <div class="tile" style="left:101px;top:660px;background:#fd8a23;"></div>
+      <div class="tile" style="left:232px;top:717px;background:#fda754;"></div>
+
+      <p class="step-label" style="position:absolute;left:23px;top:357px;z-index:5;">02 — PASSION</p>
+      <h1 class="h-title" style="position:absolute;left:24px;top:390px;width:260px;z-index:5;">Ce qui t'anime</h1>
+      <p style="position:absolute;left:27px;top:442px;width:260px;color:#fff;font:400 16px/1.4 'Inter';z-index:5;"><i>Compagnon</i> comprend mieux ce que tu veux protéger quand il connaît ce qui compte pour toi.</p>
+      <button class="btn-ghost" style="position:absolute;left:149px;top:691px;width:188px;z-index:5;" data-go="step2-form">Continuer →</button>
+      <div class="android-bar"></div>
+    </section>
+
+    <!-- ============================================================
+         #6  Étape 2 — Tes passions (chips)
+         ============================================================ -->
+    <section class="screen bg-fafafa" id="scr-step2-form">
+      <div class="status-bar"><span>09:25</span><span class="right">📶 🔋</span></div>
+      <div class="dots"></div>
+      <div class="progress">
+        <span class="fill"></span><span class="fill"></span><span></span><span></span>
+      </div>
+      <p class="pill-step" style="position:absolute;left:24px;top:62px;">ÉTAPE 2 · TES PASSIONS</p>
+      <h2 class="h-title-dark" style="position:absolute;left:22px;top:100px;">Sélectionnes tes passions</h2>
+      <p style="position:absolute;left:23px;top:132px;font:400 14px 'Work Sans';color:#000;margin:0;">Personnalises tes alternatives</p>
+      <div class="foxy" style="position:absolute;left:239px;top:137px;"></div>
+
+      <p class="pill-step" id="chip-count" style="position:absolute;left:30px;top:210px;">3 passions sélectionnées</p>
+
+      <div style="position:absolute;left:24px;top:236px;display:flex;flex-wrap:wrap;gap:7px;width:315px;" id="chip-grid">
+        <button class="chip">Fitness</button>
+        <button class="chip">Gaming</button>
+        <button class="chip">Manga / Anime</button>
+        <button class="chip">Finance</button>
+        <button class="chip">Développement personnel</button>
+        <button class="chip active">Lecture</button>
+        <button class="chip">Musique</button>
+        <button class="chip active">Voyage</button>
+        <button class="chip">Art</button>
+        <button class="chip">Nature</button>
+        <button class="chip">Entrepreneuriat</button>
+        <button class="chip">Roadtrip</button>
+        <button class="chip">Mode</button>
+        <button class="chip active">Nourriture</button>
+        <button class="chip">Cinéma</button>
+        <button class="chip">Sport</button>
+      </div>
+
+      <p style="position:absolute;left:0;right:0;top:436px;text-align:center;font:400 12px 'Inter';color:#000;margin:0;">Ajoutes tes passions :</p>
+      <button class="chip plus" style="position:absolute;left:50%;top:460px;transform:translateX(-50%);width:32px;padding:0;">+</button>
+
+      <button class="btn-primary" style="position:absolute;left:190px;top:697px;width:133px;" data-go="step3-intro">Continuer →</button>
+      <div class="android-bar"></div>
+    </section>
+
+    <!-- ============================================================
+         #7  03 — Vision intro
+         ============================================================ -->
+    <section class="screen bg-orange" id="scr-step3-intro">
+      <div class="status-bar"><span>09:26</span><span class="right">📶 🔋</span></div>
+      <!-- top corner -->
+      <div class="tile" style="left:0;top:0;background:#f49d77;"></div>
+      <div class="tile" style="left:0;top:32px;background:#ff6338;"></div>
+      <div class="tile" style="left:32px;top:80px;background:#f35b26;"></div>
+      <div class="tile" style="left:65px;top:32px;background:#f49047;"></div>
+      <div class="tile" style="left:127px;top:0;background:#f37741;"></div>
+      <div class="tile" style="left:97px;top:32px;background:#f4813a;"></div>
+      <div class="tile" style="left:170px;top:59px;background:#fc760f;"></div>
+      <div class="tile" style="left:159px;top:0;background:#fd8a23;"></div>
+      <div class="tile" style="left:170px;top:91px;background:#fc7e15;"></div>
+      <div class="tile" style="left:232px;top:32px;background:#f47f41;"></div>
+      <div class="tile" style="left:101px;top:88px;background:#f46f28;"></div>
+      <!-- bottom-right -->
+      <div class="tile" style="left:96px;top:716px;background:#fda754;"></div>
+      <div class="tile" style="left:158px;top:690px;background:#fc760f;"></div>
+      <div class="tile" style="left:158px;top:658px;background:#fc7e15;"></div>
+      <div class="tile" style="left:169px;top:748px;background:#fd8a23;"></div>
+      <div class="tile" style="left:201px;top:748px;background:#fe9e41;"></div>
+      <div class="tile" style="left:227px;top:660px;background:#fd8a23;"></div>
+      <div class="tile" style="left:231px;top:716px;background:#fd8a23;"></div>
+      <div class="tile" style="left:263px;top:716px;background:#e66b0b;"></div>
+      <div class="tile" style="left:295px;top:668px;background:#f87d4a;"></div>
+      <div class="tile" style="left:295px;top:748px;background:#f0662c;"></div>
+      <div class="tile" style="left:325px;top:614px;background:#fb750d;"></div>
+      <div class="tile" style="left:328px;top:716px;background:#ff6338;"></div>
+      <div class="tile" style="left:328px;top:748px;background:#f25023;"></div>
+
+      <p class="step-label" style="position:absolute;left:23px;top:357px;z-index:5;">03 — VISION</p>
+      <h1 class="h-title" style="position:absolute;left:24px;top:390px;width:310px;z-index:5;">Pose ton premier objectif</h1>
+      <p style="position:absolute;left:24px;top:484px;width:280px;color:#fff;font:400 16px/1.4 'Inter';z-index:5;">Dis-le comme tu le penses. Vision s'occupera de le structurer ensuite.</p>
+      <button class="btn-ghost" style="position:absolute;left:150px;top:691px;width:188px;z-index:5;" data-go="step3-form">C'est parti →</button>
+      <div class="android-bar"></div>
+    </section>
+
+    <!-- ============================================================
+         #8  Étape 3 — Que veux-tu construire ?
+         ============================================================ -->
+    <section class="screen bg-fafafa" id="scr-step3-form">
+      <div class="status-bar"><span>09:26</span><span class="right">📶 🔋</span></div>
+      <div class="dots"></div>
+      <div class="progress">
+        <span class="fill"></span><span class="fill"></span><span class="fill"></span><span></span>
+      </div>
+      <p class="pill-step" style="position:absolute;left:24px;top:62px;">ÉTAPE 3 · TA VISION</p>
+      <h2 class="h-title-dark" style="position:absolute;left:22px;top:100px;width:298px;">Que veux-tu construire ?</h2>
+      <p style="position:absolute;left:23px;top:132px;font:400 14px 'Work Sans';color:#000;margin:0;"><i>Compagnon</i> est là pour t'aider à voir plus loin.</p>
+      <p class="pill-step" id="vision-count" style="position:absolute;left:29px;top:210px;">Construit ta vision 1/3</p>
+
+      <div style="position:absolute;left:0;right:0;top:236px;height:430px;overflow-y:auto;overflow-x:hidden;padding:0 7px;">
+        <div style="display:grid;grid-template-columns:repeat(2,170px);grid-gap:8px;justify-content:center;">
+          <div class="vcard selected" data-pick="Voyager">
+            <div class="title-vc">Voyager</div>
+            <div class="mini-foxy"><div class="foxy" style="transform:scale(.5) translate(-23px,-21px);"></div></div>
+            <div class="input-vc">le mois prochain</div>
+          </div>
+          <div class="vcard" data-pick="Liberté financière"><div class="title-vc">Liberté financière</div><div class="mini-foxy"></div><div class="input-vc">Ne plus stresser</div></div>
+          <div class="vcard" data-pick="Réduire mon impact"><div class="title-vc">Réduire mon impact</div><div class="mini-foxy"></div><div class="input-vc">Ne plus stresser</div></div>
+          <div class="vcard" data-pick="Lancer un projet"><div class="title-vc">Lancer un projet</div><div class="mini-foxy"></div><div class="input-vc">Ne plus stresser</div></div>
+          <div class="vcard" data-pick="Me former"><div class="title-vc">Me former</div><div class="mini-foxy"></div><div class="input-vc">Ne plus stresser</div></div>
+          <div class="vcard" data-pick="Prendre soin de moi"><div class="title-vc">Prendre soin de moi</div><div class="mini-foxy"></div><div class="input-vc">Ne plus stresser</div></div>
+          <div class="vcard" data-pick="Premier logement"><div class="title-vc">Premier logement</div><div class="mini-foxy"></div><div class="input-vc">Ne plus stresser</div></div>
+          <div class="vcard" data-pick="Avoir de l'impact"><div class="title-vc">Avoir de l'impact</div><div class="mini-foxy"></div><div class="input-vc">Ne plus stresser</div></div>
+        </div>
+      </div>
+
+      <button class="btn-primary" style="position:absolute;left:193px;top:707px;width:133px;" data-go="surveillance">Continuer →</button>
+      <button style="position:absolute;left:24px;top:725px;background:#ededed;height:24px;padding:0 16px;border-radius:64px;border:none;font:400 12px 'Inter';color:#000;cursor:pointer;">Discute avec Foxy</button>
+      <div class="android-bar"></div>
+    </section>
+
+    <!-- ============================================================
+         #9  Surveillance sites (intermédiaire)
+         ============================================================ -->
+    <section class="screen bg-fafafa" id="scr-surveillance">
+      <div class="status-bar"><span>09:27</span><span class="right">📶 🔋</span></div>
+      <div class="dots"></div>
+      <div class="foxy" style="position:absolute;left:50%;top:103px;transform:translateX(-50%);"></div>
+      <h2 style="position:absolute;left:0;right:0;top:200px;text-align:center;font:700 24px/1.25 'Work Sans';color:#000;padding:0 22px;margin:0;">Ton compagnon va analyser ces sites pour toi</h2>
+      <p style="position:absolute;left:0;right:0;top:294px;text-align:center;font:400 13px 'Inter';color:#000;margin:0;">Tu peux en ajouter en plus</p>
+
+      <div style="position:absolute;left:32px;top:346px;width:296px;height:60px;background:#fff;border-radius:14px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;box-shadow:0 1px 4px rgba(0,0,0,.04);">
+        <div>
+          <p style="margin:0;font:400 14px 'Work Sans';color:#000;">Achat</p>
+          <p style="margin:4px 0 0;font:400 12px 'Work Sans';color:#000;opacity:.7;">(Amazon, Zara, Sephora...)</p>
+        </div>
+        <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <div style="position:absolute;left:32px;top:422px;width:296px;height:60px;background:#fff;border-radius:14px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;box-shadow:0 1px 4px rgba(0,0,0,.04);">
+        <div>
+          <p style="margin:0;font:400 14px 'Work Sans';color:#000;">Food &amp; Livraison</p>
+          <p style="margin:4px 0 0;font:400 12px 'Work Sans';color:#000;opacity:.7;">(UberEats, Deliveroo, McDo...)</p>
+        </div>
+        <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <div style="position:absolute;left:32px;top:498px;width:296px;height:60px;background:#fff;border-radius:14px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;box-shadow:0 1px 4px rgba(0,0,0,.04);">
+        <div>
+          <p style="margin:0;font:400 14px 'Work Sans';color:#000;">Réseaux &amp; Streaming</p>
+          <p style="margin:4px 0 0;font:400 12px 'Work Sans';color:#000;opacity:.7;">(TikTok, Instagram, Youtube...)</p>
+        </div>
+        <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+      </div>
+
+      <button class="btn-primary" style="position:absolute;left:149px;top:691px;width:188px;" data-go="step4-intro">Compris →</button>
+      <div class="android-bar"></div>
+    </section>
+
+    <!-- ============================================================
+         #10  04 — Ta Capsule intro
+         ============================================================ -->
+    <section class="screen bg-orange" id="scr-step4-intro">
+      <div class="status-bar"><span>09:27</span><span class="right">📶 🔋</span></div>
+      <div class="tile" style="left:155px;top:0;background:#f49d77;"></div>
+      <div class="tile" style="left:155px;top:32px;background:#ff6338;"></div>
+      <div class="tile" style="left:188px;top:80px;background:#f35b26;"></div>
+      <div class="tile" style="left:220px;top:32px;background:#f49047;"></div>
+      <div class="tile" style="left:282px;top:0;background:#f37741;"></div>
+      <div class="tile" style="left:252px;top:32px;background:#f4813a;"></div>
+      <div class="tile" style="left:325px;top:59px;background:#fc760f;"></div>
+      <div class="tile" style="left:314px;top:0;background:#fd8a23;"></div>
+      <div class="tile" style="left:325px;top:91px;background:#fc7e15;"></div>
+      <div class="tile" style="left:256px;top:88px;background:#f46f28;"></div>
+
+      <div class="tile" style="left:96px;top:716px;background:#ff6338;"></div>
+      <div class="tile" style="left:96px;top:748px;background:#f25023;"></div>
+      <div class="tile" style="left:128px;top:668px;background:#f87d4a;"></div>
+      <div class="tile" style="left:128px;top:748px;background:#f0662c;"></div>
+      <div class="tile" style="left:98px;top:614px;background:#fb750d;"></div>
+      <div class="tile" style="left:161px;top:716px;background:#e66b0b;"></div>
+      <div class="tile" style="left:193px;top:716px;background:#fd8a23;"></div>
+      <div class="tile" style="left:223px;top:748px;background:#fe9e41;"></div>
+      <div class="tile" style="left:255px;top:748px;background:#fd8a23;"></div>
+      <div class="tile" style="left:266px;top:656px;background:#fc7e15;"></div>
+      <div class="tile" style="left:266px;top:690px;background:#fc760f;"></div>
+      <div class="tile" style="left:197px;top:660px;background:#fd8a23;"></div>
+      <div class="tile" style="left:328px;top:716px;background:#fda754;"></div>
+
+      <p class="step-label" style="position:absolute;left:23px;top:357px;z-index:5;">04 — TA CAPSULE</p>
+      <h1 class="h-title" style="position:absolute;left:24px;top:390px;z-index:5;">Immortalise<br>ce moment</h1>
+      <p style="position:absolute;left:24px;top:484px;width:280px;color:#fff;font:400 16px/1.4 'Inter';z-index:5;">Enregistre un message à ton futur toi. Il s'affichera lors des moments de doute.</p>
+      <button class="btn-ghost" style="position:absolute;left:149px;top:691px;width:188px;z-index:5;" data-go="step4-form">Enregistrer →</button>
+      <div class="android-bar"></div>
+    </section>
+
+    <!-- ============================================================
+         #11  Étape 4 — Capsule caméra
+         ============================================================ -->
+    <section class="screen bg-white" id="scr-step4-form">
+      <div class="status-bar"><span>09:28</span><span class="right">📶 🔋</span></div>
+      <div class="dots"></div>
+      <div class="progress">
+        <span class="fill"></span><span class="fill"></span><span class="fill"></span><span class="fill"></span>
+      </div>
+      <p class="pill-step" style="position:absolute;left:24px;top:62px;">ÉTAPE 4 · TA CAPSULE</p>
+      <h2 class="h-title-dark" style="position:absolute;left:22px;top:100px;">Immortalise ce moment</h2>
+      <p style="position:absolute;left:22px;top:135px;width:300px;font:400 14px/1.45 'Work Sans';color:#000;margin:0;">Parle face caméra. Dis ton objectif de vie, ton projet, la personne que tu construis. Cette vidéo sera ton miroir au moment de la tentation.</p>
+
+      <!-- Camera -->
+      <div style="position:absolute;left:50%;top:204px;transform:translateX(-50%);width:326px;height:367px;background:#2a2a28;border-radius:14px;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+        <p style="margin:0;font:400 13px/1.45 'Inter';color:#5c5f5e;text-align:center;padding:0 50px;">Appuie sur le bouton pour commencer l'enregistrement</p>
+        <button id="rec-btn" onclick="this.classList.toggle('on')" style="position:absolute;left:50%;bottom:-18px;transform:translateX(-50%);width:50px;height:50px;border-radius:50%;background:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.25);">
+          <div style="width:36px;height:36px;border-radius:50%;background:#e8563a;transition:all .2s;"></div>
+        </button>
+      </div>
+
+      <!-- Transcript -->
+      <div style="position:absolute;left:32px;top:504px;width:296px;background:#40403e;border-radius:14px;padding:12px 14px;">
+        <p style="margin:0;font:400 13px/1.4 'Inter';color:#c6beb4;">"Salut, c'est moi dans 90 jours. J'espère que tu as tenu tes engagements..."</p>
+      </div>
+
+      <p style="position:absolute;left:0;right:0;top:579px;text-align:center;font:400 12px 'Inter';color:#000;margin:0;">Sinon enregistrer un vocal</p>
+      <button class="btn-primary" style="position:absolute;left:190px;top:697px;width:133px;" data-go="dashboard">Continuer →</button>
+      <div class="android-bar"></div>
+    </section>
+
+    <!-- ============================================================
+         #12  Dashboard Home
+         ============================================================ -->
+    <section class="screen bg-fafafa" id="scr-dashboard">
+      <div class="status-bar"><span>20:14</span><span class="right">📶 🔋</span></div>
+      <div class="dots"></div>
+      <h1 style="position:absolute;left:37px;top:42px;margin:0;font:700 22px 'Work Sans';color:#000;">Bonsoir, Léa 👋</h1>
+      <p style="position:absolute;left:38px;top:71px;margin:0;font:400 12px 'Inter';color:#6b6475;">🔥 8 jours sans craquage</p>
+
+      <div class="obj-banner">
+        <div class="tag">TON OBJECTIF</div>
+        <div class="obj">Je veux pouvoir voyager le mois prochain.</div>
+      </div>
+
+      <div class="widget" style="top:189px;height:93px;">
+        <p class="eyebrow">IMPACT ÉCOLOGIQUE</p>
+        <div style="font:700 22px/1 'Work Sans';color:#63993d;">36 KG</div>
+        <p class="sub">CO₂ évités cette semaine</p>
+        <p class="footnote">Soit 288 km en voiture non parcourus.</p>
+      </div>
+      <div class="widget" style="top:296px;height:93px;">
+        <p class="eyebrow">LIBERTÉ FINANCIÈRE</p>
+        <div style="font:700 22px/1 'Work Sans';color:#63993d;">124 €</div>
+        <p class="sub">62 % de l'objectif</p>
+        <div class="bar-track"><div class="bar-fill" style="width:74%;"></div></div>
+      </div>
+      <div class="widget" style="top:403px;height:93px;">
+        <p class="eyebrow">VOYAGE</p>
+        <div style="font:700 22px/1 'Work Sans';color:#38bdf8;">8 %</div>
+        <p class="sub">Il manque 1 376 €. Continue comme ça</p>
+        <div class="bar-track"><div class="bar-fill" style="width:17%;background:#4eb8ff;"></div></div>
+      </div>
+
+      <p style="position:absolute;left:32px;top:512px;margin:0;font:700 11px 'IBM Plex Mono';color:#6b6475;letter-spacing:.06em;">JOURNAL</p>
+      <div style="position:absolute;left:32px;top:534px;width:300px;display:flex;flex-direction:column;gap:6px;">
+        <div class="jrow good"><p class="when">Aujourd'hui · 14:20</p><p class="what">Résisté à Shein — +34 €</p></div>
+        <div class="jrow bad"><p class="when">Hier · 22:47</p><p class="what">Commandé Uber Eats. Fatigue.</p></div>
+        <div class="jrow good"><p class="when">Mer · 18:05</p><p class="what">Résisté à Amazon — +22 €</p></div>
+      </div>
+
+      <nav class="navbar">
+        <div class="row">
+          <button class="item active"><span class="ico">⌂</span>Home</button>
+          <button class="item" data-go="historique"><span class="ico">⊟</span>Historique</button>
+          <span></span>
+          <button class="item" data-go="compagnon"><span class="ico">✦</span>Compagnon</button>
+          <button class="item" data-go="profil"><span class="ico">☺</span>Profil</button>
+        </div>
+        <button class="fab" aria-label="Nouvelle action"></button>
+      </nav>
+    </section>
+
+    <!-- ============================================================
+         #13  Historique
+         ============================================================ -->
+    <section class="screen bg-fafafa" id="scr-historique">
+      <div class="status-bar"><span>20:15</span><span class="right">📶 🔋</span></div>
+      <div class="dots"></div>
+      <h1 style="position:absolute;left:24px;top:42px;margin:0;font:700 22px 'Work Sans';color:#000;">Historique</h1>
+      <p style="position:absolute;left:24px;top:67px;margin:0;font:400 12px 'Work Sans';color:#2a2a2a;">Ton parcours complet</p>
+
+      <div class="obj-banner">
+        <div class="tag">TON OBJECTIF</div>
+        <div class="obj">Je veux pouvoir voyager le mois prochain.</div>
+      </div>
+
+      <p style="position:absolute;left:27px;top:181px;margin:0;font:700 11px 'Work Sans';color:#6b6475;letter-spacing:.04em;">JOURNAL</p>
+      <div style="position:absolute;left:27px;top:201px;width:178px;display:flex;flex-direction:column;gap:6px;">
+        <div class="jrow good"><p class="when">Aujourd'hui · 14:20</p><p class="what">Résisté à Shein — +34 €</p></div>
+        <div class="jrow bad"><p class="when">Hier · 22:47</p><p class="what">Commandé Uber Eats. Fatigue.</p></div>
+        <div class="jrow good"><p class="when">Mer · 18:05</p><p class="what">Résisté à Amazon — +22 €</p></div>
+      </div>
+
+      <div class="foxy md" style="position:absolute;left:240px;top:200px;"></div>
+
+      <p style="position:absolute;left:24px;top:392px;margin:0;font:700 13px 'Work Sans';color:#000;">JALONS</p>
+      <div style="position:absolute;left:21px;top:415px;display:flex;flex-direction:column;gap:8px;width:316px;">
+        <div style="background:#fff;border-radius:12px;padding:12px 16px;box-shadow:0 1px 4px rgba(0,0,0,.04);">
+          <p style="margin:0 0 4px;font:700 13px 'Work Sans';color:#63993d;">🎹 Achat d'un piano</p>
+          <p style="margin:0;font:400 12px 'Inter';color:#6b6475;">— 1 200 € économisés</p>
+        </div>
+        <div style="background:#fff;border-radius:12px;padding:12px 16px;box-shadow:0 1px 4px rgba(0,0,0,.04);">
+          <p style="margin:0 0 4px;font:700 13px 'Work Sans';color:#63993d;">⌨ Apprendre le code</p>
+          <p style="margin:0;font:400 12px 'Inter';color:#6b6475;">— 130 TikTok stoppés</p>
+        </div>
+      </div>
+
+      <nav class="navbar">
+        <div class="row">
+          <button class="item" data-go="dashboard"><span class="ico">⌂</span>Home</button>
+          <button class="item active"><span class="ico">⊟</span>Historique</button>
+          <span></span>
+          <button class="item" data-go="compagnon"><span class="ico">✦</span>Compagnon</button>
+          <button class="item" data-go="profil"><span class="ico">☺</span>Profil</button>
+        </div>
+        <button class="fab"></button>
+      </nav>
+    </section>
+
+    <!-- ============================================================
+         #14  Compagnon — Renardo
+         ============================================================ -->
+    <section class="screen bg-fafafa" id="scr-compagnon">
+      <div class="status-bar"><span>20:16</span><span class="right">📶 🔋</span></div>
+      <div class="dots"></div>
+      <h1 style="position:absolute;left:24px;top:42px;margin:0;font:700 22px 'Work Sans';color:#000;">Compagnon</h1>
+      <p style="position:absolute;left:24px;top:67px;margin:0;font:400 12px 'Work Sans';color:#2a2a2a;">Renardo te suit partout</p>
+
+      <div class="obj-banner">
+        <div class="tag">TON OBJECTIF</div>
+        <div class="obj">Je veux pouvoir voyager le mois prochain.</div>
+      </div>
+
+      <div class="foxy" style="position:absolute;left:50%;top:176px;transform:translateX(-50%);"></div>
+      <p style="position:absolute;left:0;right:0;top:269px;text-align:center;margin:0;font:700 14px 'Work Sans';color:#000;">Renardo</p>
+      <p style="position:absolute;left:0;right:0;top:285px;text-align:center;margin:0;font:400 12px 'Work Sans';color:#000;">XP 5800 / 10000</p>
+
+      <p style="position:absolute;left:22px;top:309px;margin:0;font:400 12px 'Work Sans';color:#000;">🦊 Renard — Stade 2</p>
+      <div style="position:absolute;left:22px;top:330px;width:316px;height:7px;background:#f1f1f1;border-radius:8px;overflow:hidden;">
+        <div style="width:54%;height:100%;background:linear-gradient(90deg,#ff7e00,#e8563a);border-radius:8px;"></div>
+      </div>
+      <p style="position:absolute;left:25px;top:344px;margin:0;font:400 10px 'Work Sans';color:#aaa;">Sauvage</p>
+      <p style="position:absolute;left:122px;top:344px;margin:0;font:600 10px 'Work Sans';color:#ff6338;">Dompter</p>
+      <p style="position:absolute;left:210px;top:344px;margin:0;font:400 10px 'Work Sans';color:#aaa;">Maître</p>
+      <p style="position:absolute;left:282px;top:344px;margin:0;font:400 10px 'Work Sans';color:#aaa;">Légendaire</p>
+
+      <div style="position:absolute;left:50%;transform:translateX(-50%);top:368px;width:317px;height:30px;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;box-shadow:0 1px 2px rgba(0,0,0,.04);">
+        <span style="font:400 14px 'Work Sans';color:#000;">ALIGNEMENT</span>
+        <span style="font:700 10px 'Work Sans';color:#1fb966;">58 %</span>
+      </div>
+
+      <p style="position:absolute;left:21px;top:408px;width:300px;margin:0;font:400 12px/1.45 'Inter';color:#000;">Renardo grandit à chaque résistance. Il représente ta capacité à aligner tes actions avec tes vraies envies.</p>
+
+      <p style="position:absolute;left:21px;top:466px;margin:0;font:700 13px 'Work Sans';color:#000;letter-spacing:.04em;">VOS OBJECTIFS</p>
+      <div style="position:absolute;left:21px;top:490px;display:flex;gap:6px;flex-wrap:wrap;">
+        <div style="background:#fbebdc;border-radius:8px;padding:4px 11px;font:400 10px 'Work Sans';color:#ff6338;">épargne</div>
+        <div style="background:#fbebdc;border-radius:8px;padding:4px 11px;font:400 10px 'Work Sans';color:#ff6338;">écologie</div>
+        <div style="background:#fbebdc;border-radius:8px;padding:4px 11px;font:400 10px 'Work Sans';color:#ff6338;">épargne critique</div>
+      </div>
+
+      <nav class="navbar">
+        <div class="row">
+          <button class="item" data-go="dashboard"><span class="ico">⌂</span>Home</button>
+          <button class="item" data-go="historique"><span class="ico">⊟</span>Historique</button>
+          <span></span>
+          <button class="item active"><span class="ico">✦</span>Compagnon</button>
+          <button class="item" data-go="profil"><span class="ico">☺</span>Profil</button>
+        </div>
+        <button class="fab"></button>
+      </nav>
+    </section>
+
+    <!-- ============================================================
+         #15  Profil — Paramètres
+         ============================================================ -->
+    <section class="screen bg-fafafa" id="scr-profil">
+      <div class="status-bar"><span>20:17</span><span class="right">📶 🔋</span></div>
+      <div class="dots"></div>
+      <h1 style="position:absolute;left:24px;top:42px;margin:0;font:700 22px 'Work Sans';color:#000;">Paramètres</h1>
+      <p style="position:absolute;left:24px;top:67px;margin:0;font:400 12px 'Work Sans';color:#2a2a2a;">Gère ton expérience Vision</p>
+
+      <div class="obj-banner">
+        <div class="tag">TON OBJECTIF</div>
+        <div class="obj">Je veux pouvoir voyager le mois prochain.</div>
+      </div>
+
+      <div style="position:absolute;left:20px;right:20px;top:174px;display:flex;flex-direction:column;gap:5px;">
+        <div class="prow"><div class="col"><span class="lbl">TA CAPSULE</span><span class="val">Capsule enregistrée le 6 mai 2026</span></div><span class="chev">›</span></div>
+        <div class="prow" data-go="ambitions"><div class="col"><span class="lbl">MES AMBITIONS</span><span class="val">3 objectifs actifs</span></div><span class="chev">›</span></div>
+        <div class="prow"><div class="col"><span class="lbl">LIEU DE VIE ET DE TRAVAIL</span><span class="val">Paris — Télétravail</span></div><span class="chev">›</span></div>
+        <div class="prow"><div class="col"><span class="lbl">TRANSPORT HABITUEL</span><span class="val">Transport en commun</span></div><span class="chev">›</span></div>
+        <div class="prow"><div class="col"><span class="lbl">SITES ANALYSÉS PAR L'APPLICATION</span><span class="val">6 sites surveillés</span></div><span class="chev">›</span></div>
+      </div>
+
+      <nav class="navbar">
+        <div class="row">
+          <button class="item" data-go="dashboard"><span class="ico">⌂</span>Home</button>
+          <button class="item" data-go="historique"><span class="ico">⊟</span>Historique</button>
+          <span></span>
+          <button class="item" data-go="compagnon"><span class="ico">✦</span>Compagnon</button>
+          <button class="item active"><span class="ico">☺</span>Profil</button>
+        </div>
+        <button class="fab"></button>
+      </nav>
+    </section>
+
+    <!-- ============================================================
+         #16  Mes ambitions — Édition
+         ============================================================ -->
+    <section class="screen bg-fafafa" id="scr-ambitions">
+      <div class="status-bar"><span>20:18</span><span class="right">📶 🔋</span></div>
+      <div class="dots"></div>
+
+      <button class="back-nav" data-go="profil"><span class="arr">←</span><span class="lbl">retour</span></button>
+      <h1 style="position:absolute;left:0;right:0;top:52px;text-align:center;margin:0;font:700 22px 'Work Sans';color:#000;">Mes ambitions</h1>
+      <p style="position:absolute;left:26px;top:96px;width:303px;margin:0;font:400 12px 'Work Sans';color:#2a2a2a;">Modifie ou ajoute de nouveaux objectifs.</p>
+
+      <!-- Primary objective -->
+      <div style="position:absolute;left:15px;top:143px;width:330px;height:110px;background:#fff;border:1.5px solid #ff7e00;border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06);">
+        <div style="position:absolute;left:-1px;top:-1px;right:-1px;height:28px;background:linear-gradient(90deg,#ff7e00,#e8563a);border-radius:13px 13px 0 0;display:flex;align-items:center;justify-content:space-between;padding:0 12px;">
+          <span style="font:700 9px 'Inter';color:#fff;letter-spacing:.06em;">OBJECTIF PRINCIPAL</span>
+          <span style="font:400 12px 'Inter';color:#fff;">✈️</span>
+        </div>
+        <p style="position:absolute;left:11px;top:34px;margin:0;font:700 15px 'Inter';color:#1a1a1a;">Voyager</p>
+        <div style="position:absolute;left:12px;right:14px;top:60px;height:28px;border:1px solid rgba(136,136,136,.25);border-radius:8px;display:flex;align-items:center;padding:0 10px;">
+          <span style="font:400 11px 'Inter';color:#6b6474;">Je veux pouvoir voyager le mois prochain.</span>
+        </div>
+      </div>
+
+      <!-- Objective 2 -->
+      <div style="position:absolute;left:15px;top:265px;width:330px;height:100px;background:#fff;border:1.5px solid #e7e7e7;border-radius:14px;overflow:hidden;">
+        <div style="position:absolute;left:-1px;top:-1px;right:-1px;height:26px;background:#f7f7f7;display:flex;align-items:center;justify-content:space-between;padding:0 12px;">
+          <span style="font:700 9px 'Inter';color:#6b6474;letter-spacing:.06em;">OBJECTIF 2</span>
+          <span style="font:400 12px 'Inter';color:#6b6474;">🏦</span>
+        </div>
+        <p style="position:absolute;left:11px;top:32px;margin:0;font:700 15px 'Inter';color:#1a1a1a;">Liberté financière</p>
+        <button style="position:absolute;left:11px;top:74px;background:none;border:none;font:500 10px 'Inter';color:#ff7e00;cursor:pointer;padding:0;">Appuie pour affiner →</button>
+      </div>
+
+      <!-- Add new -->
+      <button style="position:absolute;left:50%;transform:translateX(-50%);top:380px;width:330px;height:58px;background:#fff;border:2px dashed #e7e7e7;border-radius:14px;display:flex;align-items:center;justify-content:center;font:400 12px 'Work Sans';color:#000;cursor:pointer;">+ Ajouter un objectif</button>
+
+      <button class="btn-primary" style="position:absolute;left:149px;top:691px;width:188px;" data-go="profil">Sauvegarder ✓</button>
+      <div class="android-bar"></div>
+    </section>
+
+  </div>
+</div>
+
+<script>
+  // ============================================================
+  // VISION — Webapp router & interactions
+  // ============================================================
+  const screens = document.querySelectorAll('.screen');
+  const devButtons = document.querySelectorAll('.dev-panel button[data-go]');
+
+  function go(id){
+    screens.forEach(s => s.classList.toggle('active', s.id === 'scr-' + id));
+    devButtons.forEach(b => b.classList.toggle('active', b.dataset.go === id));
+    // scroll any scroll containers to top
+    document.querySelectorAll('.screen.active [style*="overflow-y"]').forEach(el => el.scrollTop = 0);
+  }
+
+  // Any element with data-go navigates
+  document.addEventListener('click', e => {
+    const t = e.target.closest('[data-go]');
+    if (t) { e.preventDefault(); go(t.dataset.go); }
+  });
+
+  // Companion picker
+  document.querySelectorAll('.companion-pick').forEach(p => {
+    p.addEventListener('click', () => {
+      document.querySelectorAll('.companion-pick').forEach(o => {
+        o.classList.add('faded');
+        o.querySelector('.foxy').classList.add('faded');
+        o.querySelector('p').style.opacity = '.4';
+      });
+      p.classList.remove('faded');
+      p.querySelector('.foxy').classList.remove('faded');
+      p.querySelector('p').style.opacity = '1';
+    });
+  });
+
+  // Chip toggling + counter
+  const chipGrid = document.getElementById('chip-grid');
+  const chipCount = document.getElementById('chip-count');
+  if (chipGrid) {
+    chipGrid.addEventListener('click', e => {
+      const c = e.target.closest('.chip');
+      if (!c) return;
+      c.classList.toggle('active');
+      const n = chipGrid.querySelectorAll('.chip.active').length;
+      chipCount.textContent = `${n} passion${n>1?'s':''} sélectionnée${n>1?'s':''}`;
+    });
+  }
+
+  // Vision card single-select
+  document.querySelectorAll('.vcard').forEach(card => {
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.vcard').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      const count = document.getElementById('vision-count');
+      if (count) count.textContent = `Construit ta vision · ${card.dataset.pick}`;
+    });
+  });
+
+  // Keyboard nav (← → entre écrans pour la démo)
+  const order = ['home-mobile','welcome','step1-intro','step1-form','step2-intro','step2-form','step3-intro','step3-form','surveillance','step4-intro','step4-form','dashboard','historique','compagnon','profil','ambitions'];
+  document.addEventListener('keydown', e => {
+    const cur = order.findIndex(id => document.getElementById('scr-'+id).classList.contains('active'));
+    if (e.key === 'ArrowRight' && cur < order.length-1) go(order[cur+1]);
+    if (e.key === 'ArrowLeft' && cur > 0) go(order[cur-1]);
+  });
+</script>
+
+</body>
+</html>
