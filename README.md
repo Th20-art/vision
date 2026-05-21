@@ -1,114 +1,84 @@
-# Miroir v7.4 — Dossier complet
+# Vision
 
 Projet de fin d'études — Théo · CY École de Design
+
+**Vision** est un compagnon mobile qui transforme les achats impulsifs en choix conscients : au moment de la tentation, il confronte l'utilisateur à ses objectifs concrets (épargne, écologie, esprit critique…) via un compagnon évolutif, une capsule vidéo de soi, et des interventions contextuelles.
+
+🔗 **App en ligne** : https://Th20-art.github.io/vision/
 
 ---
 
 ## 📂 Structure du dossier
 
 ```
-miroir-v7.4-complet/
-├── extension/        Extension Chrome (Manifest V3)
-│   ├── manifest.json
-│   ├── content.js    Script injecté dans toutes les pages
-│   ├── background.js Service worker (appels Claude API)
-│   ├── popup.html    Interface du popup (3 onglets)
-│   └── popup.js
+vision/
+├── index.html        ⭐ L'application complète (maquette interactive, un seul fichier)
+├── manifest.json     Manifest PWA (installation écran d'accueil)
+├── sw.js             Service worker (cache hors-ligne)
+├── assets/           Images, icônes, sprites des compagnons, captures Amazon
 │
-├── pwa/              Progressive Web App (à héberger)
-│   └── miroir_v7.html
-│
-├── demo/             Démo mobile pour la soutenance
-│   └── miroir_demo.html
-│
+├── extension/        (ancien) Extension Chrome — non maintenu
+├── pwa/              (ancien) Prototype PWA — non maintenu
+├── demo/             (ancien) Démo soutenance — non maintenu
 └── README.md         Ce fichier
 ```
 
----
-
-## 🛠️ Comment installer chaque partie
-
-### Extension Chrome
-
-1. Ouvre Chrome → `chrome://extensions`
-2. Active le mode développeur (en haut à droite)
-3. « Charger l'extension non empaquetée »
-4. Sélectionne le dossier `extension/`
-5. Clique sur l'icône Miroir → renseigne ta clé API Anthropic (`sk-ant-…`)
-6. Coche tes ambitions, ajoute tes passions, valide
-
-### PWA
-
-Le fichier `pwa/miroir_v7.html` est destiné à être hébergé sur GitHub Pages
-ou tout serveur statique. URL actuelle : th20-art.github.io/mirror-page/
-
-Pour mettre à jour ton hébergement :
-1. Pousse `miroir_v7.html` sur ta branche `main`
-2. GitHub Pages le sert automatiquement à l'URL configurée
-
-### Démo mobile (pour la soutenance)
-
-Ouvre `demo/miroir_demo.html` dans n'importe quel navigateur :
-- Sur **desktop** : cadre Galaxy S24 stylé au centre, sidebar à droite avec 2 scènes
-- Sur **téléphone** : plein écran sans cadre, comme une vraie app
-
-**Raccourcis clavier :**
-- `F` plein écran (cache la sidebar)
-- `→` étape suivante
-- `1` / `2` switch scène Shein / TikTok
-- `R` reset
+> L'app actuelle est **`index.html`** (anciennement `miroir-v8.html`). Les dossiers `extension/`, `pwa/`, `demo/` sont d'anciennes versions conservées pour archive.
 
 ---
 
-## ✨ Fonctionnalités principales
+## 🚀 Lancer l'application
 
-### Extension (analyse produit)
-- Analyse IA des pages produits via Claude (~$0.001/analyse)
-- 3 alternatives par produit : 🔄 Plus malin · ✨ Plus toi · 🌿 Plus libre
-- Modal tirelire après résistance (QR SEPA prérempli + 6 banques)
-- Coût en temps : € → heures de salaire / jours d'épicerie / cafés
-- Mode strict : délai 60s sur les achats classés "danger"
-- Analyse médias YouTube/TikTok/Instagram en arrière-plan
+### En ligne (recommandé)
+Ouvre **https://Th20-art.github.io/vision/** — sur téléphone elle s'affiche plein écran et la caméra fonctionne (HTTPS).
 
-### PWA (tableau de bord)
-- Onboarding 6 étapes : ambitions → goals → compte → domaines → passions → loc
-- Écran Impact avec 6 blocs : épargne / tirelire / timeline / domaines / heatmap / sessions médias
-- Engagements hebdomadaires bidirectionnels avec l'extension
-- Export JSON / CSV pour analyse
+**Installer comme une app** :
+- Android (Chrome) : menu ⋮ → *Ajouter à l'écran d'accueil*
+- iPhone (Safari) : Partager → *Sur l'écran d'accueil*
 
-### Démo mobile
-- 2 scènes scriptées : Shein (achat + tirelire) et TikTok (analyse + dérive)
-- Cadre Galaxy S24 fidèle ou plein écran sur téléphone
-- Aucune dépendance externe ni clé API requise
+### En local
+- **Double-clic sur `index.html`** : fonctionne, mais la **caméra/micro** (capsule vidéo) sont désactivés en `file://` et la PWA n'est pas installable.
+- **Serveur local** (caméra OK) :
+  ```bash
+  python -m http.server 8080
+  ```
+  puis ouvre `http://localhost:8080/`.
 
 ---
 
-## 🔌 Synchronisation extension ↔ PWA
+## ✨ Fonctionnalités
 
-Les deux surfaces communiquent via :
-- `localStorage` (fallback persistant)
-- `postMessage` (sync live)
-
-Quand l'extension détecte que tu es sur la PWA, elle pousse automatiquement
-profil + journal. Quand tu modifies un engagement hebdo dans la PWA,
-l'extension le récupère et l'applique à toutes tes navigations.
+- **Onboarding** : choix de 2 objectifs (si un seul → écologie ajoutée auto), méthode SMART pour quantifier, choix du compagnon, enregistrement d'une capsule vidéo.
+- **Compagnon évolutif** : 4 personnages (Foxy, Malo, Élio, Ryo/pingouin), chacun avec sa **couleur de thème** qui recolore toute l'interface. Barre d'XP en cœurs (4 stades : Sauvage → Dompter → Maître → Légendaire) + popup d'explication.
+- **Home dynamique** : objectifs, chips et journal qui varient selon les objectifs choisis ; bandeau objectif collant au scroll ; journal limité aux 3 dernières entrées.
+- **Esprit critique** : module activable + page de paramétrage dédiée (violet, indépendant du compagnon).
+- **Flux Amazon (démo d'intervention)** : fiche produit + panier (captures réelles), **Dynamic Island** animé, puis au paiement → capsule vidéo + sous-titres → écran émotion (chrono 30 s, bouton « J'y vais quand même » déverrouillé après le compte à rebours) → écran de renoncement.
+- **Capsule** : enregistrement vidéo réel (getUserMedia/MediaRecorder en HTTPS) + transcription animée, relecture dans « Ta capsule ».
 
 ---
 
-## 📝 Versions
+## 🛠️ Mettre à jour le site
 
-- **v7.4** : Analyse médias + démo mobile (actuel)
-- **v7.3** : Passions + 3 alternatives typées
-- **v7.2** : Tirelire + QR SEPA + slide compte épargne
-- **v7.1** : Journal d'interceptions + écran Impact PWA
-- **v7.0** : Refonte ambitions concrètes (vs ikigai abstrait)
+```bash
+git add -A
+git commit -m "maj"
+git push
+```
+GitHub Pages se redéploie automatiquement (~1 min) sur https://Th20-art.github.io/vision/.
+
+---
+
+## ⚠️ Notes
+
+- C'est une **maquette interactive** : aucune donnée n'est sauvegardée (tout se réinitialise au rechargement, pas de backend).
+- La caméra/capsule nécessite **HTTPS ou localhost** (jamais en `file://`).
+- Les icônes PWA (`assets/icon-192.png`, `assets/icon-512.png`) sont des placeholders — à remplacer par de vraies icônes carrées.
 
 ---
 
 ## 🪞 Philosophie
 
-Miroir transforme les achats impulsifs en choix conscients, en confrontant
+Vision transforme les achats impulsifs en choix conscients, en confrontant
 l'utilisateur à ses engagements concrets au moment de la tentation.
 
 « Concrete beats abstract. »
-
