@@ -16,10 +16,6 @@ vision/
 ├── manifest.json     Manifest PWA (installation écran d'accueil)
 ├── sw.js             Service worker (cache hors-ligne)
 ├── assets/           Images, icônes, sprites des compagnons, captures Amazon
-│
-├── extension/        (ancien) Extension Chrome — non maintenu
-├── pwa/              (ancien) Prototype PWA — non maintenu
-├── demo/             (ancien) Démo soutenance — non maintenu
 └── README.md         Ce fichier
 ```
 
