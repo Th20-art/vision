@@ -970,20 +970,18 @@
     /* Actif = couleur du thème compagnon (orange/rose/bleu/ambre) */
     filter: var(--icon-active-filter, none);
   }
-  /* Icônes nav vectorielles : contour gris si inactif, plein couleur si actif */
-  .nav-ic {
-    width: 24px; height: 24px;
-    fill: none;
-    stroke: #b9b9b9;
-    stroke-width: 1.9;
-    stroke-linejoin: round;
-    stroke-linecap: round;
-    transition: fill .2s ease, stroke .2s ease;
+  /* Icônes nav (SVG fournis = icône + label) via CSS mask :
+     contour gris si inactif, plein couleur compagnon si actif */
+  .nav-mask {
+    height: 38px; width: auto; display: block;
+    -webkit-mask: var(--m) center / contain no-repeat;
+            mask: var(--m) center / contain no-repeat;
+    transition: background-color .2s ease;
   }
-  .nav-btn.on .nav-ic {
-    fill: var(--og);
-    stroke: var(--og);
-  }
+  .nav-mask-line { background: #888888; }
+  .nav-mask-fill { background: var(--og); display: none; }
+  .nav-btn.on .nav-mask-line { display: none; }
+  .nav-btn.on .nav-mask-fill { display: block; }
   .nav-lbl {
     font-size: 10px;
     font-weight: 500;
@@ -3192,23 +3190,23 @@
       </div>
       <div class="b-nav">
         <button class="nav-btn on" onclick="tab('home')">
-          <svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-home"/></svg>
-          <span class="nav-lbl">Home</span>
+          <span class="nav-mask nav-mask-line" style="aspect-ratio:35/47;--m:url(assets/nav-home-line.svg)"></span>
+          <span class="nav-mask nav-mask-fill" style="aspect-ratio:35/47;--m:url(assets/nav-home-fill.svg)"></span>
         </button>
         <button class="nav-btn" onclick="tab('hist')">
-          <svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-hist"/></svg>
-          <span class="nav-lbl">Historique</span>
+          <span class="nav-mask nav-mask-line" style="aspect-ratio:60/44;--m:url(assets/nav-hist-line.svg)"></span>
+          <span class="nav-mask nav-mask-fill" style="aspect-ratio:62/44;--m:url(assets/nav-hist-fill.svg)"></span>
         </button>
         <button class="nav-fab" onclick="openJournal()">
           <img src="assets/nav-fab2.svg" alt="add">
         </button>
         <button class="nav-btn" onclick="tab('comp')">
-          <svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-comp"/></svg>
-          <span class="nav-lbl">Compagnon</span>
+          <span class="nav-mask nav-mask-line" style="aspect-ratio:70/46;--m:url(assets/nav-comp-line.svg)"></span>
+          <span class="nav-mask nav-mask-fill" style="aspect-ratio:72/46;--m:url(assets/nav-comp-fill.svg)"></span>
         </button>
         <button class="nav-btn" onclick="tab('profil')">
-          <svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-prof"/></svg>
-          <span class="nav-lbl">Profil</span>
+          <span class="nav-mask nav-mask-line" style="aspect-ratio:30/44;--m:url(assets/nav-prof-line.svg)"></span>
+          <span class="nav-mask nav-mask-fill" style="aspect-ratio:31/43;--m:url(assets/nav-prof-fill.svg)"></span>
         </button>
       </div>
     </div>
@@ -3270,23 +3268,23 @@
       <div class="fox-corner"><img src="assets/comp-foxy.png" class="dyn-comp" alt="fox"></div>
       <div class="b-nav">
         <button class="nav-btn" onclick="tab('home')">
-          <svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-home"/></svg>
-          <span class="nav-lbl">Home</span>
+          <span class="nav-mask nav-mask-line" style="aspect-ratio:35/47;--m:url(assets/nav-home-line.svg)"></span>
+          <span class="nav-mask nav-mask-fill" style="aspect-ratio:35/47;--m:url(assets/nav-home-fill.svg)"></span>
         </button>
         <button class="nav-btn on" onclick="tab('hist')">
-          <svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-hist"/></svg>
-          <span class="nav-lbl">Historique</span>
+          <span class="nav-mask nav-mask-line" style="aspect-ratio:60/44;--m:url(assets/nav-hist-line.svg)"></span>
+          <span class="nav-mask nav-mask-fill" style="aspect-ratio:62/44;--m:url(assets/nav-hist-fill.svg)"></span>
         </button>
         <button class="nav-fab" onclick="openJournal()">
           <img src="assets/nav-fab2.svg" alt="add">
         </button>
         <button class="nav-btn" onclick="tab('comp')">
-          <svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-comp"/></svg>
-          <span class="nav-lbl">Compagnon</span>
+          <span class="nav-mask nav-mask-line" style="aspect-ratio:70/46;--m:url(assets/nav-comp-line.svg)"></span>
+          <span class="nav-mask nav-mask-fill" style="aspect-ratio:72/46;--m:url(assets/nav-comp-fill.svg)"></span>
         </button>
         <button class="nav-btn" onclick="tab('profil')">
-          <svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-prof"/></svg>
-          <span class="nav-lbl">Profil</span>
+          <span class="nav-mask nav-mask-line" style="aspect-ratio:30/44;--m:url(assets/nav-prof-line.svg)"></span>
+          <span class="nav-mask nav-mask-fill" style="aspect-ratio:31/43;--m:url(assets/nav-prof-fill.svg)"></span>
         </button>
       </div>
     </div>
@@ -3351,23 +3349,23 @@
       </div>
       <div class="b-nav">
         <button class="nav-btn" onclick="tab('home')">
-          <svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-home"/></svg>
-          <span class="nav-lbl">Home</span>
+          <span class="nav-mask nav-mask-line" style="aspect-ratio:35/47;--m:url(assets/nav-home-line.svg)"></span>
+          <span class="nav-mask nav-mask-fill" style="aspect-ratio:35/47;--m:url(assets/nav-home-fill.svg)"></span>
         </button>
         <button class="nav-btn" onclick="tab('hist')">
-          <svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-hist"/></svg>
-          <span class="nav-lbl">Historique</span>
+          <span class="nav-mask nav-mask-line" style="aspect-ratio:60/44;--m:url(assets/nav-hist-line.svg)"></span>
+          <span class="nav-mask nav-mask-fill" style="aspect-ratio:62/44;--m:url(assets/nav-hist-fill.svg)"></span>
         </button>
         <button class="nav-fab" onclick="openJournal()">
           <img src="assets/nav-fab2.svg" alt="add">
         </button>
         <button class="nav-btn on" onclick="tab('comp')">
-          <svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-comp"/></svg>
-          <span class="nav-lbl">Compagnon</span>
+          <span class="nav-mask nav-mask-line" style="aspect-ratio:70/46;--m:url(assets/nav-comp-line.svg)"></span>
+          <span class="nav-mask nav-mask-fill" style="aspect-ratio:72/46;--m:url(assets/nav-comp-fill.svg)"></span>
         </button>
         <button class="nav-btn" onclick="tab('profil')">
-          <svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-prof"/></svg>
-          <span class="nav-lbl">Profil</span>
+          <span class="nav-mask nav-mask-line" style="aspect-ratio:30/44;--m:url(assets/nav-prof-line.svg)"></span>
+          <span class="nav-mask nav-mask-fill" style="aspect-ratio:31/43;--m:url(assets/nav-prof-fill.svg)"></span>
         </button>
       </div>
     </div>
@@ -3445,23 +3443,23 @@
       </div>
       <div class="b-nav">
         <button class="nav-btn" onclick="tab('home')">
-          <svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-home"/></svg>
-          <span class="nav-lbl">Home</span>
+          <span class="nav-mask nav-mask-line" style="aspect-ratio:35/47;--m:url(assets/nav-home-line.svg)"></span>
+          <span class="nav-mask nav-mask-fill" style="aspect-ratio:35/47;--m:url(assets/nav-home-fill.svg)"></span>
         </button>
         <button class="nav-btn" onclick="tab('hist')">
-          <svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-hist"/></svg>
-          <span class="nav-lbl">Historique</span>
+          <span class="nav-mask nav-mask-line" style="aspect-ratio:60/44;--m:url(assets/nav-hist-line.svg)"></span>
+          <span class="nav-mask nav-mask-fill" style="aspect-ratio:62/44;--m:url(assets/nav-hist-fill.svg)"></span>
         </button>
         <button class="nav-fab" onclick="openJournal()">
           <img src="assets/nav-fab2.svg" alt="add">
         </button>
         <button class="nav-btn" onclick="tab('comp')">
-          <svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-comp"/></svg>
-          <span class="nav-lbl">Compagnon</span>
+          <span class="nav-mask nav-mask-line" style="aspect-ratio:70/46;--m:url(assets/nav-comp-line.svg)"></span>
+          <span class="nav-mask nav-mask-fill" style="aspect-ratio:72/46;--m:url(assets/nav-comp-fill.svg)"></span>
         </button>
         <button class="nav-btn on" onclick="tab('profil')">
-          <svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-prof"/></svg>
-          <span class="nav-lbl">Profil</span>
+          <span class="nav-mask nav-mask-line" style="aspect-ratio:30/44;--m:url(assets/nav-prof-line.svg)"></span>
+          <span class="nav-mask nav-mask-fill" style="aspect-ratio:31/43;--m:url(assets/nav-prof-fill.svg)"></span>
         </button>
       </div>
     </div>
