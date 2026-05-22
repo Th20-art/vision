@@ -3558,14 +3558,22 @@
       </div>
       <div style="padding:0 0 0 56px;margin-top:-4px;font-size:11px;color:var(--muted);">retour</div>
 
-      <div style="padding:14px 20px 0;font-size:13px;color:var(--muted);">Modifie ou ajoute de nouveaux objectifs.</div>
+      <div style="overflow-y:auto;max-height:calc(100% - 120px);padding-bottom:96px;">
+        <div style="padding:14px 20px 0;font-size:13px;color:var(--muted);">Modifie ou ajoute de nouveaux objectifs (3 max).</div>
 
-      <!-- Cards d'ambitions rendues DYNAMIQUEMENT depuis userAmbitions -->
-      <div id="ambitions-list" style="margin-top:4px;"></div>
+        <!-- Cards d'ambitions rendues DYNAMIQUEMENT depuis userAmbitions (+ carte Ajouter si < 3) -->
+        <div id="ambitions-list" style="margin-top:4px;"></div>
 
-      <!-- + Ajouter un objectif — ouvre un type picker puis SMART -->
-      <div onclick="openAmbitionPicker()" style="margin:10px 20px 0;background:white;border-radius:14px;border:1.5px dashed #d0d0d0;padding:18px;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;color:var(--muted);font-size:13px;">
-        + Ajouter un objectif
+        <!-- Règles personnelles : prévient si un achat va à l'encontre de tes principes -->
+        <div style="margin:24px 20px 0;">
+          <div style="font-family:'Work Sans',sans-serif;font-weight:700;font-size:15px;color:var(--dark);">Mes règles personnelles</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px;line-height:1.45;">Vision te prévient si un achat va à l'encontre de tes principes (ex.&nbsp;: «&nbsp;je ne veux aucun objet rouge&nbsp;»).</div>
+          <div style="display:flex;gap:8px;margin-top:12px;">
+            <input id="rule-input" type="text" placeholder="Ex. : je ne veux aucun objet rouge" maxlength="80" onkeydown="if(event.key==='Enter')addRule()" style="flex:1;background:#fff;border:1.5px solid #e8e8e8;border-radius:12px;padding:12px 14px;font-size:13px;color:var(--dark);outline:none;font-family:'Inter',sans-serif;">
+            <button onclick="addRule()" aria-label="Ajouter une règle" style="background:linear-gradient(90deg,var(--og),var(--og2));color:#fff;border:none;border-radius:12px;padding:0 18px;font-size:22px;line-height:1;cursor:pointer;font-family:inherit;">+</button>
+          </div>
+          <div id="rules-list" style="margin-top:10px;display:flex;flex-direction:column;gap:6px;"></div>
+        </div>
       </div>
 
       <!-- Type Picker modal (8 types) — apparaît au clic sur Ajouter -->
@@ -5183,12 +5191,51 @@
         list.appendChild(card);
       });
     }
-    // Ajoute la card "+ Ajouter un objectif"
-    const addCard = document.createElement('div');
-    addCard.style.cssText = 'margin:10px 20px 0;background:white;border-radius:14px;border:1.5px dashed #d0d0d0;padding:18px;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;color:var(--muted);font-size:13px;';
-    addCard.textContent = '+ Ajouter un objectif';
-    addCard.onclick = openAmbitionPicker;
-    list.appendChild(addCard);
+    // Carte "+ Ajouter un objectif" — seulement si moins de 3 ambitions (max 3)
+    if (userAmbitions.length < 3) {
+      const addCard = document.createElement('div');
+      addCard.style.cssText = 'margin:10px 20px 0;background:white;border-radius:14px;border:1.5px dashed #d0d0d0;padding:18px;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;color:var(--muted);font-size:13px;';
+      addCard.textContent = '+ Ajouter un objectif';
+      addCard.onclick = openAmbitionPicker;
+      list.appendChild(addCard);
+    } else {
+      const note = document.createElement('div');
+      note.style.cssText = 'margin:10px 20px 0;text-align:center;font-size:12px;color:var(--muted);';
+      note.textContent = 'Maximum atteint (3 objectifs).';
+      list.appendChild(note);
+    }
+    renderRules();
+  }
+
+  /* ── Règles personnelles (ce que l'utilisateur refuse) ── */
+  let personalRules = [];
+  function renderRules() {
+    const box = document.getElementById('rules-list');
+    if (!box) return;
+    box.innerHTML = '';
+    personalRules.forEach((rule, i) => {
+      const row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #ececec;border-radius:12px;padding:10px 12px;';
+      row.innerHTML = `
+        <span style="color:var(--og);font-size:14px;">⚠</span>
+        <span style="flex:1;font-size:13px;color:var(--dark);">${rule}</span>
+        <button onclick="removeRule(${i})" aria-label="Retirer" style="background:none;border:none;cursor:pointer;font-size:16px;line-height:1;color:var(--muted);padding:2px 4px;font-family:inherit;">✕</button>`;
+      box.appendChild(row);
+    });
+  }
+  function addRule() {
+    const inp = document.getElementById('rule-input');
+    const val = (inp ? inp.value : '').trim();
+    if (!val) { if (inp) inp.focus(); return; }
+    if (!personalRules.some(r => r.toLowerCase() === val.toLowerCase())) {
+      personalRules.push(val);
+    }
+    if (inp) inp.value = '';
+    renderRules();
+  }
+  function removeRule(i) {
+    personalRules.splice(i, 1);
+    renderRules();
   }
 
   /* Met à jour le banner objectif + les cards métriques sur la home selon userAmbitions */
@@ -5689,6 +5736,10 @@
 
   /* Type picker pour "+ Ajouter un objectif" */
   function openAmbitionPicker() {
+    if (userAmbitions.length >= 3) {
+      alert('Tu as déjà 3 objectifs (maximum). Retires-en un pour en ajouter un autre.');
+      return;
+    }
     const list = document.getElementById('ambition-types-list');
     if (!list) return;
     list.innerHTML = '';
