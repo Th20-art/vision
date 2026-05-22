@@ -5989,11 +5989,17 @@
     document.addEventListener('click', fire, { once: true });
     document.addEventListener('touchend', fire, { once: true });
   }
-  bindImmersiveOnce();
-  // Re-tente le plein écran si l'utilisateur en sort (sauf action volontaire)
-  document.addEventListener('fullscreenchange', () => {
-    if (!document.fullscreenElement) { bindImmersiveOnce(); }
-  });
+  // Uniquement sur mobile tactile (pas sur ordinateur)
+  const isMobileImmersive =
+    window.matchMedia('(pointer: coarse)').matches &&
+    window.matchMedia('(max-width: 600px)').matches;
+  if (isMobileImmersive) {
+    bindImmersiveOnce();
+    // Re-tente le plein écran si l'utilisateur en sort (sauf action volontaire)
+    document.addEventListener('fullscreenchange', () => {
+      if (!document.fullscreenElement) { bindImmersiveOnce(); }
+    });
+  }
 
   /* ─── PWA : enregistrement du service worker (offline + installable) ─── */
   if ('serviceWorker' in navigator) {
