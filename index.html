@@ -3488,7 +3488,23 @@
       <div style="margin:16px auto 0;width:calc(100% - 28px);height:330px;background:#1c1c1a;border-radius:18px;position:relative;overflow:hidden;">
         <!-- Vidéo enregistrée (affichée si dispo) -->
         <video id="capsule-video" playsinline webkit-playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;background:#1c1c1a;"></video>
-        <!-- Placeholder si aucune vidéo enregistrée -->
+        <!-- Audio enregistré (élément de lecture, invisible) -->
+        <audio id="capsule-audio" style="display:none;"></audio>
+        <!-- Vue AUDIO : "Écouter mon audio" (waveform) -->
+        <div id="capsule-audio-ph" style="position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;">
+          <div style="display:flex;align-items:center;gap:4px;height:48px;">
+            <span style="width:4px;height:14px;background:rgba(255,255,255,.55);border-radius:2px;"></span>
+            <span style="width:4px;height:30px;background:rgba(255,255,255,.8);border-radius:2px;"></span>
+            <span style="width:4px;height:44px;background:#fff;border-radius:2px;"></span>
+            <span style="width:4px;height:22px;background:rgba(255,255,255,.7);border-radius:2px;"></span>
+            <span style="width:4px;height:38px;background:rgba(255,255,255,.85);border-radius:2px;"></span>
+            <span style="width:4px;height:16px;background:rgba(255,255,255,.55);border-radius:2px;"></span>
+            <span style="width:4px;height:34px;background:rgba(255,255,255,.8);border-radius:2px;"></span>
+            <span style="width:4px;height:24px;background:rgba(255,255,255,.7);border-radius:2px;"></span>
+          </div>
+          <div style="font-family:'Work Sans',sans-serif;font-weight:700;font-size:15px;color:#fff;">Écouter mon audio</div>
+        </div>
+        <!-- Placeholder si aucune capsule enregistrée -->
         <div id="capsule-video-ph" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;">
           <img src="assets/video-placeholder.svg" alt="" style="width:46px;height:46px;opacity:0.35;">
           <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:8px;">Aucune capsule enregistrée</div>
@@ -4876,7 +4892,10 @@
     spot.classList.add('pulse');
   }
 
+  let tourDone = false;
   function startTour() {
+    if (tourDone) return;   // ne relance pas le tuto (ex. après réenregistrement)
+    tourDone = true;
     tourActive = true;
     tourCurrentStep = 0;
     renderTourStep(0);
@@ -5736,8 +5755,9 @@
   ];
 
   let recState = { timer: null, transcriptIdx: 0, secs: 0, mode: 'video', active: false, stream: null, audioCtx: null, analyser: null };
-  // Capture réelle de la capsule (MediaRecorder) — pour réafficher la vidéo dans "Ta capsule"
+  // Capture réelle de la capsule (MediaRecorder) — pour réafficher la vidéo/audio dans "Ta capsule"
   let capsuleRecorder = null, capsuleChunks = [], capsuleVideoURL = null;
+  let capsuleAudioURL = null, capsuleMode = null;  // 'video' | 'audio'
 
   /* Click sur le bouton record principal : démarre (idle) ou arrête (recording) */
   function handleRecordClick() {
@@ -5751,6 +5771,7 @@
   /* Démarre l'enregistrement INLINE — tente getUserMedia, sinon fallback mockup */
   function startRecordingInline(mode) {
     recState.mode = mode || 'video';
+    capsuleMode = recState.mode;   // mémorise le type de capsule (video/audio)
     recState.secs = 0;
     recState.transcriptIdx = 0;
     recState.active = true;
@@ -5860,7 +5881,7 @@
           capsuleRecorder.start();
         } catch (e) { console.warn('[Capsule] MediaRecorder indispo', e); }
       }
-      // Mode audio : analyse en temps réel pour animer la waveform
+      // Mode audio : analyse temps réel (waveform) + enregistrement réel
       if (constraints.audio && !constraints.video) {
         try {
           const AC = window.AudioContext || window.webkitAudioContext;
@@ -5873,6 +5894,19 @@
         } catch (e) {
           console.warn('[Capsule] audio analysis non dispo', e);
         }
+        // Enregistre réellement l'audio pour le réécouter dans "Ta capsule"
+        try {
+          capsuleChunks = [];
+          capsuleRecorder = new MediaRecorder(stream);
+          capsuleRecorder.ondataavailable = e => { if (e.data && e.data.size) capsuleChunks.push(e.data); };
+          capsuleRecorder.onstop = () => {
+            if (capsuleChunks.length) {
+              if (capsuleAudioURL) URL.revokeObjectURL(capsuleAudioURL);
+              capsuleAudioURL = URL.createObjectURL(new Blob(capsuleChunks, { type: 'audio/webm' }));
+            }
+          };
+          capsuleRecorder.start();
+        } catch (e) { console.warn('[Capsule] MediaRecorder audio indispo', e); }
       }
     }).catch(err => {
       console.info('[Capsule] permission refusée ou indispo → mockup actif', err && err.name);
@@ -5982,42 +6016,57 @@
   /* ─── PLAYBACK in s-param-video ─── */
   let playState = { timer: null, playing: false, secs: 0, total: 24 };
 
-  /* Charge la vidéo enregistrée dans "Ta capsule" (ou affiche le placeholder) */
+  /* Charge la capsule (vidéo OU audio) dans "Ta capsule", sinon placeholder */
   function loadCapsuleVideo() {
     const v = document.getElementById('capsule-video');
+    const a = document.getElementById('capsule-audio');
     const ph = document.getElementById('capsule-video-ph');
+    const aph = document.getElementById('capsule-audio-ph');
     if (!v) return;
     // Reset état de lecture
     playState.secs = 0; playState.playing = false;
     if (playState.timer) { clearInterval(playState.timer); playState.timer = null; }
     const btn = document.getElementById('play-btn');
     if (btn) btn.textContent = '▶';
+    // Tout masquer par défaut
+    v.style.display = 'none'; v.removeAttribute('src');
+    if (a) { a.pause(); a.removeAttribute('src'); }
+    if (ph) ph.style.display = 'none';
+    if (aph) aph.style.display = 'none';
 
-    if (capsuleVideoURL) {
+    const onEnded = () => {
+      playState.playing = false;
+      if (playState.timer) { clearInterval(playState.timer); playState.timer = null; }
+      if (btn) btn.textContent = '↻';
+    };
+
+    if (capsuleMode === 'audio' && capsuleAudioURL && a) {
+      // Capsule AUDIO → vue "Écouter mon audio"
+      a.src = capsuleAudioURL;
+      if (aph) aph.style.display = 'flex';
+      a.onloadedmetadata = () => { if (isFinite(a.duration) && a.duration > 0) playState.total = a.duration; renderPlaybackUI(); };
+      a.onended = onEnded;
+    } else if (capsuleVideoURL) {
+      // Capsule VIDÉO
       v.src = capsuleVideoURL;
       v.style.display = 'block';
-      if (ph) ph.style.display = 'none';
-      v.onloadedmetadata = () => {
-        if (isFinite(v.duration) && v.duration > 0) { playState.total = v.duration; }
-        renderPlaybackUI();
-      };
-      v.onended = () => {
-        playState.playing = false;
-        if (playState.timer) { clearInterval(playState.timer); playState.timer = null; }
-        if (btn) btn.textContent = '↻';
-      };
+      v.onloadedmetadata = () => { if (isFinite(v.duration) && v.duration > 0) playState.total = v.duration; renderPlaybackUI(); };
+      v.onended = onEnded;
     } else {
-      v.removeAttribute('src');
-      v.style.display = 'none';
+      // Rien d'enregistré
       if (ph) ph.style.display = 'block';
       playState.total = 24;
     }
     renderPlaybackUI();
   }
 
+  /* Renvoie l'élément média actif (vidéo OU audio) */
   function getCapsuleVideoEl() {
     const v = document.getElementById('capsule-video');
-    return (v && v.getAttribute('src')) ? v : null;
+    if (v && v.getAttribute('src')) return v;
+    const a = document.getElementById('capsule-audio');
+    if (a && a.getAttribute('src')) return a;
+    return null;
   }
 
   function togglePlayback() {
