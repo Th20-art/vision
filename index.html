@@ -970,6 +970,20 @@
     /* Actif = couleur du thème compagnon (orange/rose/bleu/ambre) */
     filter: var(--icon-active-filter, none);
   }
+  /* Icônes nav vectorielles : contour gris si inactif, plein couleur si actif */
+  .nav-ic {
+    width: 24px; height: 24px;
+    fill: none;
+    stroke: #b9b9b9;
+    stroke-width: 1.9;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    transition: fill .2s ease, stroke .2s ease;
+  }
+  .nav-btn.on .nav-ic {
+    fill: var(--og);
+    stroke: var(--og);
+  }
   .nav-lbl {
     font-size: 10px;
     font-weight: 500;
@@ -2543,6 +2557,25 @@
 </style>
 </head>
 <body>
+<!-- Sprite SVG des icônes de navigation (contour si inactif, plein si actif) -->
+<svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true">
+  <symbol id="ic-home" viewBox="0 0 24 24"><path d="M4 11 L12 4 L20 11 V20 H14 V15 H10 V20 H4 Z"/></symbol>
+  <symbol id="ic-hist" viewBox="0 0 24 24">
+    <rect x="3.5" y="13" width="4.2" height="7" rx="1.2"/>
+    <rect x="9.9" y="9" width="4.2" height="11" rx="1.2"/>
+    <rect x="16.3" y="5" width="4.2" height="15" rx="1.2"/>
+  </symbol>
+  <symbol id="ic-comp" viewBox="0 0 24 24">
+    <ellipse cx="6.8" cy="9.5" rx="1.8" ry="2.3"/>
+    <ellipse cx="11.7" cy="7.6" rx="1.9" ry="2.6"/>
+    <ellipse cx="16.8" cy="9.5" rx="1.8" ry="2.3"/>
+    <path d="M11.8 11.2 C8.2 11.2 6.3 14 6.3 16.4 C6.3 19 9 20 11.8 20 C14.6 20 17.3 19 17.3 16.4 C17.3 14 15.4 11.2 11.8 11.2 Z"/>
+  </symbol>
+  <symbol id="ic-prof" viewBox="0 0 24 24">
+    <circle cx="12" cy="8" r="3.6"/>
+    <path d="M5 20 C5 15.8 8.1 13.8 12 13.8 C15.9 13.8 19 15.8 19 20 Z"/>
+  </symbol>
+</svg>
 <div class="phone">
 
   <!-- ════════════════════════════════════════════════════ -->
@@ -3155,22 +3188,22 @@
       </div>
       <div class="b-nav">
         <button class="nav-btn on" onclick="tab('home')">
-          <img src="assets/nav-home2.svg" alt="home">
+          <svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-home"/></svg>
           <span class="nav-lbl">Home</span>
         </button>
         <button class="nav-btn" onclick="tab('hist')">
-          <img src="assets/nav-hist2.svg" alt="hist">
+          <svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-hist"/></svg>
           <span class="nav-lbl">Historique</span>
         </button>
         <button class="nav-fab" onclick="openJournal()">
           <img src="assets/nav-fab2.svg" alt="add">
         </button>
         <button class="nav-btn" onclick="tab('comp')">
-          <img src="assets/nav-comp2.svg" alt="comp">
+          <svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-comp"/></svg>
           <span class="nav-lbl">Compagnon</span>
         </button>
         <button class="nav-btn" onclick="tab('profil')">
-          <img src="assets/nav-prof2.svg" alt="profil">
+          <svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-prof"/></svg>
           <span class="nav-lbl">Profil</span>
         </button>
       </div>
@@ -3233,22 +3266,22 @@
       <div class="fox-corner"><img src="assets/comp-foxy.png" class="dyn-comp" alt="fox"></div>
       <div class="b-nav">
         <button class="nav-btn" onclick="tab('home')">
-          <img src="assets/nav-home2.svg" alt="home">
+          <svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-home"/></svg>
           <span class="nav-lbl">Home</span>
         </button>
         <button class="nav-btn on" onclick="tab('hist')">
-          <img src="assets/nav-hist2.svg" alt="hist">
+          <svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-hist"/></svg>
           <span class="nav-lbl">Historique</span>
         </button>
         <button class="nav-fab" onclick="openJournal()">
           <img src="assets/nav-fab2.svg" alt="add">
         </button>
         <button class="nav-btn" onclick="tab('comp')">
-          <img src="assets/nav-comp2.svg" alt="comp">
+          <svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-comp"/></svg>
           <span class="nav-lbl">Compagnon</span>
         </button>
         <button class="nav-btn" onclick="tab('profil')">
-          <img src="assets/nav-prof2.svg" alt="profil">
+          <svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-prof"/></svg>
           <span class="nav-lbl">Profil</span>
         </button>
       </div>
@@ -3314,22 +3347,22 @@
       </div>
       <div class="b-nav">
         <button class="nav-btn" onclick="tab('home')">
-          <img src="assets/nav-home2.svg" alt="home">
+          <svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-home"/></svg>
           <span class="nav-lbl">Home</span>
         </button>
         <button class="nav-btn" onclick="tab('hist')">
-          <img src="assets/nav-hist2.svg" alt="hist">
+          <svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-hist"/></svg>
           <span class="nav-lbl">Historique</span>
         </button>
         <button class="nav-fab" onclick="openJournal()">
           <img src="assets/nav-fab2.svg" alt="add">
         </button>
         <button class="nav-btn on" onclick="tab('comp')">
-          <img src="assets/nav-comp2.svg" alt="comp">
+          <svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-comp"/></svg>
           <span class="nav-lbl">Compagnon</span>
         </button>
         <button class="nav-btn" onclick="tab('profil')">
-          <img src="assets/nav-prof2.svg" alt="profil">
+          <svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-prof"/></svg>
           <span class="nav-lbl">Profil</span>
         </button>
       </div>
@@ -3408,22 +3441,22 @@
       </div>
       <div class="b-nav">
         <button class="nav-btn" onclick="tab('home')">
-          <img src="assets/nav-home2.svg" alt="home">
+          <svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-home"/></svg>
           <span class="nav-lbl">Home</span>
         </button>
         <button class="nav-btn" onclick="tab('hist')">
-          <img src="assets/nav-hist2.svg" alt="hist">
+          <svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-hist"/></svg>
           <span class="nav-lbl">Historique</span>
         </button>
         <button class="nav-fab" onclick="openJournal()">
           <img src="assets/nav-fab2.svg" alt="add">
         </button>
         <button class="nav-btn" onclick="tab('comp')">
-          <img src="assets/nav-comp2.svg" alt="comp">
+          <svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-comp"/></svg>
           <span class="nav-lbl">Compagnon</span>
         </button>
         <button class="nav-btn on" onclick="tab('profil')">
-          <img src="assets/nav-prof2.svg" alt="profil">
+          <svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-prof"/></svg>
           <span class="nav-lbl">Profil</span>
         </button>
       </div>
