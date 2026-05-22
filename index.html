@@ -1563,7 +1563,7 @@
   /* Sous-titre — Inter Regular 16px blanc, w:218, top:64.9% */
   .splash-sub {
     position: absolute;
-    top: 64.9%;                 /* 506.64 / 780 */
+    top: 53%;                   /* rapproché du logo (titre supprimé) */
     left: 50%;
     transform: translateX(-50%);
     width: 218px;
@@ -2632,11 +2632,8 @@
       <!-- Logo : image PNG blanche fournie (à placer dans assets/welcome-logo.png) -->
       <img class="welcome-logo" src="assets/welcome-logo.png" alt="">
 
-      <!-- Titre — UNE SEULE LIGNE (Figma) -->
-      <h1 class="splash-title">Bienvenue sur Vision</h1>
-
-      <!-- Sous-titre — Inter 16px blanc -->
-      <p class="splash-sub">L'impulsion passe.<br>Tes ambitions restent.</p>
+      <!-- Baseline -->
+      <p class="splash-sub">La tentation passe.<br>Tes ambitions restent.</p>
 
       <!-- "Create account" — bg #f5f5f5 + border, radius 12, texte noir -->
       <button class="splash-btn-primary" onclick="go('s-intro-1')">Create account</button>
