@@ -288,9 +288,17 @@
     background: #e0e0e0;
     border-radius: 3px;
   }
+  /* Les segments actifs forment ENSEMBLE un seul dégradé continu :
+     chaque segment affiche sa tranche du dégradé global (4 segments). */
   .seg.on {
-    background: linear-gradient(90deg, var(--og), var(--og2));
+    background-image: linear-gradient(90deg, var(--og), var(--og2));
+    background-repeat: no-repeat;
+    background-size: 400% 100%;
   }
+  .step-bar .seg:nth-child(1) { background-position: 0%   0; }
+  .step-bar .seg:nth-child(2) { background-position: 33.333% 0; }
+  .step-bar .seg:nth-child(3) { background-position: 66.666% 0; }
+  .step-bar .seg:nth-child(4) { background-position: 100% 0; }
 
   /* ─── FORM SCREENS (WHITE) ──────────────────────────────── */
   .form-screen {
@@ -305,17 +313,18 @@
     align-items: center;
     gap: 8px;
   }
-  .step-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--og), var(--og2));
-  }
+  .step-dot { display: none; }
   .step-lbl {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 10px;
-    color: var(--muted);
-    letter-spacing: 0.1em;
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 800;
+    font-size: 17px;
+    letter-spacing: 0.03em;
     text-transform: uppercase;
+    background: linear-gradient(90deg, var(--og), var(--og2));
+    -webkit-background-clip: text;
+            background-clip: text;
+    -webkit-text-fill-color: transparent;
+            color: transparent;
   }
   .form-title {
     font-family: 'Work Sans', sans-serif;
@@ -980,7 +989,7 @@
     transform-origin: center 60%;
   }
   .nav-mask-line { background: #888888; opacity: 1; transform: scale(1); }
-  .nav-mask-fill { background: var(--og); display: none; }
+  .nav-mask-fill { background: linear-gradient(135deg, var(--og), var(--og2)); display: none; }
   /* Onglet actif : la version pleine apparaît avec un petit "pop" */
   .nav-btn.on .nav-mask-line { display: none; }
   .nav-btn.on .nav-mask-fill { display: block; animation: navPop .32s cubic-bezier(.34,1.56,.64,1); }
@@ -2716,7 +2725,7 @@
       </div>
       <div class="step-hdr">
         <div class="step-dot"></div>
-        <div class="step-lbl">Étape 1 • Ton Partenaire</div>
+        <div class="step-lbl">Étape 1 ▪ Ton Partenaire</div>
       </div>
       <div class="form-title">Choisis ton partenaire</div>
       <div class="form-sub">Plus facile ensemble.</div>
@@ -2802,7 +2811,7 @@
       </div>
       <div class="step-hdr">
         <div class="step-dot"></div>
-        <div class="step-lbl">Étape 2 • Tes Passions</div>
+        <div class="step-lbl">Étape 2 ▪ Tes Passions</div>
       </div>
       <div class="passion-fox">
         <div class="fox-mini"><img src="assets/comp-foxy.png" class="dyn-comp" alt="fox"></div>
@@ -2881,7 +2890,7 @@
       </div>
       <div class="step-hdr">
         <div class="step-dot"></div>
-        <div class="step-lbl">Ta Vision • Construis ta vision 1/3</div>
+        <div class="step-lbl">Étape 3 ▪ Ta Vision</div>
       </div>
       <div class="form-title">Que veux-tu construire ?</div>
       <div class="vision-scroll" style="max-height: 470px;">
@@ -3048,7 +3057,7 @@
       </div>
       <div class="step-hdr">
         <div class="step-dot"></div>
-        <div class="step-lbl">Étape 4 • Ta Capsule</div>
+        <div class="step-lbl">Étape 4 ▪ Ta Capsule</div>
       </div>
       <div class="form-title">Immortalise ce moment</div>
       <div class="form-sub">Un message pour ton futur toi.</div>
