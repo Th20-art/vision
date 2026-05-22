@@ -2024,6 +2024,10 @@
     touch-action:pan-y;
     user-select:none;-webkit-user-select:none
   }
+  /* Sur ordinateur (cadre téléphone), l'îlot redescend pour ne pas être coupé */
+  @media (min-width: 481px) {
+    .dyn-isl { top: 16px; }
+  }
   .dyn-isl.exp{
     height:253px;width:213px;
     box-shadow:0 14px 44px rgba(0,0,0,.65),0 0 0 1px rgba(255,255,255,.04)
