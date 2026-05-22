@@ -388,20 +388,16 @@
   }
   .comp-card {
     border-radius: 14px;
-    border: 2px solid #e8e8e8;
-    padding: 12px;
+    border: none;
+    padding: 14px 12px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     cursor: pointer;
-    transition: border-color 0.2s, box-shadow 0.2s, transform 0.1s;
+    transition: transform 0.1s;
   }
-  .comp-card:active { transform: scale(0.97); }
-  .comp-card.active {
-    border-color: var(--og);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--og) 20%, transparent);
-  }
+  .comp-card:active { transform: scale(0.96); }
   .comp-card .fox-mini { width: 72px; height: 64px; }
   /* Grise les compagnons non-sélectionnés, full color quand .active */
   .comp-card img {
@@ -418,13 +414,12 @@
   .comp-name {
     font-family: 'Work Sans', sans-serif;
     font-weight: 600;
-    font-size: 13px;
-    color: var(--dark);
+    font-size: 14px;
+    color: #c4c4c4;
+    transition: color .25s ease;
   }
-  .comp-trait {
-    font-size: 10px;
-    color: var(--muted);
-  }
+  .comp-card.active .comp-name { color: var(--dark); }
+  .comp-trait { display: none; }
 
   .comp-input-area {
     background: #2a2a28;
@@ -2641,35 +2636,17 @@
       <h1 class="splash-title">Bienvenue sur Vision</h1>
 
       <!-- Sous-titre — Inter 16px blanc -->
-      <p class="splash-sub">L'impulsion passe. Mais tes ambitions restes.</p>
+      <p class="splash-sub">L'impulsion passe.<br>Tes ambitions restent.</p>
 
       <!-- "Create account" — bg #f5f5f5 + border, radius 12, texte noir -->
-      <button class="splash-btn-primary" onclick="go('s-name')">Create account</button>
+      <button class="splash-btn-primary" onclick="go('s-intro-1')">Create account</button>
 
       <!-- "Login" — texte blanc Inter Bold, pas de fond -->
       <button class="splash-btn-login" onclick="go('s-home')">Login</button>
     </div>
   </div>
 
-  <!-- ════════════════════════════════════════════════════ -->
-  <!-- ════════════════════════════════════════════════════ -->
-  <!-- SCREEN: PRÉNOM UTILISATEUR                          -->
-  <!-- ════════════════════════════════════════════════════ -->
-  <div class="screen" id="s-name">
-    <div class="name-screen">
-      <!-- Logo -->
-      <div style="width:70px;height:70px;border-radius:18px;background:linear-gradient(135deg,var(--og),var(--og2));display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:28px;">
-        <div style="width:70px;height:70px;overflow:hidden;position:relative;">
-          <img src="assets/comp-foxy.png" class="dyn-comp" style="position:absolute;width:576%;height:650%;left:-183%;top:-369%;image-rendering:pixelated;" alt="">
-        </div>
-      </div>
-      <div style="font-family:'Work Sans',sans-serif;font-weight:800;font-size:26px;color:var(--dark);text-align:center;line-height:1.2;">Comment tu<br>t'appelles ?</div>
-      <input id="nameInput" class="name-input" type="text" placeholder="Ton prénom" maxlength="20" onkeydown="if(event.key==='Enter')continueName()">
-      <div style="font-size:13px;color:var(--muted);text-align:center;margin-bottom:32px;">Vision va personnaliser<br>ton expérience.</div>
-      <button onclick="continueName()" style="width:100%;background:linear-gradient(90deg,var(--og),var(--og2));color:white;font-family:'Work Sans',sans-serif;font-weight:700;font-size:16px;padding:16px;border-radius:14px;border:none;cursor:pointer;">C'est parti →</button>
-      <button onclick="go('s-splash')" style="margin-top:12px;background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;">← Retour</button>
-    </div>
-  </div>
+  <!-- (Page prénom supprimée — le prénom est désormais saisi sur la page Compagnon) -->
 
   <!-- SCREEN: ORANGE INTRO 1 (158-2)                      -->
   <!-- ════════════════════════════════════════════════════ -->
@@ -2752,10 +2729,10 @@
         </div>
       </div>
       <div class="comp-input-area">
-        <div class="comp-desc">Ton compagnon t'accompagne chaque jour. Il évolue en fonction de tes actions et t'aide à rester aligné avec tes objectifs.</div>
-        <input class="dark-input" type="text" placeholder="Donne-lui un surnom...">
+        <div class="comp-desc" id="comp-desc">Ce renard est stratège. Toujours un coup d'avance, il sera toujours là pour te réorienter en cas de coup dur.</div>
+        <input id="compNameInput" class="dark-input" type="text" placeholder="Donne-lui ton prénom" maxlength="20" onkeydown="if(event.key==='Enter')continueComp()">
       </div>
-      <button class="cont-btn" onclick="go('s-intro-2')">Suivant →</button>
+      <button class="cont-btn" onclick="continueComp()">Continuer →</button>
     </div>
   </div>
 
@@ -5074,15 +5051,38 @@
     go('s-intro-1');
   }
 
+  /* Descriptions par compagnon (affichées sous la grille) */
+  const COMP_DESC = {
+    foxy: "Ce renard est stratège. Toujours un coup d'avance, il sera toujours là pour te réorienter en cas de coup dur.",
+    malo: "Cette méduse est apaisante. Elle t'aide à prendre du recul et à calmer tes impulsions.",
+    elio: "Cet ours est rassurant. Stable et bienveillant, il t'accompagne pas à pas vers tes objectifs.",
+    ryo:  "Ce pingouin est discipliné. Rigoureux et constant, il te garde sur la bonne voie."
+  };
   function selectComp(card) {
     card.closest('#compGrid').querySelectorAll('.comp-card').forEach(c => c.classList.remove('active'));
     card.classList.add('active');
     const comp = card.dataset.comp;
     applyTheme(comp);
-    // Mettre à jour l'input description
-    const t = themes[comp];
-    const input = document.querySelector('.dark-input');
-    if (input) input.placeholder = 'Donner un surnom à ' + t.name + '...';
+    // Met à jour la description du compagnon
+    const desc = document.getElementById('comp-desc');
+    if (desc && COMP_DESC[comp]) desc.textContent = COMP_DESC[comp];
+  }
+
+  /* Validation prénom sur la page Compagnon — bloque si vide */
+  function continueComp() {
+    const input = document.getElementById('compNameInput');
+    const name = input ? input.value.trim() : '';
+    if (!name) {
+      if (input) {
+        input.focus();
+        input.style.outline = '2px solid var(--og)';
+        setTimeout(() => { input.style.outline = ''; }, 1500);
+      }
+      return;
+    }
+    userName = name;
+    document.querySelectorAll('.user-name').forEach(el => el.textContent = name);
+    go('s-intro-2');
   }
 
   /* ── Chips passions ── */
