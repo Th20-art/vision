@@ -775,6 +775,19 @@
   .notif-ti { font-family: 'Work Sans', sans-serif; font-weight: 700; font-size: 13px; color: var(--dark); margin-bottom: 2px; }
   .notif-tx { font-size: 12px; color: var(--muted); line-height: 1.4; }
   .notif-tm { font-size: 10px; color: #b8b8b8; font-family: 'IBM Plex Mono', monospace; margin-top: 5px; }
+  /* Nouvelle notification — rectangle orange, typo blanche */
+  .notif-new {
+    background: linear-gradient(135deg, var(--og), var(--og2));
+    border-radius: 16px;
+    padding: 16px 18px;
+    color: #fff;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+  }
+  .notif-new .nn-lbl { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.12em; opacity: 0.85; margin-bottom: 7px; }
+  .notif-new .nn-tx { font-family: 'Work Sans', sans-serif; font-weight: 600; font-size: 14px; line-height: 1.4; }
+  .notif-sec { font-size: 10px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.1em; margin: 16px 4px 2px; }
+  /* Notifications lues : légèrement atténuées */
+  .notif-row.read { opacity: 0.72; }
 
   .obj-banner {
     margin: 14px 20px 0;
@@ -5495,13 +5508,42 @@
     }
     return list;
   }
+  /* La notification "qui vient d'arriver" — conseil lié à l'objectif principal */
+  function buildNewNotif() {
+    const first = userAmbitions[0];
+    const k = first ? first.key : 'liberte';
+    const tips = {
+      voyage:    { lbl:'POUR TON VOYAGE',    tx:"Pense à revendre ce que tu n'utilises plus — chaque euro te rapproche du départ." },
+      liberte:   { lbl:'POUR TON ÉCONOMIE',  tx:"Pense à revendre ce que tu n'utilises pas : tu pourrais récupérer ~120 € ce mois-ci." },
+      impact:    { lbl:'POUR TON IMPACT',    tx:"Revends ou donne ce que tu n'utilises plus plutôt que de le jeter." },
+      sante:     { lbl:'POUR TA SANTÉ',      tx:"Et si tu remplaçais une commande par une marche ce soir ?" },
+      projet:    { lbl:'POUR TON PROJET',    tx:"Revends ce qui dort dans tes placards pour financer ton projet." },
+      formation: { lbl:'POUR TA FORMATION',  tx:"Mets de côté ce que tu aurais dépensé aujourd'hui pour ta prochaine session." },
+      logement:  { lbl:'POUR TON LOGEMENT',  tx:"Chaque achat évité grossit ton apport. Revends ce qui ne sert plus." },
+      societal:  { lbl:'POUR TON IMPACT',    tx:"Privilégie la seconde main : bon pour ton objectif et pour la planète." }
+    };
+    return tips[k] || tips.liberte;
+  }
+
   function renderNotifs() {
     const box = document.getElementById('notif-list');
     if (!box) return;
     box.innerHTML = '';
+    // 1) Nouvelle notification — rectangle orange, typo blanche
+    const nn = buildNewNotif();
+    const card = document.createElement('div');
+    card.className = 'notif-new';
+    card.innerHTML = `<div class="nn-lbl">${nn.lbl} · NOUVEAU</div><div class="nn-tx">${nn.tx}</div>`;
+    box.appendChild(card);
+    // 2) Séparateur
+    const sec = document.createElement('div');
+    sec.className = 'notif-sec';
+    sec.textContent = 'PLUS TÔT';
+    box.appendChild(sec);
+    // 3) Notifications déjà lues
     buildNotifs().forEach(n => {
       const row = document.createElement('div');
-      row.className = 'notif-row';
+      row.className = 'notif-row read';
       row.innerHTML = `<div class="notif-bar" style="background:${n.bar}"></div>
         <div class="notif-bd"><div class="notif-ti">${n.ti}</div><div class="notif-tx">${n.tx}</div><div class="notif-tm">${n.tm}</div></div>`;
       box.appendChild(row);
