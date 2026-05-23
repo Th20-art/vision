@@ -750,6 +750,31 @@
     flex-shrink: 0;
   }
   .bell-btn img { width: 20px; height: 20px; }
+  .bell-btn { position: relative; }
+  .bell-btn.has-notif::after {
+    content: '';
+    position: absolute;
+    top: 5px; right: 6px;
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--og);
+    border: 2px solid #fff;
+  }
+
+  /* ─── Panneau Notifications ─── */
+  .notif-row {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 12px 14px;
+    background: #fff;
+    border-radius: 14px;
+    position: relative;
+    overflow: hidden;
+  }
+  .notif-bar { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; }
+  .notif-bd { flex: 1; min-width: 0; }
+  .notif-ti { font-family: 'Work Sans', sans-serif; font-weight: 700; font-size: 13px; color: var(--dark); margin-bottom: 2px; }
+  .notif-tx { font-size: 12px; color: var(--muted); line-height: 1.4; }
+  .notif-tm { font-size: 10px; color: #b8b8b8; font-family: 'IBM Plex Mono', monospace; margin-top: 5px; }
 
   .obj-banner {
     margin: 14px 20px 0;
@@ -3136,7 +3161,7 @@
         <!-- Header centré + bell (Figma 510:1136) -->
         <div style="position:relative;padding:36px 20px 0;text-align:center;">
           <div style="font-family:'Work Sans',sans-serif;font-weight:700;font-size:22px;color:#000;">Bonsoir, <span class="user-name">Léa</span> 👋</div>
-          <button class="bell-btn" style="position:absolute;right:20px;top:34px;"><img src="assets/bell.svg" alt="notifications"></button>
+          <button class="bell-btn has-notif" onclick="openNotifs()" style="position:absolute;right:20px;top:34px;"><img src="assets/bell.svg" alt="notifications"></button>
         </div>
 
         <!-- Fox centré + 2 cœurs + streak -->
@@ -3231,7 +3256,7 @@
             <div class="app-greeting">Historique</div>
             <div class="app-streak">Ton parcours complet</div>
           </div>
-          <button class="bell-btn"><img src="assets/bell.svg" alt="notifications"></button>
+          <button class="bell-btn has-notif" onclick="openNotifs()"><img src="assets/bell.svg" alt="notifications"></button>
         </div>
         <div class="obj-banner">
           <div class="obj-label">TON OBJECTIF</div>
@@ -3309,7 +3334,7 @@
             <div class="app-greeting">Compagnon</div>
             <div class="app-streak">Renardo te suit partout</div>
           </div>
-          <button class="bell-btn"><img src="assets/bell.svg" alt="notifications"></button>
+          <button class="bell-btn has-notif" onclick="openNotifs()"><img src="assets/bell.svg" alt="notifications"></button>
         </div>
         <div class="obj-banner">
           <div class="obj-label">TON OBJECTIF</div>
@@ -3390,7 +3415,7 @@
             <div class="app-greeting">Paramètres</div>
             <div class="app-streak">Gère ton expérience Vision</div>
           </div>
-          <button class="bell-btn"><img src="assets/bell.svg" alt="notifications"></button>
+          <button class="bell-btn has-notif" onclick="openNotifs()"><img src="assets/bell.svg" alt="notifications"></button>
         </div>
         <div class="obj-banner">
           <div class="obj-label">TON OBJECTIF</div>
@@ -4371,6 +4396,21 @@
         <input id="chatInput" type="text" placeholder="Écris ta vision..." style="flex:1;border:1.5px solid #e8e8e8;border-radius:22px;padding:10px 16px;font-size:13px;font-family:'Inter',sans-serif;outline:none;color:#1a1a1a;">
         <button onclick="sendChatMessage()" style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--og),var(--og2));border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:white;font-size:18px;flex-shrink:0;">→</button>
       </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════ -->
+  <!-- MODAL : Notifications (liées aux objectifs)          -->
+  <!-- ════════════════════════════════════════════════════ -->
+  <div id="notif-modal" style="display:none;position:absolute;inset:0;z-index:210;">
+    <div onclick="closeNotifs()" style="position:absolute;inset:0;background:rgba(0,0,0,0.45);backdrop-filter:blur(2px);"></div>
+    <div style="position:absolute;bottom:0;left:0;right:0;background:#fafafa;border-radius:28px 28px 0 0;padding:14px 18px 30px;max-height:82%;overflow-y:auto;box-shadow:0 -8px 40px rgba(0,0,0,0.18);">
+      <div style="width:44px;height:5px;background:#d8d8d8;border-radius:100px;margin:0 auto 18px;"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin:0 4px 14px;">
+        <div style="font-family:'Work Sans',sans-serif;font-weight:700;font-size:20px;color:#000;">Notifications</div>
+        <button onclick="closeNotifs()" style="background:none;border:none;font-size:13px;color:var(--og);font-weight:600;cursor:pointer;font-family:inherit;">Tout marquer lu</button>
+      </div>
+      <div id="notif-list" style="display:flex;flex-direction:column;gap:8px;"></div>
     </div>
   </div>
 
@@ -5421,6 +5461,60 @@
   /* ── Popup "Comment monter de niveau" (? barre XP compagnon) ── */
   function openXpHelp() { document.getElementById('xp-help-modal').style.display = 'block'; }
   function closeXpHelp() { document.getElementById('xp-help-modal').style.display = 'none'; }
+
+  /* ── Notifications liées aux objectifs ── */
+  function buildNotifs() {
+    const og = (getComputedStyle(document.documentElement).getPropertyValue('--og') || '#ff7e00').trim();
+    const list = [];
+    // Compagnon
+    list.push({ bar:'#63993d', ti:'Ton compagnon progresse', tx:"Renardo a gagné de l'XP grâce à ta dernière résistance. Plus que 4 200 XP avant le stade Maître.", tm:'Il y a 1 h' });
+    // Série / streak
+    list.push({ bar:og, ti:'Série en cours 🔥', tx:'8 jours sans craquage ! Ton record est à 12 jours — tu peux le battre.', tm:"Aujourd'hui · 09:12" });
+    // Une notif par objectif choisi
+    const tpl = {
+      voyage:    { ti:'Objectif Voyage',        tx:"Il te manque 1 376 € pour ton voyage. En résistant à 2 achats/semaine, tu y es dans 3 mois." },
+      liberte:   { ti:'Liberté financière',     tx:"Tu as résisté à 3 achats cette semaine — +96 € mis de côté pour ton objectif." },
+      impact:    { ti:'Impact écologique',      tx:"36 kg de CO₂ évités cette semaine, soit 288 km en voiture non parcourus." },
+      sante:     { ti:'Prendre soin de toi',    tx:"3 jours d'affilée sans commande de livraison. Ton corps te dit merci." },
+      projet:    { ti:'Lancer un projet',       tx:"Tu as mis de côté l'équivalent de 2 mois d'abonnement pour financer ton projet." },
+      formation: { ti:'Me former',              tx:"L'argent économisé cette semaine couvre une session de ta formation." },
+      logement:  { ti:'Premier logement',       tx:"+120 € vers ton apport ce mois-ci. Chaque résistance te rapproche des clés." },
+      societal:  { ti:"Avoir de l'impact",      tx:"Tes choix de la semaine ont évité 4 achats à fort impact." }
+    };
+    userAmbitions.forEach((a, i) => {
+      const t = tpl[a.key];
+      if (t) list.push({ bar:og, ti:t.ti, tx:t.tx, tm: i === 0 ? 'Il y a 3 h' : 'Hier · 19:30' });
+    });
+    // Esprit critique (si activé)
+    if (typeof espritCritiqueOn !== 'undefined' && espritCritiqueOn) {
+      list.push({ bar:'#7c5cdb', ti:'Esprit critique', tx:"Un article que tu consultes semble généré par IA. Croise tes sources avant de le partager.", tm:'Hier · 21:40' });
+    }
+    // Règle personnelle (si définie)
+    if (typeof personalRules !== 'undefined' && personalRules.length) {
+      list.push({ bar:'#e8563a', ti:'Rappel de ta règle', tx:'« ' + personalRules[0] + ' » — on t\'alertera si un achat va à son encontre.', tm:'Hier · 18:05' });
+    }
+    return list;
+  }
+  function renderNotifs() {
+    const box = document.getElementById('notif-list');
+    if (!box) return;
+    box.innerHTML = '';
+    buildNotifs().forEach(n => {
+      const row = document.createElement('div');
+      row.className = 'notif-row';
+      row.innerHTML = `<div class="notif-bar" style="background:${n.bar}"></div>
+        <div class="notif-bd"><div class="notif-ti">${n.ti}</div><div class="notif-tx">${n.tx}</div><div class="notif-tm">${n.tm}</div></div>`;
+      box.appendChild(row);
+    });
+  }
+  function openNotifs() {
+    renderNotifs();
+    document.getElementById('notif-modal').style.display = 'block';
+  }
+  function closeNotifs() {
+    document.getElementById('notif-modal').style.display = 'none';
+    document.querySelectorAll('.bell-btn').forEach(b => b.classList.remove('has-notif')); // marque comme lu
+  }
 
   /* ── Sites à ne pas analyser (liste d'exclusion) ── */
   let excludedSites = ['Société générale', 'Netflix'];

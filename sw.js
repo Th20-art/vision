@@ -1,7 +1,7 @@
 /* Service worker — Vision (PWA)
    - manifest.json + navigations HTML : network-first (toujours à jour)
    - autres ressources (images, svg…) : cache-first avec mise à jour en arrière-plan */
-const CACHE = 'vision-v32';
+const CACHE = 'vision-v33';
 const CORE = [
   './',
   'index.html'
