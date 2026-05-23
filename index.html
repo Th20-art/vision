@@ -5508,21 +5508,26 @@
     }
     return list;
   }
-  /* La notification "qui vient d'arriver" — conseil lié à l'objectif principal */
+  /* La notification "qui vient d'arriver" — comparaison sociale liée à l'objectif principal */
   function buildNewNotif() {
     const first = userAmbitions[0];
     const k = first ? first.key : 'liberte';
-    const tips = {
-      voyage:    { lbl:'POUR TON VOYAGE',    tx:"Pense à revendre ce que tu n'utilises plus — chaque euro te rapproche du départ." },
-      liberte:   { lbl:'POUR TON ÉCONOMIE',  tx:"Pense à revendre ce que tu n'utilises pas : tu pourrais récupérer ~120 € ce mois-ci." },
-      impact:    { lbl:'POUR TON IMPACT',    tx:"Revends ou donne ce que tu n'utilises plus plutôt que de le jeter." },
-      sante:     { lbl:'POUR TA SANTÉ',      tx:"Et si tu remplaçais une commande par une marche ce soir ?" },
-      projet:    { lbl:'POUR TON PROJET',    tx:"Revends ce qui dort dans tes placards pour financer ton projet." },
-      formation: { lbl:'POUR TA FORMATION',  tx:"Mets de côté ce que tu aurais dépensé aujourd'hui pour ta prochaine session." },
-      logement:  { lbl:'POUR TON LOGEMENT',  tx:"Chaque achat évité grossit ton apport. Revends ce qui ne sert plus." },
-      societal:  { lbl:'POUR TON IMPACT',    tx:"Privilégie la seconde main : bon pour ton objectif et pour la planète." }
+    const label = first ? first.label : 'Liberté financière';
+    const data = {
+      voyage:    { amount:'240', obj:'vêtements jamais portés' },
+      liberte:   { amount:'180', obj:"appareils qu'ils n'utilisaient plus" },
+      impact:    { amount:'150', obj:'objets en double' },
+      sante:     { amount:'90',  obj:'équipements de sport oubliés' },
+      projet:    { amount:'320', obj:'affaires qui dormaient dans un placard' },
+      formation: { amount:'200', obj:'vieux livres et matériel' },
+      logement:  { amount:'410', obj:'meubles inutilisés' },
+      societal:  { amount:'130', obj:'objets du quotidien en trop' }
     };
-    return tips[k] || tips.liberte;
+    const d = data[k] || data.liberte;
+    return {
+      lbl: 'LA COMMUNAUTÉ',
+      tx: `Plusieurs personnes ont économisé ${d.amount} € en revendant leurs ${d.obj}. Pourquoi pas toi ? Aide ton objectif ${label}.`
+    };
   }
 
   function renderNotifs() {
