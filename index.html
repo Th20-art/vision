@@ -50,7 +50,7 @@
     overflow: hidden;
     position: relative;
     background: #fff;
-    box-shadow: 0 30px 80px rgba(0,0,0,0.35);
+    box-shadow: none;
   }
 
   /* ─── MOBILE : la maquette remplit tout l'écran (plus de cadre/marges) ─── */
@@ -691,7 +691,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+    box-shadow: none;
   }
   .record-dot {
     width: 20px; height: 20px;
@@ -783,7 +783,7 @@
     border-radius: 16px;
     padding: 16px 18px;
     color: #fff;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    box-shadow: none;
   }
   .notif-new .nn-lbl { font-family: 'Inter', sans-serif; font-size: 10px; letter-spacing: 0.12em; opacity: 0.85; margin-bottom: 7px; }
   .notif-new .nn-tx { font-family: 'Work Sans', sans-serif; font-weight: 600; font-size: 14px; line-height: 1.4; }
@@ -800,7 +800,7 @@
     -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
     border-radius: 18px;
     padding: 11px 14px;
-    box-shadow: 0 10px 28px rgba(0,0,0,0.3);
+    box-shadow: none;
     cursor: pointer;
     opacity: 0;
     transform: translateY(-130%);
@@ -1271,7 +1271,7 @@
     background:var(--og); color:#fff; border:none; cursor:pointer;
     font-family:'Inter',sans-serif; font-weight:700; font-size:14px;
     display:flex; align-items:center; justify-content:center;
-    box-shadow:0 2px 6px rgba(0,0,0,.15); margin-top:14px;
+    box-shadow: none; margin-top:14px;
   }
   .xp-help:active { transform:scale(.92); }
   .xp-track { position:relative; flex:1; }
@@ -1567,7 +1567,7 @@
     color: var(--dark);
     line-height: 1.4;
     max-width: 200px;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+    box-shadow: none;
   }
   .fox-bubble strong { color: var(--og); }
   .amz-nav {
@@ -1932,7 +1932,7 @@
     border-radius: 20px;
     padding: 18px 20px 20px;
     pointer-events: all;
-    box-shadow: 0 4px 32px rgba(0,0,0,0.22);
+    box-shadow: none;
     animation: tourSlideUp 0.35s cubic-bezier(.22,.68,0,1.2) both;
   }
   @keyframes tourSlideUp {
@@ -2037,7 +2037,7 @@
   .amzn-img{display:block;width:100%;height:auto}
   .amzn-hot{position:absolute;background:transparent;border:none;padding:0;margin:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
   /* Nav bar Amazon fixe (image) en bas de l'écran */
-  .amzn-navimg{position:absolute;left:0;right:0;bottom:0;z-index:30;background:#fff;line-height:0;box-shadow:0 -1px 8px rgba(0,0,0,.07)}
+  .amzn-navimg{position:absolute;left:0;right:0;bottom:0;z-index:30;background:#fff;line-height:0;box-shadow: none}
   .amzn-navimg img{width:100%;height:auto;display:block}
 
   /* Status bar (time + signals) */
@@ -2076,7 +2076,7 @@
   .cat-tog-knob{
     position:absolute;top:3px;left:3px;
     width:24px;height:24px;border-radius:50%;
-    background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.2);
+    background:#fff;box-shadow: none;
     transition:transform .25s;
     display:flex;align-items:center;justify-content:center;
     font-size:11px
@@ -2108,7 +2108,7 @@
                width .35s cubic-bezier(.32,1.1,.5,1);
     opacity:0;
     animation:dynIn .55s cubic-bezier(.34,1.56,.64,1) .25s forwards;
-    box-shadow:0 6px 22px rgba(0,0,0,.5);
+    box-shadow: none;
     touch-action:pan-y;
     user-select:none;-webkit-user-select:none
   }
@@ -2118,8 +2118,7 @@
   }
   .dyn-isl.exp{
     height:253px;width:213px;
-    box-shadow:0 14px 44px rgba(0,0,0,.65),0 0 0 1px rgba(255,255,255,.04)
-  }
+    box-shadow: none}
   @keyframes dynIn{0%{opacity:0;transform:translate(-50%,-14px) scale(.85)}100%{opacity:1;transform:translate(-50%,0) scale(1)}}
 
   /* 5 states absolument positionnés (un seul .on visible) */
@@ -2306,8 +2305,7 @@
   .dx-beach::before{
     content:'';position:absolute;top:6%;right:14%;
     width:14px;height:14px;background:#FFD700;border-radius:50%;
-    box-shadow:0 0 8px rgba(255,215,0,.6)
-  }
+    box-shadow: none}
   .dx-beach::after{
     content:'';position:absolute;bottom:32%;left:50%;
     transform:translateX(-50%);
@@ -2406,7 +2404,7 @@
 
   /* "Ajouter au panier" CTA at bottom */
   .prod-cta-wr{padding:0 12px 18px;background:#fff}
-  .amzn-btn{display:block;width:100%;padding:10px;background:#FFD814;border:1px solid #FCD200;border-radius:100px;font-size:14px;font-weight:500;color:#0F1111;cursor:pointer;font-family:inherit;box-shadow:0 2px 5px rgba(213,217,217,.5)}
+  .amzn-btn{display:block;width:100%;padding:10px;background:#FFD814;border:1px solid #FCD200;border-radius:100px;font-size:14px;font-weight:500;color:#0F1111;cursor:pointer;font-family:inherit;box-shadow: none}
   .amzn-btn:active{background:#F7CA00}
 
   /* ───── CART PAGE (438:1012) ───── */
@@ -2435,7 +2433,7 @@
   .cart-it-st{font-size:13px;color:#007600}
 
   .cart-rw{display:flex;align-items:center;gap:8px;padding:8px 12px 4px;flex-wrap:wrap}
-  .cart-qy{display:inline-flex;align-items:center;background:#FFD814;border:1px solid #FCD200;border-radius:100px;padding:5px 11px;gap:10px;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+  .cart-qy{display:inline-flex;align-items:center;background:#FFD814;border:1px solid #FCD200;border-radius:100px;padding:5px 11px;gap:10px;box-shadow: none}
   .cart-qy-b{background:none;border:none;font-size:15px;cursor:pointer;color:#0F1111;line-height:1;font-family:inherit;padding:0;width:14px}
   .cart-qy-v{font-size:13px;font-weight:500;color:#0F1111;min-width:12px;text-align:center}
   .cart-qy-tr{font-size:12px;margin-right:2px}
@@ -2455,13 +2453,13 @@
   .cap-ov{position:absolute;inset:0;z-index:70;background:rgba(0,0,0,0);pointer-events:none;opacity:0;transition:opacity .35s,background .35s;display:flex;flex-direction:column;padding:78px 16px 16px}
   .cap-ov.on{opacity:1;pointer-events:auto;background:rgba(0,0,0,.55)}
   .cap-cl{position:absolute;top:38px;right:16px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.22);border:none;color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
-  .cap-bn{background:linear-gradient(90deg,var(--og),var(--og2));border-radius:13px;padding:12px 16px;color:#fff;box-shadow:0 6px 18px rgba(0,0,0,.28)}
+  .cap-bn{background:linear-gradient(90deg,var(--og),var(--og2));border-radius:13px;padding:12px 16px;color:#fff;box-shadow: none}
   .cap-bn-l{font-size:9px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:rgba(255,255,255,.78);margin-bottom:4px}
   .cap-bn-t{font-size:14px;font-weight:600;line-height:1.4}
   .cap-pb{margin-top:10px;padding:0 2px}
   .cap-pb-b{height:4px;background:rgba(255,255,255,.18);border-radius:2px;overflow:hidden}
   .cap-pb-f{height:100%;width:30%;background:var(--og);border-radius:2px}
-  .cap-vd{flex:1;margin-top:14px;background:#2c2c2c;border-radius:16px;position:relative;display:flex;align-items:flex-end;padding:16px;overflow:visible;min-height:200px;box-shadow:0 8px 28px rgba(0,0,0,.4)}
+  .cap-vd{flex:1;margin-top:14px;background:#2c2c2c;border-radius:16px;position:relative;display:flex;align-items:flex-end;padding:16px;overflow:visible;min-height:200px;box-shadow: none}
   .cap-vd .fox-mini{position:absolute;left:14px;bottom:-6px;width:52px;height:46px;z-index:2}
   .cap-bb{background:rgba(255,255,255,.16);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.12);border-radius:13px;padding:10px 13px;color:#fff;font-size:12.5px;font-style:italic;line-height:1.45;width:calc(100% - 48px);margin-left:auto}
   .cap-mt{text-align:center;color:rgba(255,255,255,.75);font-size:12px;margin-top:14px;font-style:italic}
@@ -2469,7 +2467,7 @@
   /* ───── IMPACT BOTTOM SHEET (444:1545) — DARK ───── */
   .imp-ov{position:absolute;inset:0;z-index:75;background:rgba(0,0,0,0);pointer-events:none;transition:background .35s}
   .imp-ov.on{background:rgba(0,0,0,.55);pointer-events:auto}
-  .imp-sh{position:absolute;bottom:0;left:0;right:0;background:#242426;border-radius:22px 22px 0 0;padding:42px 16px 22px;box-shadow:0 -16px 50px rgba(0,0,0,.55);transform:translateY(105%);transition:transform .42s cubic-bezier(.32,0,.67,0)}
+  .imp-sh{position:absolute;bottom:0;left:0;right:0;background:#242426;border-radius:22px 22px 0 0;padding:42px 16px 22px;box-shadow: none;transform:translateY(105%);transition:transform .42s cubic-bezier(.32,0,.67,0)}
   .imp-ov.on .imp-sh{transform:translateY(0);transition:transform .42s cubic-bezier(.33,1,.68,1)}
   .imp-sh .fox-mini{position:absolute;top:-30px;left:50%;transform:translateX(-50%);width:62px;height:54px;z-index:2}
   .imp-pd{background:#30302e;border-radius:13px;padding:13px;margin-bottom:16px;text-align:center}
@@ -2545,7 +2543,7 @@
   .ec-step{font-family:'Inter',sans-serif;font-size:14px;color:rgba(255,255,255,0.85);margin-bottom:14px;}
   .ec-title{font-family:'Work Sans',sans-serif;font-weight:800;font-size:34px;line-height:1.12;color:#fff;margin-bottom:18px;}
   .ec-desc{font-family:'Inter',sans-serif;font-size:15px;color:rgba(255,255,255,0.85);line-height:1.5;margin-bottom:26px;}
-  .ec-card{background:#fff;border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 4px 18px rgba(0,0,0,0.12);}
+  .ec-card{background:#fff;border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px;box-shadow: none;}
   .ec-btn{
     position:absolute;bottom:24px;right:24px;z-index:2;
     background:#f5f5f5;border:1px solid #e8e8e8;border-radius:12px;
@@ -2564,7 +2562,7 @@
   .ec-toggle.on{background:#7c5cdb}
   .ec-knob{
     position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;
-    background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .25s;
+    background:#fff;box-shadow: none;transition:transform .25s;
   }
   .ec-toggle.on .ec-knob{transform:translateX(22px)}
 
@@ -3217,7 +3215,7 @@
         <div id="home-chips" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px;padding:0 20px;"></div>
 
         <!-- Banner objectif (dynamique userAmbitions[0]) — collant en haut au scroll -->
-        <div class="obj-banner" id="home-obj-banner" style="position:sticky;top:0;z-index:20;margin:16px 14px 0;box-shadow:0 6px 16px rgba(0,0,0,0.12);">
+        <div class="obj-banner" id="home-obj-banner" style="position:sticky;top:0;z-index:20;margin:16px 14px 0;box-shadow: none;">
           <div class="obj-label">TON OBJECTIF</div>
           <div class="obj-text" id="home-obj-text">Je veux pouvoir voyager le mois prochain.</div>
         </div>
@@ -3767,7 +3765,7 @@
           <div style="position:absolute;left:10%;top:80%;font-size:6px;color:#888;">Bd de la Linarde</div>
           <div style="position:absolute;left:70%;top:30%;font-size:6px;color:#888;">Ch. de Niquet</div>
           <!-- Yellow pin -->
-          <div style="position:absolute;left:32%;top:48%;width:11px;height:11px;border-radius:50%;background:#f4c211;border:2px solid #6b4f0a;box-shadow:0 0 0 4px rgba(244,194,17,0.25);"></div>
+          <div style="position:absolute;left:32%;top:48%;width:11px;height:11px;border-radius:50%;background:#f4c211;border:2px solid #6b4f0a;box-shadow: none;"></div>
         </div>
       </div>
 
@@ -3781,7 +3779,7 @@
           <div style="position:absolute;left:60%;top:0;bottom:0;width:3px;background:#fff;opacity:.5;transform:rotate(-15deg);transform-origin:top;"></div>
           <div style="position:absolute;left:10%;top:80%;font-size:6px;color:#888;">Bd de la Linarde</div>
           <div style="position:absolute;left:70%;top:30%;font-size:6px;color:#888;">Ch. de Niquet</div>
-          <div style="position:absolute;left:32%;top:48%;width:11px;height:11px;border-radius:50%;background:#f4c211;border:2px solid #6b4f0a;box-shadow:0 0 0 4px rgba(244,194,17,0.25);"></div>
+          <div style="position:absolute;left:32%;top:48%;width:11px;height:11px;border-radius:50%;background:#f4c211;border:2px solid #6b4f0a;box-shadow: none;"></div>
         </div>
       </div>
 
@@ -4414,7 +4412,7 @@
           <div style="width:28px;height:28px;border-radius:50%;overflow:hidden;position:relative;flex-shrink:0;background:#ffe5cc;">
             <img src="assets/comp-foxy.png" id="chatBubbleImg" class="dyn-comp" style="position:absolute;width:576%;height:650%;left:-183%;top:-369%;image-rendering:pixelated;" alt="">
           </div>
-          <div style="background:white;border-radius:16px 16px 16px 4px;padding:12px 14px;max-width:240px;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+          <div style="background:white;border-radius:16px 16px 16px 4px;padding:12px 14px;max-width:240px;box-shadow: none;">
             <p style="font-size:13px;color:#1a1a1a;line-height:1.5;margin:0;">Salut ! Je suis là pour t'aider à définir ta vision. Qu'est-ce que tu veux vraiment construire dans ta vie ? 🌟</p>
           </div>
         </div>
@@ -4422,7 +4420,7 @@
           <div style="width:28px;height:28px;border-radius:50%;overflow:hidden;position:relative;flex-shrink:0;background:#ffe5cc;">
             <img src="assets/comp-foxy.png" class="dyn-comp" style="position:absolute;width:576%;height:650%;left:-183%;top:-369%;image-rendering:pixelated;" alt="">
           </div>
-          <div style="background:white;border-radius:16px 16px 16px 4px;padding:12px 14px;max-width:240px;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+          <div style="background:white;border-radius:16px 16px 16px 4px;padding:12px 14px;max-width:240px;box-shadow: none;">
             <p style="font-size:13px;color:#1a1a1a;line-height:1.5;margin:0;">Voici quelques visions qui correspondent à ton profil ✨</p>
           </div>
         </div>
@@ -4437,7 +4435,7 @@
           <div style="width:28px;height:28px;border-radius:50%;overflow:hidden;position:relative;flex-shrink:0;background:#ffe5cc;">
             <img src="assets/comp-foxy.png" class="dyn-comp" style="position:absolute;width:576%;height:650%;left:-183%;top:-369%;image-rendering:pixelated;" alt="">
           </div>
-          <div style="background:white;border-radius:16px 16px 16px 4px;padding:12px 14px;max-width:240px;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+          <div style="background:white;border-radius:16px 16px 16px 4px;padding:12px 14px;max-width:240px;box-shadow: none;">
             <p style="font-size:13px;color:#1a1a1a;line-height:1.5;margin:0;">Ou dis-moi toi-même ce qui te tient vraiment à cœur 💬</p>
           </div>
         </div>
@@ -4455,7 +4453,7 @@
   <!-- ════════════════════════════════════════════════════ -->
   <div id="notif-modal" style="display:none;position:absolute;inset:0;z-index:210;">
     <div onclick="closeNotifs()" style="position:absolute;inset:0;background:rgba(0,0,0,0.45);backdrop-filter:blur(2px);"></div>
-    <div style="position:absolute;bottom:0;left:0;right:0;background:#fafafa;border-radius:28px 28px 0 0;padding:14px 18px 30px;max-height:82%;overflow-y:auto;box-shadow:0 -8px 40px rgba(0,0,0,0.18);">
+    <div style="position:absolute;bottom:0;left:0;right:0;background:#fafafa;border-radius:28px 28px 0 0;padding:14px 18px 30px;max-height:82%;overflow-y:auto;box-shadow: none;">
       <div style="width:44px;height:5px;background:#d8d8d8;border-radius:100px;margin:0 auto 18px;"></div>
       <div style="display:flex;align-items:center;justify-content:space-between;margin:0 4px 14px;">
         <div style="font-family:'Work Sans',sans-serif;font-weight:700;font-size:20px;color:#000;">Notifications</div>
@@ -4470,7 +4468,7 @@
   <!-- ════════════════════════════════════════════════════ -->
   <div id="excl-modal" style="display:none;position:absolute;inset:0;z-index:200;">
     <div onclick="closeExcl()" style="position:absolute;inset:0;background:rgba(0,0,0,0.45);backdrop-filter:blur(2px);"></div>
-    <div style="position:absolute;bottom:0;left:0;right:0;background:white;border-radius:28px 28px 0 0;padding:14px 24px 36px;box-shadow:0 -8px 40px rgba(0,0,0,0.18);">
+    <div style="position:absolute;bottom:0;left:0;right:0;background:white;border-radius:28px 28px 0 0;padding:14px 24px 36px;box-shadow: none;">
       <div style="width:44px;height:5px;background:#d8d8d8;border-radius:100px;margin:0 auto 20px;"></div>
       <div style="font-family:'Work Sans',sans-serif;font-weight:700;font-size:20px;color:#000;margin-bottom:6px;">Site à ne pas analyser</div>
       <div style="font-size:13px;color:var(--muted);line-height:1.45;margin-bottom:16px;">Ajoute un site ou une app que Vision ignorera (ex. ta banque).</div>
@@ -4486,7 +4484,7 @@
     <!-- Fond semi-transparent -->
     <div onclick="closeJournal()" style="position:absolute;inset:0;background:rgba(0,0,0,0.45);backdrop-filter:blur(2px);"></div>
     <!-- Sheet -->
-    <div style="position:absolute;bottom:0;left:0;right:0;background:white;border-radius:28px 28px 0 0;padding:14px 24px 40px;box-shadow:0 -8px 40px rgba(0,0,0,0.18);">
+    <div style="position:absolute;bottom:0;left:0;right:0;background:white;border-radius:28px 28px 0 0;padding:14px 24px 40px;box-shadow: none;">
       <!-- Handle -->
       <div style="width:44px;height:5px;background:#d8d8d8;border-radius:100px;margin:0 auto 22px;"></div>
       <div style="font-family:'Work Sans',sans-serif;font-weight:700;font-size:24px;color:#000;text-align:center;margin-bottom:26px;">Ajouter dans le journal</div>
@@ -4504,7 +4502,7 @@
   <!-- ════════════════════════════════════════════════════ -->
   <div id="xp-help-modal" style="display:none;position:absolute;inset:0;z-index:200;">
     <div onclick="closeXpHelp()" style="position:absolute;inset:0;background:rgba(0,0,0,0.45);backdrop-filter:blur(2px);"></div>
-    <div style="position:absolute;bottom:0;left:0;right:0;background:white;border-radius:28px 28px 0 0;padding:14px 24px 36px;box-shadow:0 -8px 40px rgba(0,0,0,0.18);">
+    <div style="position:absolute;bottom:0;left:0;right:0;background:white;border-radius:28px 28px 0 0;padding:14px 24px 36px;box-shadow: none;">
       <div style="width:44px;height:5px;background:#d8d8d8;border-radius:100px;margin:0 auto 20px;"></div>
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
         <span class="xp-help" style="margin-top:0;cursor:default;">?</span>
@@ -5750,7 +5748,7 @@
         <div style="width:28px;height:28px;border-radius:50%;overflow:hidden;position:relative;flex-shrink:0;background:#ffe5cc;">
           <img src="${t.img}" style="${imgStyle}" alt="">
         </div>
-        <div style="background:white;border-radius:16px 16px 16px 4px;padding:12px 14px;max-width:220px;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+        <div style="background:white;border-radius:16px 16px 16px 4px;padding:12px 14px;max-width:220px;box-shadow: none;">
           <p style="font-size:13px;color:#1a1a1a;line-height:1.5;margin:0;">Super choix ! 🔥 Je vais t'aider à construire un plan pour <strong>${text.replace(/^[^\s]+\s/,'')}</strong>. Commence par l'ajouter à tes visions !</p>
         </div>`;
       msgs.appendChild(compMsg);
@@ -6025,7 +6023,7 @@
         <div style="width:28px;height:28px;border-radius:50%;overflow:hidden;position:relative;flex-shrink:0;background:#ffe5cc;">
           <img src="${t.img}" style="${imgStyle}" alt="">
         </div>
-        <div style="background:white;border-radius:16px 16px 16px 4px;padding:12px 14px;max-width:220px;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+        <div style="background:white;border-radius:16px 16px 16px 4px;padding:12px 14px;max-width:220px;box-shadow: none;">
           <p style="font-size:13px;color:#1a1a1a;line-height:1.5;margin:0;">J'ai bien noté ta vision : <strong>"${text}"</strong>. Ajoute-la à ton étape 3 pour qu'on puisse travailler dessus ensemble ! 💪</p>
         </div>`;
       msgs.appendChild(compMsg);
