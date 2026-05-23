@@ -230,14 +230,16 @@
   /* Titre : Work Sans Bold 36px blanc */
   .og-title {
     position: static;
-    max-width: 62%;
+    max-width: 84%;
     font-family: 'Work Sans', sans-serif;
     font-weight: 700;
-    font-size: 36px;
-    line-height: 1.1;
+    font-size: 34px;
+    line-height: 1.12;
     color: #ffffff;
     margin: 0 0 14px;
-    word-break: break-word;
+    word-break: normal;
+    overflow-wrap: break-word;   /* ne coupe un mot que s'il dépasse vraiment */
+    hyphens: none;
   }
   /* Description : Inter Regular 16px blanc */
   .og-desc {
