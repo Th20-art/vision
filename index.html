@@ -14,7 +14,7 @@
 <link rel="apple-touch-icon" href="assets/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Work+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Work+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   /* Masquer les barres de scroll partout (Chrome/Safari/Firefox/Edge) */
@@ -774,7 +774,7 @@
   .notif-bd { flex: 1; min-width: 0; }
   .notif-ti { font-family: 'Work Sans', sans-serif; font-weight: 700; font-size: 13px; color: var(--dark); margin-bottom: 2px; }
   .notif-tx { font-size: 12px; color: var(--muted); line-height: 1.4; }
-  .notif-tm { font-size: 10px; color: #b8b8b8; font-family: 'IBM Plex Mono', monospace; margin-top: 5px; }
+  .notif-tm { font-size: 10px; color: #b8b8b8; font-family: 'Inter', sans-serif; margin-top: 5px; }
   /* Nouvelle notification — rectangle orange, typo blanche */
   .notif-new {
     background: linear-gradient(135deg, var(--og), var(--og2));
@@ -783,9 +783,9 @@
     color: #fff;
     box-shadow: 0 6px 18px rgba(0,0,0,0.15);
   }
-  .notif-new .nn-lbl { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.12em; opacity: 0.85; margin-bottom: 7px; }
+  .notif-new .nn-lbl { font-family: 'Inter', sans-serif; font-size: 10px; letter-spacing: 0.12em; opacity: 0.85; margin-bottom: 7px; }
   .notif-new .nn-tx { font-family: 'Work Sans', sans-serif; font-weight: 600; font-size: 14px; line-height: 1.4; }
-  .notif-sec { font-size: 10px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.1em; margin: 16px 4px 2px; }
+  .notif-sec { font-size: 10px; color: var(--muted); font-family: 'Inter', sans-serif; letter-spacing: 0.1em; margin: 16px 4px 2px; }
   /* Notifications lues : légèrement atténuées */
   .notif-row.read { opacity: 0.72; }
 
@@ -821,7 +821,7 @@
     color: white;
   }
   .obj-label {
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: 'Inter', sans-serif;
     font-size: 10px;
     letter-spacing: 0.1em;
     opacity: 0.8;
@@ -908,7 +908,7 @@
     padding: 12px 14px;
   }
   .metric-lbl {
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: 'Inter', sans-serif;
     font-size: 9px;
     letter-spacing: 0.1em;
     color: var(--muted);
@@ -1239,7 +1239,7 @@
   .align-lbl {
     font-size: 11px;
     color: var(--muted);
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: 'Inter', sans-serif;
   }
   .align-val {
     font-weight: 700;
@@ -1314,7 +1314,7 @@
     cursor: pointer;
   }
   .param-lbl {
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: 'Inter', sans-serif;
     font-size: 10px;
     letter-spacing: 0.08em;
     color: var(--dark);
@@ -1374,7 +1374,7 @@
   }
   .widget-info { flex: 1; }
   .widget-lbl {
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: 'Inter', sans-serif;
     font-size: 9px;
     color: var(--muted);
     letter-spacing: 0.08em;
@@ -1737,7 +1737,7 @@
     border-radius: 8px;
     padding: 3px 10px;
     font-size: 9px;
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: 'Inter', sans-serif;
     color: #999;
     letter-spacing: 0.06em;
     display: flex;
@@ -1797,7 +1797,7 @@
   .jfi-bar.green { background: #42c47e; }
   .jfi-bar.red   { background: #c4c4c4; }   /* rouge remplacé par gris */
   .jfi-content { flex: 1; display: flex; flex-direction: column; justify-content: center; }
-  .jfi-time { font-size: 9px; color: var(--muted); margin-bottom: 3px; font-family: 'IBM Plex Mono', monospace; }
+  .jfi-time { font-size: 9px; color: var(--muted); margin-bottom: 3px; font-family: 'Inter', sans-serif; }
   .jfi-text { font-size: 11px; font-weight: 600; line-height: 1.35; }
   .jfi-text.green { color: #42c47e; }
   .jfi-text.dark  { color: var(--dark); }
@@ -1944,7 +1944,7 @@
     gap: 5px;
     background: color-mix(in srgb, var(--og) 12%, white);
     color: var(--og);
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: 'Inter', sans-serif;
     font-size: 10px;
     font-weight: 500;
     letter-spacing: 0.08em;
@@ -2585,8 +2585,8 @@
     0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(239,68,68,0.6); }
     50%      { opacity: .5; transform: scale(1.2); box-shadow: 0 0 0 8px rgba(239,68,68,0); }
   }
-  .rec-live-lbl { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #ef4444; letter-spacing: .12em; font-weight: 700; }
-  .rec-timer { font-family: 'IBM Plex Mono', monospace; font-size: 34px; font-weight: 500; color: #fff; margin-bottom: 18px; }
+  .rec-live-lbl { font-family: 'Inter', sans-serif; font-size: 11px; color: #ef4444; letter-spacing: .12em; font-weight: 700; }
+  .rec-timer { font-family: 'Inter', sans-serif; font-size: 34px; font-weight: 500; color: #fff; margin-bottom: 18px; }
   /* Video viewfinder */
   .rec-cam-view {
     width: 100%; aspect-ratio: 3/4; max-height: 250px; flex-shrink: 0;
@@ -2619,7 +2619,7 @@
     margin-bottom: 16px; min-height: 90px;
   }
   .rec-transcript::-webkit-scrollbar { display: none; }
-  .rec-transcript-lbl { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: rgba(255,255,255,0.4); letter-spacing: .14em; margin-bottom: 8px; }
+  .rec-transcript-lbl { font-family: 'Inter', sans-serif; font-size: 9px; color: rgba(255,255,255,0.4); letter-spacing: .14em; margin-bottom: 8px; }
   .rec-word { opacity: 0; display: inline; animation: wordFadeIn .25s ease forwards; }
   @keyframes wordFadeIn { to { opacity: 1; } }
   .rec-cursor { display: inline-block; width: 2px; height: 14px; background: #ef4444; vertical-align: middle; animation: blink 1s steps(2) infinite; margin-left: 2px; }
@@ -2634,13 +2634,13 @@
   .play-controls { display: flex; align-items: center; gap: 12px; padding: 11px 13px; background: rgba(0,0,0,0.55); border-radius: 12px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); position: absolute; left: 12px; right: 12px; bottom: 12px; }
   .play-btn { width: 36px; height: 36px; border-radius: 50%; background: #fff; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #000; transition: transform .12s; flex-shrink: 0; }
   .play-btn:active { transform: scale(.92); }
-  .play-time { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #fff; min-width: 64px; }
+  .play-time { font-family: 'Inter', sans-serif; font-size: 11px; color: #fff; min-width: 64px; }
   .play-progress { flex: 1; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; overflow: hidden; cursor: pointer; }
   .play-progress-fill { height: 100%; background: var(--og); border-radius: 2px; width: 0; transition: width .1s linear; }
   /* Transcription synced */
   .play-transcript { margin: 14px 20px 0; background: #fff; border-radius: 14px; padding: 14px 16px; height: 104px; overflow-y: auto; font-family: 'Inter', sans-serif; font-size: 14px; color: #b0b0b0; line-height: 1.7; }
   .play-transcript-body { font-size: 13px; line-height: 1.6; }
-  .play-transcript-lbl { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--muted); letter-spacing: .14em; margin-bottom: 8px; }
+  .play-transcript-lbl { font-family: 'Inter', sans-serif; font-size: 9px; color: var(--muted); letter-spacing: .14em; margin-bottom: 8px; }
   .play-word { transition: color .18s ease, font-weight .18s ease; }
   .play-word.spoken { color: var(--dark); font-weight: 500; }
   .play-word.current { color: var(--og); font-weight: 700; background: rgba(245,96,28,0.10); border-radius: 3px; padding: 1px 2px; }
@@ -3122,7 +3122,7 @@
           <div style="position:absolute;top:12px;left:14px;right:14px;display:flex;align-items:center;gap:8px;background:rgba(0,0,0,0.45);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-radius:18px;padding:6px 12px;">
             <div class="rec-live-dot"></div>
             <div class="rec-live-lbl" id="rec-mode-lbl">REC · VIDÉO</div>
-            <div style="margin-left:auto;font-family:'IBM Plex Mono',monospace;color:#fff;font-size:16px;font-weight:500;" id="rec-timer">0:00</div>
+            <div style="margin-left:auto;font-family:'Inter',sans-serif;color:#fff;font-size:16px;font-weight:500;" id="rec-timer">0:00</div>
           </div>
           <!-- Transcription overlay FIXE (taille fixe, ne grandit pas) -->
           <div style="position:absolute;left:12px;right:12px;bottom:12px;height:80px;background:rgba(0,0,0,0.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:12px;padding:10px 12px;overflow-y:auto;font-size:13px;line-height:1.5;color:rgba(255,255,255,0.95);">
@@ -3133,7 +3133,7 @@
         <div id="cam-state-preview" style="display:none;width:100%;height:100%;flex-direction:column;align-items:center;justify-content:center;color:rgba(255,255,255,0.85);padding:14px;">
           <div style="font-size:42px;margin-bottom:14px;">✓</div>
           <div style="font-family:'Work Sans',sans-serif;font-weight:700;font-size:16px;margin-bottom:6px;">Capsule enregistrée</div>
-          <div id="cam-preview-meta" style="font-size:12px;color:rgba(255,255,255,0.55);font-family:'IBM Plex Mono',monospace;letter-spacing:.05em;">VIDÉO · 0:00</div>
+          <div id="cam-preview-meta" style="font-size:12px;color:rgba(255,255,255,0.55);font-family:'Inter',sans-serif;letter-spacing:.05em;">VIDÉO · 0:00</div>
           <button type="button" onclick="resetRecording()" style="margin-top:18px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;font-family:'Inter',sans-serif;font-size:12px;padding:8px 16px;border-radius:20px;cursor:pointer;">↻ Réenregistrer</button>
         </div>
       </div>
@@ -3671,13 +3671,13 @@
           <div id="smart-emoji" style="font-size:22px;"></div>
           <div>
             <div id="smart-title" style="font-family:'Work Sans',sans-serif;font-weight:700;font-size:17px;color:#1a1a1a;"></div>
-            <div style="font-size:10px;color:var(--muted);font-family:'IBM Plex Mono',monospace;letter-spacing:0.06em;">Méthode SMART — objectif concret</div>
+            <div style="font-size:10px;color:var(--muted);font-family:'Inter',sans-serif;letter-spacing:0.06em;">Méthode SMART — objectif concret</div>
           </div>
         </div>
 
         <!-- ÉTAPE 1 : Spécifique -->
         <div id="smart-step-1">
-          <div style="font-size:10px;font-family:'IBM Plex Mono',monospace;color:var(--og);letter-spacing:0.12em;margin-bottom:8px;">S — SPÉCIFIQUE</div>
+          <div style="font-size:10px;font-family:'Inter',sans-serif;color:var(--og);letter-spacing:0.12em;margin-bottom:8px;">S — SPÉCIFIQUE</div>
           <div id="smart-q1" style="font-family:'Work Sans',sans-serif;font-weight:700;font-size:17px;color:#1a1a1a;line-height:1.3;margin-bottom:14px;"></div>
           <div id="smart-chips-1" style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px;"></div>
           <div style="font-size:10px;color:#bbb;margin-bottom:6px;">ou précise toi-même :</div>
@@ -3686,7 +3686,7 @@
 
         <!-- ÉTAPE 2 : Mesurable -->
         <div id="smart-step-2" style="display:none;">
-          <div style="font-size:10px;font-family:'IBM Plex Mono',monospace;color:var(--og);letter-spacing:0.12em;margin-bottom:8px;">M — MESURABLE</div>
+          <div style="font-size:10px;font-family:'Inter',sans-serif;color:var(--og);letter-spacing:0.12em;margin-bottom:8px;">M — MESURABLE</div>
           <div style="font-family:'Work Sans',sans-serif;font-weight:700;font-size:17px;color:#1a1a1a;line-height:1.3;margin-bottom:6px;">Tu vises combien ?</div>
           <div style="font-size:12px;color:var(--muted);margin-bottom:14px;">Un chiffre concret t'aide à savoir si tu as réussi.</div>
           <div style="display:flex;gap:8px;align-items:center;">
@@ -3703,7 +3703,7 @@
 
         <!-- ÉTAPE 3 : Délai -->
         <div id="smart-step-3" style="display:none;">
-          <div style="font-size:10px;font-family:'IBM Plex Mono',monospace;color:var(--og);letter-spacing:0.12em;margin-bottom:8px;">T — DÉLAI</div>
+          <div style="font-size:10px;font-family:'Inter',sans-serif;color:var(--og);letter-spacing:0.12em;margin-bottom:8px;">T — DÉLAI</div>
           <div style="font-family:'Work Sans',sans-serif;font-weight:700;font-size:17px;color:#1a1a1a;line-height:1.3;margin-bottom:6px;">Pour quand ?</div>
           <div style="font-size:12px;color:var(--muted);margin-bottom:14px;">Une date te donne un cap, pas une pression.</div>
           <div style="display:flex;flex-wrap:wrap;gap:8px;" id="smart-time-chips">
@@ -3716,7 +3716,7 @@
 
         <!-- RÉSULTAT SMART -->
         <div id="smart-result" style="display:none;">
-          <div style="font-size:10px;font-family:'IBM Plex Mono',monospace;color:var(--og);letter-spacing:0.12em;margin-bottom:12px;">✨ TON OBJECTIF SMART</div>
+          <div style="font-size:10px;font-family:'Inter',sans-serif;color:var(--og);letter-spacing:0.12em;margin-bottom:12px;">✨ TON OBJECTIF SMART</div>
           <div id="smart-generated" style="background:linear-gradient(90deg,var(--og),var(--og2));border-radius:16px;padding:18px 16px;color:white;font-family:'Work Sans',sans-serif;font-weight:600;font-size:15px;line-height:1.4;margin-bottom:14px;"></div>
           <div style="font-size:11px;color:var(--muted);margin-bottom:20px;text-align:center;">Vision va suivre cet objectif chaque semaine et t'encourager. 🙌</div>
           <button onclick="saveSmart()" style="width:100%;padding:15px;background:linear-gradient(90deg,var(--og),var(--og2));color:white;font-family:'Work Sans',sans-serif;font-weight:700;font-size:15px;border:none;border-radius:14px;cursor:pointer;margin-bottom:10px;">Parfait, je valide ! ✓</button>
@@ -4402,7 +4402,7 @@
         </div>
         <div>
           <div id="chatCompName" style="font-family:'Work Sans',sans-serif;font-weight:700;font-size:15px;color:#1a1a1a;">Foxy</div>
-          <div style="font-size:10px;color:#42c47e;font-family:'IBM Plex Mono',monospace;">● En ligne</div>
+          <div style="font-size:10px;color:#42c47e;font-family:'Inter',sans-serif;">● En ligne</div>
         </div>
       </div>
       <!-- Messages -->
@@ -4526,7 +4526,7 @@
         </div>
       </div>
       <div style="background:#f5f5f3;border-radius:14px;padding:14px 16px;margin-bottom:20px;">
-        <div style="font-size:11px;color:var(--muted);margin-bottom:8px;font-family:'IBM Plex Mono',monospace;letter-spacing:.08em;">LES 4 STADES</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:8px;font-family:'Inter',sans-serif;letter-spacing:.08em;">LES 4 STADES</div>
         <div style="font-size:13px;color:var(--dark);line-height:1.6;">Sauvage&nbsp;→ <strong style="color:var(--og);">Dompter</strong>&nbsp;→ Maître&nbsp;→ Légendaire</div>
         <div style="font-size:12px;color:var(--muted);margin-top:6px;">Tu es au stade 2 — il te manque <strong>4&nbsp;200&nbsp;XP</strong> pour atteindre Maître.</div>
       </div>
