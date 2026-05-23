@@ -4103,7 +4103,7 @@
       <div class="dyn-state on" data-st="0">
         <img class="dyn-exp-svg" src="assets/dyn-exp-0.svg" alt="">
         <!-- Compact -->
-        <div class="dyn-fox"><img src="assets/comp-foxy.png" alt=""></div>
+        <div class="dyn-fox"><img src="assets/comp-foxy.png" class="dyn-comp" alt=""></div>
         <p class="dyn-l">Score d'alignement</p>
         <div class="dyn-bar"><div class="dyn-bar-fill"></div></div>
         <p class="dyn-sc">4/<span>10</span></p>
@@ -4139,7 +4139,7 @@
       <div class="dyn-state" data-st="2">
         <img class="dyn-exp-svg" src="assets/dyn-exp-2.svg" alt="">
         <!-- Compact -->
-        <div class="dyn-fox"><img src="assets/comp-foxy.png" alt=""></div>
+        <div class="dyn-fox"><img src="assets/comp-foxy.png" class="dyn-comp" alt=""></div>
         <p class="dyn-alt-l">Alternative trouvée&nbsp;!</p>
         <p class="dyn-alt-n">Back Market</p>
         <span class="dyn-badge">+20$</span>
@@ -4168,7 +4168,7 @@
       <div class="dyn-state" data-st="3">
         <img class="dyn-exp-svg" src="assets/dyn-exp-3.svg" alt="">
         <!-- Compact -->
-        <div class="dyn-fox"><img src="assets/comp-foxy.png" alt=""></div>
+        <div class="dyn-fox"><img src="assets/comp-foxy.png" class="dyn-comp" alt=""></div>
         <p class="dyn-alt-l">Alternative trouvée&nbsp;!</p>
         <p class="dyn-alt-n">Place plutôt ton argent</p>
         <p class="dyn-alt-sub">pour ton objectif</p>
@@ -4190,7 +4190,7 @@
       <div class="dyn-state" data-st="4">
         <img class="dyn-exp-svg" src="assets/dyn-exp-4.svg" alt="">
         <!-- Compact -->
-        <div class="dyn-fox"><img src="assets/comp-foxy.png" alt=""></div>
+        <div class="dyn-fox"><img src="assets/comp-foxy.png" class="dyn-comp" alt=""></div>
         <p class="dyn-alt-l">Alternative trouvée&nbsp;!</p>
         <p class="dyn-alt-n">Application</p>
         <p class="dyn-alt-zero">0$</p>
@@ -5179,6 +5179,7 @@
     const t = themes[key];
     if (!t) return;
     currentTheme = key;
+    try { localStorage.setItem('visionComp', key); } catch(e) {}   // mémorise le compagnon choisi
     const root = document.documentElement;
     root.style.setProperty('--og',  t.og);
     root.style.setProperty('--og2', t.og2);
@@ -6466,6 +6467,14 @@
       );
     });
   }
+
+  /* Au chargement : restaure le compagnon choisi (persisté) → toutes les images suivent */
+  (function restoreComp(){
+    try {
+      const saved = localStorage.getItem('visionComp');
+      if (saved && typeof themes !== 'undefined' && themes[saved]) applyTheme(saved);
+    } catch(e) {}
+  })();
 
   /* Au chargement : si le bureau Android est l'écran actif → notification simulée */
   (function initAndroidNotif(){
