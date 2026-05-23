@@ -4602,15 +4602,60 @@
     }
   }
 
-  /* Notification Android simulée : remplit le texte (comparaison sociale) + animation d'arrivée */
+  /* Notification Android simulée : texte (comparaison sociale) + arrivée + auto-disparition + swipe */
+  let andNotifTimer = null, andNotifBound = false;
+  function hideAndroidNotif() {
+    const el = document.getElementById('and-notif');
+    if (el) el.classList.remove('show');
+    if (andNotifTimer) { clearTimeout(andNotifTimer); andNotifTimer = null; }
+  }
   function showAndroidNotif() {
     const el = document.getElementById('and-notif');
     if (!el) return;
     const tx = document.getElementById('and-notif-tx');
     if (tx && typeof buildNewNotif === 'function') tx.textContent = buildNewNotif().tx;
+    el.style.transform = '';        // reset éventuel décalage de swipe
     el.classList.remove('show');
     void el.offsetWidth;            // reflow → relance l'animation
     setTimeout(() => el.classList.add('show'), 500);
+    // Auto-disparition après ~5,5 s
+    if (andNotifTimer) clearTimeout(andNotifTimer);
+    andNotifTimer = setTimeout(hideAndroidNotif, 5500);
+
+    // Balayage pour retirer (haut ou côté) — une seule fois
+    if (!andNotifBound) {
+      andNotifBound = true;
+      let sx = 0, sy = 0, drag = false;
+      const start = e => {
+        const p = e.touches ? e.touches[0] : e;
+        sx = p.clientX; sy = p.clientY; drag = true;
+        el.style.transition = 'none';
+      };
+      const move = e => {
+        if (!drag) return;
+        const p = e.touches ? e.touches[0] : e;
+        const dx = p.clientX - sx, dy = p.clientY - sy;
+        el.style.transform = `translate(${dx}px, ${Math.min(dy, 20)}px)`;
+        el.style.opacity = String(Math.max(0, 1 - (Math.abs(dx) + Math.max(0, -dy)) / 160));
+      };
+      const end = e => {
+        if (!drag) return;
+        drag = false;
+        const p = e.changedTouches ? e.changedTouches[0] : e;
+        const dx = p.clientX - sx, dy = p.clientY - sy;
+        el.style.transition = '';
+        if (Math.abs(dx) > 70 || dy < -50) {   // swipe latéral ou vers le haut → ferme
+          hideAndroidNotif();
+        }
+        el.style.transform = ''; el.style.opacity = '';
+      };
+      el.addEventListener('touchstart', start, { passive: true });
+      el.addEventListener('touchmove', move, { passive: true });
+      el.addEventListener('touchend', end);
+      el.addEventListener('mousedown', start);
+      window.addEventListener('mousemove', move);
+      window.addEventListener('mouseup', end);
+    }
   }
 
   /* ════════════════════════════════════════════════════════════
