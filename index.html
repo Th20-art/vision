@@ -791,12 +791,6 @@
   /* Notifications lues : légèrement atténuées */
   .notif-row.read { opacity: 0.72; }
 
-  /* Lignes toggle des alternatives (mode pro) */
-  .alt-tog-row { background:#fff; border-radius:14px; padding:12px 14px; display:flex; align-items:center; gap:12px; }
-  .alt-tog-row > div:first-child { flex:1; }
-  .alt-t { font-family:'Work Sans',sans-serif; font-weight:700; font-size:14px; color:var(--dark); }
-  .alt-s { font-size:11px; color:var(--muted); margin-top:2px; }
-
   /* Notification Android simulée (bureau s-widget) */
   .and-notif {
     position: absolute;
@@ -3486,13 +3480,6 @@
             </div>
             <span class="param-chevron">›</span>
           </div>
-          <div class="param-item" onclick="go('s-param-alt')" style="cursor:pointer;">
-            <div>
-              <span class="param-lbl">ALTERNATIVES <span style="color:var(--og);font-size:9px;font-weight:700;border:1px solid var(--og);border-radius:6px;padding:1px 5px;margin-left:4px;vertical-align:middle;">PRO</span></span>
-              <div style="font-size:10px;color:var(--muted);margin-top:3px;">Personnalise ce que Vision te propose</div>
-            </div>
-            <span class="param-chevron">›</span>
-          </div>
           <div class="param-item" onclick="go('s-param-lieu')" style="cursor:pointer;">
             <div>
               <span class="param-lbl">LIEU DE VIE ET DE TRAVAIL</span>
@@ -4092,57 +4079,6 @@
   </div>
 
   <!-- ════════════════════════════════════════════════════ -->
-  <!-- SOUS-PAGE : ALTERNATIVES (Mode Pro)                  -->
-  <!-- ════════════════════════════════════════════════════ -->
-  <div class="screen" id="s-param-alt">
-    <div class="form-screen" style="background:var(--bg);overflow:hidden;">
-      <div style="display:flex;align-items:center;gap:14px;padding:52px 20px 0;">
-        <button onclick="go('s-profil')" style="background:none;border:none;cursor:pointer;font-size:22px;line-height:1;padding:4px;color:var(--dark);">←</button>
-        <div style="font-family:'Work Sans',sans-serif;font-weight:700;font-size:22px;color:var(--dark);">Alternatives <span style="color:var(--og);font-size:11px;border:1px solid var(--og);border-radius:6px;padding:1px 6px;vertical-align:middle;">PRO</span></div>
-      </div>
-      <div style="padding:0 0 0 24px;margin-top:-4px;font-size:11px;color:var(--muted);">retour</div>
-      <div style="padding:14px 20px 0;font-size:13px;color:var(--muted);line-height:1.45;">Choisis les types d'alternatives que Vision te propose au moment d'un achat impulsif.</div>
-
-      <div style="overflow-y:auto;max-height:calc(100% - 150px);padding:14px 20px 96px;display:flex;flex-direction:column;gap:8px;">
-        <div class="alt-tog-row" data-alt="Seconde main"><div><div class="alt-t">Seconde main</div><div class="alt-s">(Vinted, Back Market, Leboncoin…)</div></div><span class="cat-tog on" onclick="toggleCat(this)"><span class="cat-tog-knob"></span></span></div>
-        <div class="alt-tog-row" data-alt="Réparer / entretenir"><div><div class="alt-t">Réparer / entretenir</div><div class="alt-s">Prolonger ce que tu as déjà</div></div><span class="cat-tog on" onclick="toggleCat(this)"><span class="cat-tog-knob"></span></span></div>
-        <div class="alt-tog-row" data-alt="Louer ou emprunter"><div><div class="alt-t">Louer ou emprunter</div><div class="alt-s">Pour un usage ponctuel</div></div><span class="cat-tog" onclick="toggleCat(this)"><span class="cat-tog-knob"></span></span></div>
-        <div class="alt-tog-row" data-alt="Attendre 30 jours"><div><div class="alt-t">Attendre 30 jours</div><div class="alt-s">Le délai qui calme l'impulsion</div></div><span class="cat-tog on" onclick="toggleCat(this)"><span class="cat-tog-knob"></span></span></div>
-        <div class="alt-tog-row" data-alt="Investir l'argent"><div><div class="alt-t">Investir l'argent</div><div class="alt-s">Placer vers ton objectif</div></div><span class="cat-tog" onclick="toggleCat(this)"><span class="cat-tog-knob"></span></span></div>
-        <div class="alt-tog-row" data-alt="Version gratuite"><div><div class="alt-t">Version gratuite / alternative</div><div class="alt-s">Une option sans dépenser</div></div><span class="cat-tog" onclick="toggleCat(this)"><span class="cat-tog-knob"></span></span></div>
-
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding:0 2px;">
-          <span style="font-size:13px;color:var(--dark);font-weight:600;">Mes alternatives perso</span>
-          <button onclick="openAlt()" style="background:none;border:none;font-size:22px;color:var(--og);cursor:pointer;line-height:1;font-family:inherit;padding:0 4px;">+</button>
-        </div>
-        <div id="alt-list" style="background:white;border-radius:14px;padding:8px 6px;display:flex;flex-direction:column;gap:2px;"></div>
-
-        <!-- Parler au compagnon -->
-        <div onclick="go('s-chat')" style="margin-top:8px;background:linear-gradient(90deg,var(--og),var(--og2));border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;">
-          <div class="fox-mini" style="width:40px;height:36px;flex-shrink:0;"><img src="assets/comp-foxy.png" class="dyn-comp" alt=""></div>
-          <div style="flex:1;color:#fff;"><div style="font-family:'Work Sans',sans-serif;font-weight:700;font-size:14px;">En parler à ton compagnon</div><div style="font-size:11px;opacity:.85;">Dis-lui comment tu veux être aidé.e</div></div>
-          <span style="color:#fff;font-size:18px;">›</span>
-        </div>
-      </div>
-      <button class="cont-btn" style="position:absolute;bottom:20px;right:20px;" onclick="go('s-profil')">Sauvegarder ✓</button>
-    </div>
-  </div>
-
-  <!-- ════════════════════════════════════════════════════ -->
-  <!-- MODAL : Ajouter une alternative perso                -->
-  <!-- ════════════════════════════════════════════════════ -->
-  <div id="alt-modal" style="display:none;position:absolute;inset:0;z-index:210;">
-    <div onclick="closeAlt()" style="position:absolute;inset:0;background:rgba(0,0,0,0.45);backdrop-filter:blur(2px);"></div>
-    <div style="position:absolute;bottom:0;left:0;right:0;background:white;border-radius:28px 28px 0 0;padding:14px 24px 36px;">
-      <div style="width:44px;height:5px;background:#d8d8d8;border-radius:100px;margin:0 auto 20px;"></div>
-      <div style="font-family:'Work Sans',sans-serif;font-weight:700;font-size:20px;color:#000;margin-bottom:6px;">Ton alternative</div>
-      <div style="font-size:13px;color:var(--muted);line-height:1.45;margin-bottom:16px;">Ajoute une façon de remplacer un achat (ex. «&nbsp;l'emprunter à un proche&nbsp;»).</div>
-      <input id="alt-input" type="text" maxlength="60" placeholder="Ton alternative…" onkeydown="if(event.key==='Enter')addAlt()" style="width:100%;background:#363636;border:none;border-radius:18px;padding:16px 20px;font-size:15px;color:white;font-family:'Inter',sans-serif;outline:none;margin-bottom:14px;">
-      <button onclick="addAlt()" style="width:100%;padding:16px;background:linear-gradient(90deg,var(--og),var(--og2));color:white;font-family:'Work Sans',sans-serif;font-weight:700;font-size:16px;border:none;border-radius:16px;cursor:pointer;">Ajouter</button>
-    </div>
-  </div>
-
-  <!-- ════════════════════════════════════════════════════ -->
   <!-- SCREEN: ANDROID WIDGET (237-1094) — Figma image    -->
   <!-- ════════════════════════════════════════════════════ -->
   <div class="screen active" id="s-widget" style="background:#2d2060;">
@@ -4542,15 +4478,8 @@
             <img src="assets/comp-foxy.png" class="dyn-comp" style="position:absolute;width:576%;height:650%;left:-183%;top:-369%;image-rendering:pixelated;" alt="">
           </div>
           <div style="background:white;border-radius:16px 16px 16px 4px;padding:12px 14px;max-width:240px;box-shadow: none;">
-            <p style="font-size:13px;color:#1a1a1a;line-height:1.5;margin:0;">Tu peux aussi me dire comment t'aider face aux achats — j'ajusterai tes alternatives. 💬</p>
+            <p style="font-size:13px;color:#1a1a1a;line-height:1.5;margin:0;">Ou dis-moi toi-même ce qui te tient vraiment à cœur 💬</p>
           </div>
-        </div>
-        <!-- Suggestions alternatives (mode pro) -->
-        <div style="display:flex;flex-wrap:wrap;gap:6px;padding-left:36px;">
-          <div onclick="chatQuick('Privilégie la seconde main')" style="background:#fff;border:1.5px solid #e8e8e8;color:#1a1a1a;padding:7px 12px;border-radius:20px;font-size:12px;cursor:pointer;">Privilégie la seconde main</div>
-          <div onclick="chatQuick('Fais-moi plutôt réparer')" style="background:#fff;border:1.5px solid #e8e8e8;color:#1a1a1a;padding:7px 12px;border-radius:20px;font-size:12px;cursor:pointer;">Fais-moi réparer</div>
-          <div onclick="chatQuick('Fais-moi attendre avant d&#39;acheter')" style="background:#fff;border:1.5px solid #e8e8e8;color:#1a1a1a;padding:7px 12px;border-radius:20px;font-size:12px;cursor:pointer;">Fais-moi attendre</div>
-          <div onclick="chatQuick('Propose-moi d&#39;investir l&#39;argent')" style="background:#fff;border:1.5px solid #e8e8e8;color:#1a1a1a;padding:7px 12px;border-radius:20px;font-size:12px;cursor:pointer;">Investir plutôt</div>
         </div>
       </div>
       <!-- Barre d'envoi -->
@@ -4714,10 +4643,6 @@
     // Simule l'arrivée d'une notification sur le bureau Android
     if (id === 's-widget' && typeof showAndroidNotif === 'function') {
       showAndroidNotif();
-    }
-    // Rend la liste des alternatives perso à l'entrée du mode Pro
-    if (id === 's-param-alt' && typeof renderAlt === 'function') {
-      renderAlt();
     }
   }
 
@@ -5527,42 +5452,6 @@
     go('s-profil');
   }
 
-  /* ── Alternatives perso (mode pro) ── */
-  let personalAlts = [];
-  function renderAlt() {
-    const box = document.getElementById('alt-list');
-    if (!box) return;
-    box.innerHTML = '';
-    if (!personalAlts.length) {
-      box.innerHTML = '<div style="font-size:12px;color:var(--muted);padding:8px 10px;">Aucune alternative perso.</div>';
-      return;
-    }
-    personalAlts.forEach((a, i) => {
-      const row = document.createElement('div');
-      row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:8px 10px;';
-      row.innerHTML = `<span style="color:var(--og);">▪</span>
-        <span style="flex:1;font-size:13px;color:var(--dark);">${a}</span>
-        <button onclick="removeAlt(${i})" aria-label="Retirer" style="background:none;border:none;cursor:pointer;font-size:16px;line-height:1;color:var(--muted);padding:2px 6px;font-family:inherit;">✕</button>`;
-      box.appendChild(row);
-    });
-  }
-  function openAlt() {
-    const inp = document.getElementById('alt-input');
-    if (inp) inp.value = '';
-    document.getElementById('alt-modal').style.display = 'block';
-    setTimeout(() => { if (inp) inp.focus(); }, 50);
-  }
-  function closeAlt() { document.getElementById('alt-modal').style.display = 'none'; }
-  function addAlt() {
-    const inp = document.getElementById('alt-input');
-    const val = (inp ? inp.value : '').trim();
-    if (!val) { if (inp) inp.focus(); return; }
-    if (!personalAlts.some(a => a.toLowerCase() === val.toLowerCase())) personalAlts.push(val);
-    renderAlt();
-    closeAlt();
-  }
-  function removeAlt(i) { personalAlts.splice(i, 1); renderAlt(); }
-
   /* Met à jour le banner objectif + les cards métriques sur la home selon userAmbitions */
   function renderHomeMetrics() {
     // Banner — première ambition, synchronisé sur TOUS les écrans
@@ -6175,50 +6064,6 @@
     if (el) el.style.display = 'none';
   }
 
-  /* Active/désactive un toggle d'alternative depuis le chat */
-  function setAltToggle(alt, on) {
-    const rows = document.querySelectorAll('.alt-tog-row');
-    rows.forEach(r => {
-      if (r.getAttribute('data-alt') === alt) {
-        const tog = r.querySelector('.cat-tog');
-        if (tog) tog.classList.toggle('on', !!on);
-      }
-    });
-  }
-
-  /* "Cerveau" scripté du compagnon : détecte des mots-clés et agit sur les alternatives */
-  function companionScripted(text) {
-    const s = (' ' + text.toLowerCase() + ' ');
-    const map = [
-      { alt: 'Réparer / entretenir', kw: ['répar', 'repar', 'entretien'] },
-      { alt: 'Seconde main',         kw: ['occasion', 'seconde main', 'vinted', 'leboncoin', 'back market', 'reconditionn'] },
-      { alt: 'Attendre 30 jours',    kw: ['atten', 'délai', 'delai', 'patien', 'réfléch', 'reflech'] },
-      { alt: 'Louer ou emprunter',   kw: ['lou', 'emprunt'] },
-      { alt: "Investir l'argent",    kw: ['invest', 'plac', 'épargn', 'epargn', 'économ', 'econom', 'mettre de côté', 'mettre de cote'] },
-      { alt: 'Version gratuite',     kw: ['gratuit', 'sans dépens', 'sans payer', 'sans rien'] }
-    ];
-    const off = /(pas de |désactive|desactive|enlève|enleve|sans |stop |retire |arrête|arrete|ne (me )?propose plus)/.test(s);
-    const matched = [];
-    map.forEach(m => { if (m.kw.some(k => s.includes(k))) matched.push(m.alt); });
-    if (matched.length) {
-      matched.forEach(alt => setAltToggle(alt, !off));
-      if (off) return `C'est noté, je ne te proposerai plus « ${matched.join(' » ni « ')} ». 👌`;
-      return `Parfait ! J'active « ${matched.join(' » et « ')} » dans tes alternatives — je te les proposerai au bon moment quand tu seras tenté·e. 💪`;
-    }
-    // Quelques intentions générales
-    if (/(merci|super|génial|genial|ok|d'accord|parfait)/.test(s)) return 'Avec plaisir ! Je suis là quand tu veux. 🙌';
-    if (/(aide|comment|propose|alternative)/.test(s)) return 'Dis-moi ce que tu préfères et je règle tes alternatives : par ex. « privilégie la seconde main », « fais-moi réparer », « investir plutôt » ou « fais-moi attendre avant d\'acheter ».';
-    // Sinon : on traite comme une vision/objectif
-    return `J'ai bien noté : <strong>"${text}"</strong>. On peut creuser ça ensemble — dis-moi aussi comment tu veux que je t'aide face aux tentations. 💬`;
-  }
-
-  /* Suggestion rapide : remplit le champ et envoie (passe par le cerveau scripté) */
-  function chatQuick(text) {
-    const input = document.getElementById('chatInput');
-    if (input) input.value = text;
-    sendChatMessage();
-  }
-
   function sendChatMessage() {
     const input = document.getElementById('chatInput');
     const text = input.value.trim();
@@ -6229,7 +6074,7 @@
     userMsg.innerHTML = `<div style="background:linear-gradient(90deg,var(--og),var(--og2));color:white;border-radius:16px 16px 4px 16px;padding:10px 14px;max-width:220px;font-size:13px;line-height:1.4;">${text}</div>`;
     msgs.appendChild(userMsg);
     input.value = '';
-    const reply = companionScripted(text);
+    const reply = `J'ai bien noté ta vision : <strong>"${text}"</strong>. Ajoute-la à ton étape 3 pour qu'on puisse travailler dessus ensemble ! 💪`;
     setTimeout(() => {
       const t = themes[currentTheme];
       const compMsg = document.createElement('div');
