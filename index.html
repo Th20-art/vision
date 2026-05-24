@@ -4542,8 +4542,15 @@
             <img src="assets/comp-foxy.png" class="dyn-comp" style="position:absolute;width:576%;height:650%;left:-183%;top:-369%;image-rendering:pixelated;" alt="">
           </div>
           <div style="background:white;border-radius:16px 16px 16px 4px;padding:12px 14px;max-width:240px;box-shadow: none;">
-            <p style="font-size:13px;color:#1a1a1a;line-height:1.5;margin:0;">Ou dis-moi toi-même ce qui te tient vraiment à cœur 💬</p>
+            <p style="font-size:13px;color:#1a1a1a;line-height:1.5;margin:0;">Tu peux aussi me dire comment t'aider face aux achats — j'ajusterai tes alternatives. 💬</p>
           </div>
+        </div>
+        <!-- Suggestions alternatives (mode pro) -->
+        <div style="display:flex;flex-wrap:wrap;gap:6px;padding-left:36px;">
+          <div onclick="chatQuick('Privilégie la seconde main')" style="background:#fff;border:1.5px solid #e8e8e8;color:#1a1a1a;padding:7px 12px;border-radius:20px;font-size:12px;cursor:pointer;">Privilégie la seconde main</div>
+          <div onclick="chatQuick('Fais-moi plutôt réparer')" style="background:#fff;border:1.5px solid #e8e8e8;color:#1a1a1a;padding:7px 12px;border-radius:20px;font-size:12px;cursor:pointer;">Fais-moi réparer</div>
+          <div onclick="chatQuick('Fais-moi attendre avant d&#39;acheter')" style="background:#fff;border:1.5px solid #e8e8e8;color:#1a1a1a;padding:7px 12px;border-radius:20px;font-size:12px;cursor:pointer;">Fais-moi attendre</div>
+          <div onclick="chatQuick('Propose-moi d&#39;investir l&#39;argent')" style="background:#fff;border:1.5px solid #e8e8e8;color:#1a1a1a;padding:7px 12px;border-radius:20px;font-size:12px;cursor:pointer;">Investir plutôt</div>
         </div>
       </div>
       <!-- Barre d'envoi -->
@@ -6168,6 +6175,50 @@
     if (el) el.style.display = 'none';
   }
 
+  /* Active/désactive un toggle d'alternative depuis le chat */
+  function setAltToggle(alt, on) {
+    const rows = document.querySelectorAll('.alt-tog-row');
+    rows.forEach(r => {
+      if (r.getAttribute('data-alt') === alt) {
+        const tog = r.querySelector('.cat-tog');
+        if (tog) tog.classList.toggle('on', !!on);
+      }
+    });
+  }
+
+  /* "Cerveau" scripté du compagnon : détecte des mots-clés et agit sur les alternatives */
+  function companionScripted(text) {
+    const s = (' ' + text.toLowerCase() + ' ');
+    const map = [
+      { alt: 'Réparer / entretenir', kw: ['répar', 'repar', 'entretien'] },
+      { alt: 'Seconde main',         kw: ['occasion', 'seconde main', 'vinted', 'leboncoin', 'back market', 'reconditionn'] },
+      { alt: 'Attendre 30 jours',    kw: ['atten', 'délai', 'delai', 'patien', 'réfléch', 'reflech'] },
+      { alt: 'Louer ou emprunter',   kw: ['lou', 'emprunt'] },
+      { alt: "Investir l'argent",    kw: ['invest', 'plac', 'épargn', 'epargn', 'économ', 'econom', 'mettre de côté', 'mettre de cote'] },
+      { alt: 'Version gratuite',     kw: ['gratuit', 'sans dépens', 'sans payer', 'sans rien'] }
+    ];
+    const off = /(pas de |désactive|desactive|enlève|enleve|sans |stop |retire |arrête|arrete|ne (me )?propose plus)/.test(s);
+    const matched = [];
+    map.forEach(m => { if (m.kw.some(k => s.includes(k))) matched.push(m.alt); });
+    if (matched.length) {
+      matched.forEach(alt => setAltToggle(alt, !off));
+      if (off) return `C'est noté, je ne te proposerai plus « ${matched.join(' » ni « ')} ». 👌`;
+      return `Parfait ! J'active « ${matched.join(' » et « ')} » dans tes alternatives — je te les proposerai au bon moment quand tu seras tenté·e. 💪`;
+    }
+    // Quelques intentions générales
+    if (/(merci|super|génial|genial|ok|d'accord|parfait)/.test(s)) return 'Avec plaisir ! Je suis là quand tu veux. 🙌';
+    if (/(aide|comment|propose|alternative)/.test(s)) return 'Dis-moi ce que tu préfères et je règle tes alternatives : par ex. « privilégie la seconde main », « fais-moi réparer », « investir plutôt » ou « fais-moi attendre avant d\'acheter ».';
+    // Sinon : on traite comme une vision/objectif
+    return `J'ai bien noté : <strong>"${text}"</strong>. On peut creuser ça ensemble — dis-moi aussi comment tu veux que je t'aide face aux tentations. 💬`;
+  }
+
+  /* Suggestion rapide : remplit le champ et envoie (passe par le cerveau scripté) */
+  function chatQuick(text) {
+    const input = document.getElementById('chatInput');
+    if (input) input.value = text;
+    sendChatMessage();
+  }
+
   function sendChatMessage() {
     const input = document.getElementById('chatInput');
     const text = input.value.trim();
@@ -6178,6 +6229,7 @@
     userMsg.innerHTML = `<div style="background:linear-gradient(90deg,var(--og),var(--og2));color:white;border-radius:16px 16px 4px 16px;padding:10px 14px;max-width:220px;font-size:13px;line-height:1.4;">${text}</div>`;
     msgs.appendChild(userMsg);
     input.value = '';
+    const reply = companionScripted(text);
     setTimeout(() => {
       const t = themes[currentTheme];
       const compMsg = document.createElement('div');
@@ -6190,7 +6242,7 @@
           <img src="${t.img}" style="${imgStyle}" alt="">
         </div>
         <div style="background:white;border-radius:16px 16px 16px 4px;padding:12px 14px;max-width:220px;box-shadow: none;">
-          <p style="font-size:13px;color:#1a1a1a;line-height:1.5;margin:0;">J'ai bien noté ta vision : <strong>"${text}"</strong>. Ajoute-la à ton étape 3 pour qu'on puisse travailler dessus ensemble ! 💪</p>
+          <p style="font-size:13px;color:#1a1a1a;line-height:1.5;margin:0;">${reply}</p>
         </div>`;
       msgs.appendChild(compMsg);
       msgs.scrollTop = msgs.scrollHeight;
