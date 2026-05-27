@@ -2774,7 +2774,7 @@
       <div class="form-sub">Plus facile ensemble.</div>
       <div class="comp-grid" id="compGrid">
         <div class="comp-card active" data-comp="foxy" onclick="selectComp(this)">
-          <div class="fox-mini"><img src="assets/comp-foxy.png" class="dyn-comp" alt="Foxy"></div>
+          <div class="fox-mini"><img src="assets/comp-foxy.png" alt="Foxy" style="position:relative;width:100%;height:100%;object-fit:contain;image-rendering:pixelated;"></div>
           <div class="comp-name">Foxy</div>
           <div class="comp-trait">Curieux • Motivant</div>
         </div>
@@ -5268,6 +5268,15 @@
 
     // Filtre couleur sur les IMAGES fond + mosaïque (orange → couleur compagnon)
     root.style.setProperty('--bg-filter', t.bgFilter);
+
+    // Comp-cards : toujours leur propre image (jamais remplacée par le thème actif)
+    document.querySelectorAll('.comp-card').forEach(function(card) {
+      var k = card.dataset.comp;
+      var th = themes[k];
+      if(!th) return;
+      var img = card.querySelector('img');
+      if(img) img.src = th.img;
+    });
 
     // Vision-card thumbnails : endormis (décoratifs, pas le compagnon actif)
     var bkT = COMP_BLINK_SPRITES[key];
