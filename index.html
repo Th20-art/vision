@@ -5302,8 +5302,8 @@
     function schedule(){
       // Plus de délai si l'utilisateur vient d'interagir (lecture en cours)
       var idle = Date.now() - _lastActivity;
-      var base = idle < 3000 ? 7000 : 4000;
-      var delay = base + Math.random() * 5000;
+      var base = idle < 3000 ? 4500 : 2500;
+      var delay = base + Math.random() * 3000;
 
       _blinkT = setTimeout(function(){
         var r = Math.random();
@@ -5324,7 +5324,7 @@
       }, delay);
     }
 
-    _blinkT = setTimeout(schedule, 2000 + Math.random() * 2000);
+    _blinkT = setTimeout(schedule, 1000 + Math.random() * 1500);
   }
 
   /* ── Prénom utilisateur ── */
