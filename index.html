@@ -378,9 +378,10 @@
     image-rendering: pixelated;
   }
   .fox-mini img {
-    position: absolute;
-    width: 576%; height: 650%;
-    left: -183%; top: -369%;
+    position: relative;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    object-fit: contain;
     image-rendering: pixelated;
   }
 
@@ -5218,7 +5219,7 @@
 
   /* ── Thèmes par compagnon ── */
   const themes = {
-    foxy: { og: '#ff7e00', og2: '#e8563a', mx1: '#f25023', mx2: '#ff6338', mx3: '#ffa43a', name: 'Foxy', img: 'assets/comp-foxy.png', clip: true,  iconFilter: 'none',                                                       bgFilter: 'none' },
+    foxy: { og: '#ff7e00', og2: '#e8563a', mx1: '#f25023', mx2: '#ff6338', mx3: '#ffa43a', name: 'Foxy', img: 'assets/comp-foxy.png', clip: false, iconFilter: 'none',                                                       bgFilter: 'none' },
     malo: { og: '#f472b6', og2: '#a855f7', mx1: '#e879c8', mx2: '#c026d3', mx3: '#d946ef', name: 'Malo', img: 'assets/comp-malo.png', clip: false, iconFilter: 'hue-rotate(315deg) saturate(1.4) brightness(1.05)',           bgFilter: 'hue-rotate(-60deg) saturate(0.95)' },
     elio: { og: '#f59e0b', og2: '#92400e', mx1: '#d97706', mx2: '#b45309', mx3: '#fbbf24', name: 'Élio', img: 'assets/comp-elio.png', clip: false, iconFilter: 'hue-rotate(28deg) saturate(0.9) brightness(0.85)',            bgFilter: 'hue-rotate(15deg) saturate(0.8) brightness(0.92)' },
     ryo:  { og: '#3aa6e8', og2: '#1d6fd4', mx1: '#2f8fd6', mx2: '#1d6fd4', mx3: '#7cc6f2', name: 'Ryo',  img: 'assets/comp-ryo.png',  clip: false, iconFilter: 'hue-rotate(190deg) saturate(1.35) brightness(1.1)',           bgFilter: 'hue-rotate(190deg) saturate(1.1) brightness(1.02)' },
