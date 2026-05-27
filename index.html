@@ -5265,6 +5265,65 @@
 
     // Filtre couleur sur les IMAGES fond + mosaïque (orange → couleur compagnon)
     root.style.setProperty('--bg-filter', t.bgFilter);
+
+    // Démarrer l'animation de clignement si des sprites existent
+    _startBlink(key);
+  }
+
+  /* ── Animation clignement compagnon ── */
+  const COMP_BLINK_SPRITES = {
+    foxy: {
+      close: 'assets/comp-foxy-close-eyes.png',
+      dirs:  ['assets/comp-foxy-upright-eyes.png','assets/comp-foxy-downright-eyes.png','assets/comp-foxy-downleft-eyes.png']
+    }
+  };
+  let _blinkT = null;
+  let _lastActivity = 0;
+  document.addEventListener('scroll', function(){ _lastActivity = Date.now(); }, true);
+  document.addEventListener('touchstart', function(){ _lastActivity = Date.now(); }, true);
+  document.addEventListener('touchmove', function(){ _lastActivity = Date.now(); }, true);
+
+  function _stopBlink(){ if(_blinkT){ clearTimeout(_blinkT); _blinkT = null; } }
+
+  function _startBlink(key){
+    _stopBlink();
+    const bk = COMP_BLINK_SPRITES[key];
+    if(!bk) return;
+    const normalSrc = themes[key].img;
+
+    function swap(src){ document.querySelectorAll('.dyn-comp').forEach(function(img){ img.src = src; }); }
+
+    function doBlink(cb){
+      swap(bk.close);
+      setTimeout(function(){ swap(normalSrc); if(cb) cb(); }, 150);
+    }
+
+    function schedule(){
+      // Plus de délai si l'utilisateur vient d'interagir (lecture en cours)
+      var idle = Date.now() - _lastActivity;
+      var base = idle < 3000 ? 7000 : 4000;
+      var delay = base + Math.random() * 5000;
+
+      _blinkT = setTimeout(function(){
+        var r = Math.random();
+        if(r < 0.25){
+          // Regard directionnel (yeux bougent sans cligner)
+          var dir = bk.dirs[Math.floor(Math.random() * bk.dirs.length)];
+          swap(dir);
+          setTimeout(function(){ swap(normalSrc); schedule(); }, 700 + Math.random() * 800);
+        } else if(r < 0.45){
+          // Double clignement (naturel)
+          doBlink(function(){
+            setTimeout(function(){ doBlink(schedule); }, 100);
+          });
+        } else {
+          // Clignement simple
+          doBlink(schedule);
+        }
+      }, delay);
+    }
+
+    _blinkT = setTimeout(schedule, 2000 + Math.random() * 2000);
   }
 
   /* ── Prénom utilisateur ── */
