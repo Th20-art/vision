@@ -5292,7 +5292,7 @@
     if(!bk) return;
     const normalSrc = themes[key].img;
 
-    function swap(src){ document.querySelectorAll('.dyn-comp').forEach(function(img){ img.src = src; }); }
+    function swap(src){ document.querySelectorAll('.dyn-comp').forEach(function(img){ if(!img.closest('.vision-thumb') && !img.closest('.vision-card')) img.src = src; }); }
 
     function doBlink(cb){
       swap(bk.close);
