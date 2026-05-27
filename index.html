@@ -2133,7 +2133,8 @@
   /* Fox pixel sprite — bas-gauche, présent dans 4/5 états */
   .dyn-state .dyn-fox{
     position:absolute;left:13px;top:37px;
-    width:55px;height:48px;z-index:3;overflow:hidden
+    width:55px;height:48px;z-index:3;overflow:hidden;
+    transition:width .28s ease,height .28s ease
   }
   .dyn-state .dyn-fox img{
     position:relative;width:100%;height:100%;
@@ -2232,8 +2233,11 @@
   /* En développé, le SVG remplace tout → masque mockups CSS + dots HTML (dots inclus dans le SVG) */
   .dyn-isl.exp .dyn-extra{display:none}
   .dyn-isl.exp .dyn-dots{display:none}
-  /* Cacher le compagnon HTML en mode étendu : le SVG est l'unique source visuelle */
-  .dyn-isl.exp .dyn-fox{display:none}
+  /* Compagnon agrandi et au-dessus du SVG en mode étendu — même position, pas de saut */
+  .dyn-isl.exp .dyn-fox{
+    width:78px;height:68px;
+    z-index:7  /* au-dessus du SVG (z-index:6) */
+  }
 
   /* Typographie commune expanded */
   .dx-h{
