@@ -4623,8 +4623,15 @@
     if (id === 's-param-ambitions' && typeof renderMyAmbitions === 'function') {
       renderMyAmbitions();
     }
-    // Réveil du compagnon à l'arrivée sur le home
-    if (id === 's-home' && typeof _wakeUpFox === 'function') _wakeUpFox();
+    // Réveil du compagnon : une seule fois par session (fin tuto ou ouverture app)
+    if (id === 's-home' && typeof _wakeUpFox === 'function') {
+      if (!_wakePlayedThisSession) {
+        _wakePlayedThisSession = true;
+        _wakeUpFox();
+      } else if (typeof _startBlink === 'function') {
+        _startBlink(currentTheme);
+      }
+    }
     // Re-render home chips à l'entrée du dashboard
     if ((id === 's-home' || id === 's-comp') && typeof renderHomeAmbitions === 'function') {
       renderHomeAmbitions();
@@ -5299,10 +5306,26 @@
       close: 'assets/comp-foxy-close-eyes.png',
       sleep: 'assets/comp-foxy-sleep.png',
       dirs:  ['assets/comp-foxy-upright-eyes.png','assets/comp-foxy-downright-eyes.png','assets/comp-foxy-downleft-eyes.png']
+    },
+    malo: {
+      close: 'assets/comp-malo-close-eyes.png',
+      sleep: 'assets/comp-malo-sleep.png',
+      dirs:  ['assets/comp-malo-upright-eyes.png','assets/comp-malo-downright-eyes.png','assets/comp-malo-downleft-eyes.png']
+    },
+    elio: {
+      close: 'assets/comp-elio-close-eyes.png',
+      sleep: 'assets/comp-elio-sleep.png',
+      dirs:  ['assets/comp-elio-upright-eyes.png','assets/comp-elio-downright-eyes.png','assets/comp-elio-downleft-eyes.png']
+    },
+    ryo: {
+      close: 'assets/comp-ryo-close-eyes.png',
+      sleep: 'assets/comp-ryo-sleep.png',
+      dirs:  ['assets/comp-ryo-upright-eyes.png','assets/comp-ryo-downright-eyes.png','assets/comp-ryo-downleft-eyes.png']
     }
   };
   let _blinkT = null;
   let _wakeT  = null;
+  let _wakePlayedThisSession = false;
   let _lastActivity = 0;
   document.addEventListener('scroll',     function(){ _lastActivity = Date.now(); }, true);
   document.addEventListener('touchstart', function(){ _lastActivity = Date.now(); }, true);
