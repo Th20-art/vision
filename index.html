@@ -1634,7 +1634,7 @@
   /* Sous-titre — Inter Regular 16px blanc, w:218, top:64.9% */
   .splash-sub {
     position: absolute;
-    top: 53%;                   /* rapproché du logo (titre supprimé) */
+    top: 60%;
     left: 50%;
     transform: translateX(-50%);
     width: 218px;
@@ -2458,10 +2458,9 @@
   .cap-bn-t{font-size:14px;font-weight:600;line-height:1.4}
   .cap-pb{margin-top:10px;padding:0 2px}
   .cap-pb-b{height:4px;background:rgba(255,255,255,.18);border-radius:2px;overflow:hidden}
-  .cap-pb-f{height:100%;width:30%;background:var(--og);border-radius:2px}
+  .cap-pb-f{height:100%;width:0%;background:var(--og);border-radius:2px;transition:width .15s linear}
   .cap-vd{flex:1;margin-top:14px;background:#2c2c2c;border-radius:16px;position:relative;display:flex;align-items:flex-end;padding:16px;overflow:visible;min-height:200px;box-shadow: none}
-  .cap-vd .fox-mini{position:absolute;left:14px;bottom:-6px;width:52px;height:46px;z-index:2}
-  .cap-bb{background:rgba(255,255,255,.16);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.12);border-radius:13px;padding:10px 13px;color:#fff;font-size:12.5px;font-style:italic;line-height:1.45;width:calc(100% - 48px);margin-left:auto}
+  .cap-bb{background:rgba(255,255,255,.16);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.12);border-radius:13px;padding:10px 13px;color:#fff;font-size:12.5px;font-style:italic;line-height:1.45;width:100%}
   .cap-mt{text-align:center;color:rgba(255,255,255,.75);font-size:12px;margin-top:14px;font-style:italic}
 
   /* ───── IMPACT BOTTOM SHEET (444:1545) — DARK ───── */
@@ -4305,9 +4304,8 @@
         <!-- Vidéo enregistrée -->
         <video id="cap-video" playsinline webkit-playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:16px;display:none;background:#1c1c1a;"></video>
         <!-- Placeholder si aucune capsule -->
-        <div id="cap-vd-ph" style="position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);z-index:2;text-align:center;">
-          <div class="fox-mini" style="width:64px;height:57px;margin:0 auto;"><img src="assets/comp-foxy.png" class="dyn-comp" alt=""></div>
-          <div style="font-size:11px;color:rgba(255,255,255,0.45);margin-top:8px;">Aucune capsule enregistrée</div>
+        <div id="cap-vd-ph" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2;text-align:center;">
+          <div style="font-size:11px;color:rgba(255,255,255,0.45);">Aucune capsule enregistrée</div>
         </div>
         <!-- Sous-titres synchronisés -->
         <div id="cap-subs" class="cap-bb" style="position:absolute;left:14px;right:14px;bottom:14px;width:auto;margin:0;z-index:3;"></div>
@@ -4717,11 +4715,13 @@
     const v = document.getElementById('cap-video');
     const ph = document.getElementById('cap-vd-ph');
     const subs = document.getElementById('cap-subs');
+    const pbf = ov.querySelector('.cap-pb-f');
     if(AMZN.capT) clearTimeout(AMZN.capT);
     if(capSubT){ clearInterval(capSubT); capSubT = null; }
+    if(pbf) pbf.style.width = '0%';
 
     if(capsuleVideoURL && v){
-      // Vidéo enregistrée disponible → lecture + sous-titres synchronisés
+      // Vidéo enregistrée disponible → lecture + sous-titres + barre synchronisés
       v.src = capsuleVideoURL;
       v.style.display = 'block';
       if(ph) ph.style.display = 'none';
@@ -4730,17 +4730,25 @@
       capSubT = setInterval(() => {
         const dur = (isFinite(v.duration) && v.duration > 0) ? v.duration : 24;
         const ratio = Math.min(1, v.currentTime / dur);
+        if(pbf) pbf.style.width = (ratio * 100) + '%';
         const n = Math.max(1, Math.round(ratio * CAPSULE_WORDS.length));
         if(subs) subs.textContent = CAPSULE_WORDS.slice(0, n).join(' ');
       }, 150);
       v.onended = () => closeCapsule();
       AMZN.capT = setTimeout(closeCapsule, 14000); // garde-fou
     } else {
-      // Pas de vidéo (file:// ou non enregistrée) → placeholder + texte statique
+      // Pas de vidéo → placeholder + barre animée sur 3.5 s
       if(v) v.style.display = 'none';
       if(ph) ph.style.display = 'block';
       if(subs) subs.textContent = '« Salut, c\'est moi dans 90 jours. Je prends des engagements pour partir… »';
-      AMZN.capT = setTimeout(closeCapsule, 3500);
+      const PH_DUR = 3500;
+      const start = Date.now();
+      capSubT = setInterval(() => {
+        const ratio = Math.min(1, (Date.now() - start) / PH_DUR);
+        if(pbf) pbf.style.width = (ratio * 100) + '%';
+        if(ratio >= 1){ clearInterval(capSubT); capSubT = null; }
+      }, 80);
+      AMZN.capT = setTimeout(closeCapsule, PH_DUR);
     }
   }
 

@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Miroir — Coach objectifs</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#08060F;--bg2:#100E1A;--ink:#EDE9E0;--muted:#6B6475;
+  --line:rgba(255,255,255,.08);--fox:#E8563A;--green:#42C47E;
+  --purple:#A78BFA;--purple-dim:rgba(167,139,250,.15);
+}
+html,body{height:100%;background:var(--bg);color:var(--ink);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;}
+
+/* ── Layout ── */
+.app{display:flex;flex-direction:column;height:100vh;max-width:680px;margin:0 auto;}
+
+/* ── Header ── */
+.header{display:flex;align-items:center;gap:12px;padding:18px 24px 14px;border-bottom:1px solid var(--line);flex-shrink:0;}
+.header-logo{font-size:22px;}
+.header-text{flex:1;}
+.header-title{font-size:17px;font-weight:700;letter-spacing:-.3px;}
+.header-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+.header-badge{padding:4px 10px;background:var(--purple-dim);border:1px solid rgba(167,139,250,.3);border-radius:12px;font-size:10px;font-weight:700;color:var(--purple);letter-spacing:.5px;text-transform:uppercase;flex-shrink:0;}
+
+/* ── Messages zone ── */
+.messages{flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:14px;}
+.messages::-webkit-scrollbar{width:4px;}
+.messages::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px;}
+
+/* ── Bulles ── */
+.msg{display:flex;gap:10px;max-width:90%;}
+.msg.user{align-self:flex-end;flex-direction:row-reverse;}
+.msg.assistant{align-self:flex-start;}
+
+.bubble{padding:11px 15px;border-radius:16px;font-size:13px;line-height:1.6;word-break:break-word;}
+.msg.assistant .bubble{background:var(--bg2);border:1px solid var(--line);border-radius:4px 16px 16px 16px;color:var(--ink);}
+.msg.user .bubble{background:rgba(232,86,58,.18);border:1px solid rgba(232,86,58,.3);border-radius:16px 4px 16px 16px;color:var(--ink);}
+
+.avatar{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px;margin-top:2px;}
+.avatar.ai{background:linear-gradient(135deg,#E8563A,#F5C842);box-shadow:0 2px 8px rgba(232,86,58,.3);}
+.avatar.you{background:rgba(255,255,255,.08);border:1px solid var(--line);}
+
+/* ── Typing indicator ── */
+.typing{display:flex;align-items:center;gap:4px;padding:10px 14px;background:var(--bg2);border:1px solid var(--line);border-radius:4px 16px 16px 16px;width:fit-content;}
+.dot-typing{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:blink 1.2s infinite;}
+.dot-typing:nth-child(2){animation-delay:.2s;}
+.dot-typing:nth-child(3){animation-delay:.4s;}
+@keyframes blink{0%,60%,100%{opacity:.3;}30%{opacity:1;}}
+
+/* ── Bloc résultats ── */
+.goals-block{background:rgba(66,196,126,.07);border:1.5px solid rgba(66,196,126,.3);border-radius:12px;padding:14px 16px;margin-top:4px;}
+.goals-block-title{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.goals-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+.goal-chip{padding:5px 12px;background:rgba(66,196,126,.12);border:1px solid rgba(66,196,126,.35);border-radius:14px;font-size:12px;font-weight:600;color:#EDE9E0;}
+.goals-phrase{font-size:12px;color:var(--muted);font-style:italic;line-height:1.5;margin-bottom:12px;padding:8px 10px;background:rgba(255,255,255,.03);border-radius:7px;border-left:2px solid rgba(66,196,126,.4);}
+.btn-apply{width:100%;padding:11px;border-radius:9px;background:var(--green);border:none;color:#08060F;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.2px;transition:opacity .15s;}
+.btn-apply:hover{opacity:.88;}
+.btn-apply:active{opacity:.75;}
+.btn-apply:disabled{opacity:.4;cursor:default;}
+
+/* ── Zone de saisie ── */
+.input-wrap{padding:16px 24px 20px;border-top:1px solid var(--line);flex-shrink:0;}
+.input-row{display:flex;gap:8px;align-items:flex-end;}
+.input-msg{flex:1;background:rgba(255,255,255,.05);border:1.5px solid var(--line);border-radius:12px;padding:11px 14px;font-size:13px;color:var(--ink);outline:none;resize:none;line-height:1.5;max-height:120px;font-family:inherit;transition:border-color .2s;}
+.input-msg:focus{border-color:rgba(232,86,58,.45);}
+.input-msg::placeholder{color:var(--muted);}
+.btn-send{width:44px;height:44px;border-radius:11px;border:none;background:var(--fox);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity .15s;}
+.btn-send:hover{opacity:.85;}
+.btn-send:active{opacity:.7;}
+.btn-send:disabled{opacity:.35;cursor:default;}
+.btn-send svg{width:18px;height:18px;}
+
+/* ── État vide / erreur ── */
+.state-box{text-align:center;padding:40px 24px;color:var(--muted);font-size:13px;line-height:1.7;}
+.state-box strong{color:var(--fox);display:block;margin-bottom:6px;font-size:15px;}
+.state-box a{color:var(--fox);text-decoration:none;}
+
+/* ── Hint bas de page ── */
+.hint-bar{text-align:center;padding:6px 24px 0;font-size:10px;color:rgba(107,100,117,.6);}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-logo">🪞</div>
+    <div class="header-text">
+      <div class="header-title">Coach Miroir</div>
+      <div class="header-sub">Quelques questions pour ancrer tes vrais objectifs</div>
+    </div>
+    <div class="header-badge">IA · Confidentiel</div>
+  </div>
+
+  <!-- Messages -->
+  <div class="messages" id="messages"></div>
+
+  <!-- Input -->
+  <div class="input-wrap">
+    <div class="input-row">
+      <textarea id="input-msg" class="input-msg" rows="1" placeholder="Réponds ici…" disabled></textarea>
+      <button id="btn-send" class="btn-send" disabled title="Envoyer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </button>
+    </div>
+    <div class="hint-bar">La conversation reste locale — elle n'est pas sauvegardée.</div>
+  </div>
+
+</div>
+
+<script>
+// ── Config ──
+var API_URL = "https://api.anthropic.com/v1/messages";
+var MODEL   = "claude-haiku-4-5";
+
+var SYSTEM_PROMPT = [
+  "Tu es le coach de vie de Miroir, une extension Chrome qui aide les gens à consommer de façon plus consciente.",
+  "Ton rôle : aider l'utilisateur à identifier et formuler ses objectifs de vie à long terme (1 à 5 ans) en 3-4 échanges maximum.",
+  "",
+  "Méthode :",
+  "1. Commence par UNE seule question ouverte courte pour comprendre ce que la personne veut changer ou construire.",
+  "2. Écoute, puis creuse avec 1-2 questions précises (chiffres, délais, \"pourquoi c'est important pour toi ?\").",
+  "3. Après 3-4 échanges, propose ta synthèse finale.",
+  "",
+  "Objectifs disponibles dans Miroir (utilise ces identifiants exacts) :",
+  "- epargne : construire une épargne ou atteindre un objectif financier",
+  "- voyage : financer et réaliser un voyage de vie",
+  "- ecologie : réduire son impact environnemental",
+  "- projet : lancer un projet personnel, artistique ou professionnel",
+  "- formation : financer une formation, reconversion, études",
+  "- sante : investir dans sa santé physique ou mentale",
+  "- logement : financer un logement, sortir de location",
+  "- impact : avoir un impact social, contribuer à quelque chose de plus grand",
+  "- esprit_critique : mieux analyser l'information, éviter la manipulation médiatique",
+  "",
+  "IMPORTANT — Quand tu as terminé l'exploration (3-4 échanges), inclus OBLIGATOIREMENT dans ton dernier message :",
+  "---MIROIR_GOALS---",
+  "objectifs: [ids séparés par virgule, ex: epargne,voyage]",
+  "phrase: [phrase de vie courte et personnalisée, max 80 caractères]",
+  "---FIN_GOALS---",
+  "",
+  "Style : chaleureux, direct, 1-3 phrases par réponse max (sauf synthèse finale). Pousse vers des objectifs concrets à long terme si la personne est vague."
+].join("\n");
+
+var AMB_LABELS = {
+  epargne:"💰 Épargne", voyage:"🗺️ Voyage", ecologie:"🌱 Écologie",
+  projet:"🚀 Projet", formation:"📚 Formation", sante:"💪 Santé",
+  logement:"🏠 Logement", impact:"🤝 Impact", esprit_critique:"🧠 Esprit critique"
+};
+
+// ── État ──
+var apiKey = "";
+var history = [];  // [{role, content}]
+var waiting = false;
+
+// ── DOM refs ──
+var messagesEl = document.getElementById("messages");
+var inputEl    = document.getElementById("input-msg");
+var sendBtn    = document.getElementById("btn-send");
+
+// ── Helpers DOM ──
+function scrollDown() {
+  setTimeout(function() { messagesEl.scrollTop = messagesEl.scrollHeight; }, 50);
+}
+
+function addMessage(role, html, isHtml) {
+  var msg = document.createElement("div");
+  msg.className = "msg " + role;
+
+  var av = document.createElement("div");
+  av.className = "avatar " + (role === "assistant" ? "ai" : "you");
+  av.textContent = role === "assistant" ? "🪞" : "👤";
+
+  var bubble = document.createElement("div");
+  bubble.className = "bubble";
+  if (isHtml) { bubble.innerHTML = html; }
+  else { bubble.textContent = html; }
+
+  msg.appendChild(av);
+  msg.appendChild(bubble);
+  messagesEl.appendChild(msg);
+  scrollDown();
+  return bubble;
+}
+
+function showTyping() {
+  var wrap = document.createElement("div");
+  wrap.id = "typing-indicator";
+  wrap.className = "msg assistant";
+  var av = document.createElement("div");
+  av.className = "avatar ai";
+  av.textContent = "🪞";
+  var t = document.createElement("div");
+  t.className = "typing";
+  t.innerHTML = '<span class="dot-typing"></span><span class="dot-typing"></span><span class="dot-typing"></span>';
+  wrap.appendChild(av);
+  wrap.appendChild(t);
+  messagesEl.appendChild(wrap);
+  scrollDown();
+}
+
+function removeTyping() {
+  var t = document.getElementById("typing-indicator");
+  if (t) t.remove();
+}
+
+// ── Parser le bloc goals ──
+function parseGoals(text) {
+  var m = text.match(/---MIROIR_GOALS---([\s\S]*?)---FIN_GOALS---/);
+  if (!m) return null;
+  var block = m[1];
+  var objMatch = block.match(/objectifs\s*:\s*([^\n]+)/i);
+  var phraseMatch = block.match(/phrase\s*:\s*([^\n]+)/i);
+  if (!objMatch) return null;
+  var ids = objMatch[1].trim().split(",").map(function(s) { return s.trim(); }).filter(Boolean);
+  var phrase = phraseMatch ? phraseMatch[1].trim() : "";
+  return { ids: ids, phrase: phrase };
+}
+
+// ── Rendre le texte propre (supprimer le bloc goals du texte affiché) ──
+function cleanText(text) {
+  return text.replace(/---MIROIR_GOALS---[\s\S]*?---FIN_GOALS---/g, "").trim();
+}
+
+// ── Afficher le bloc résultats ──
+function renderGoalsBlock(goals, parentBubble) {
+  var block = document.createElement("div");
+  block.className = "goals-block";
+
+  var title = document.createElement("div");
+  title.className = "goals-block-title";
+  title.innerHTML = '✦ Tes objectifs Miroir';
+  block.appendChild(title);
+
+  var chips = document.createElement("div");
+  chips.className = "goals-chips";
+  goals.ids.forEach(function(id) {
+    var chip = document.createElement("div");
+    chip.className = "goal-chip";
+    chip.textContent = AMB_LABELS[id] || id;
+    chips.appendChild(chip);
+  });
+  block.appendChild(chips);
+
+  if (goals.phrase) {
+    var phraseEl2 = document.createElement("div");
+    phraseEl2.className = "goals-phrase";
+    phraseEl2.textContent = "« " + goals.phrase + " »";
+    block.appendChild(phraseEl2);
+  }
+
+  var applyBtn = document.createElement("button");
+  applyBtn.className = "btn-apply";
+  applyBtn.textContent = "✓ Appliquer à mon profil Miroir";
+  applyBtn.addEventListener("click", function() {
+    applyBtn.disabled = true;
+    applyBtn.textContent = "⟳ Enregistrement…";
+    applyGoals(goals, applyBtn);
+  });
+  block.appendChild(applyBtn);
+  parentBubble.appendChild(block);
+}
+
+// ── Appliquer les objectifs au profil ──
+function applyGoals(goals, btn) {
+  chrome.storage.local.get("miroir_profile", function(data) {
+    var p = (data && data.miroir_profile) || {};
+    // Fusionner (ne pas écraser les ambitions custom déjà présentes)
+    var existing = Array.isArray(p.ambitions) ? p.ambitions : [];
+    var merged = existing.slice();
+    goals.ids.forEach(function(id) {
+      if (merged.indexOf(id) === -1) merged.push(id);
+    });
+    p.ambitions = merged;
+    if (goals.phrase) p.lifePhrase = goals.phrase;
+
+    chrome.storage.local.set({ miroir_profile: p }, function() {
+      if (chrome.runtime.lastError) {
+        btn.textContent = "✗ Erreur — réessaie";
+        btn.disabled = false;
+        return;
+      }
+      btn.textContent = "✓ Objectifs appliqués !";
+      btn.style.background = "#42C47E";
+      // Notifier les onglets ouverts
+      chrome.tabs.query({}, function(tabs) {
+        tabs.forEach(function(tab) {
+          if (tab.id && tab.url && tab.url.slice(0,9) !== "chrome://") {
+            chrome.tabs.sendMessage(tab.id, { type:"PROFILE_UPDATED", profile:p }, function() {
+              void chrome.runtime.lastError;
+            });
+          }
+        });
+      });
+    });
+  });
+}
+
+// ── Envoi message → API ──
+function sendMessage(userText) {
+  if (waiting || !userText.trim()) return;
+  waiting = true;
+  sendBtn.disabled = true;
+  inputEl.disabled = true;
+
+  history.push({ role: "user", content: userText });
+  addMessage("user", userText);
+  inputEl.value = "";
+  inputEl.style.height = "auto";
+  showTyping();
+
+  fetch(API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": apiKey,
+      "anthropic-version": "2023-06-01"
+    },
+    body: JSON.stringify({
+      model: MODEL,
+      max_tokens: 600,
+      system: SYSTEM_PROMPT,
+      messages: history
+    })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    removeTyping();
+    waiting = false;
+
+    if (data.error) {
+      addMessage("assistant", "⚠️ " + (data.error.message || "Erreur API. Vérifie ta clé dans le popup Miroir."), false);
+      inputEl.disabled = false;
+      sendBtn.disabled = false;
+      return;
+    }
+
+    var raw = (data.content && data.content[0] && data.content[0].text) || "";
+    history.push({ role: "assistant", content: raw });
+
+    var goals = parseGoals(raw);
+    var display = cleanText(raw);
+
+    var bubble = addMessage("assistant", display, false);
+
+    if (goals && goals.ids.length > 0) {
+      renderGoalsBlock(goals, bubble);
+      // Ne plus permettre de continuer après la synthèse
+      inputEl.disabled = true;
+      sendBtn.disabled = true;
+      inputEl.placeholder = "La session est terminée — clique sur Appliquer ci-dessus.";
+    } else {
+      inputEl.disabled = false;
+      sendBtn.disabled = false;
+      inputEl.focus();
+    }
+  })
+  .catch(function(err) {
+    removeTyping();
+    waiting = false;
+    addMessage("assistant", "⚠️ Erreur réseau : " + err.message, false);
+    inputEl.disabled = false;
+    sendBtn.disabled = false;
+  });
+}
+
+// ── Auto-resize textarea ──
+inputEl.addEventListener("input", function() {
+  this.style.height = "auto";
+  this.style.height = Math.min(this.scrollHeight, 120) + "px";
+});
+
+// ── Envoi sur Enter (Shift+Enter = nouvelle ligne) ──
+inputEl.addEventListener("keydown", function(e) {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    if (!sendBtn.disabled) sendBtn.click();
+  }
+});
+
+sendBtn.addEventListener("click", function() {
+  sendMessage(inputEl.value.trim());
+});
+
+// ── Init : charger la clé API puis démarrer ──
+chrome.storage.local.get("miroir_profile", function(data) {
+  var p = (data && data.miroir_profile) || {};
+  apiKey = p.apiKey || "";
+
+  if (!apiKey) {
+    messagesEl.innerHTML = [
+      '<div class="state-box">',
+      '<strong>🔑 Clé API manquante</strong>',
+      'Pour utiliser le coach, configure d\'abord ta clé API Anthropic dans le popup Miroir (icône 🪞 dans la barre d\'outils).<br><br>',
+      '<a href="https://console.anthropic.com/" target="_blank">→ Obtenir une clé sur console.anthropic.com</a>',
+      '</div>'
+    ].join("");
+    return;
+  }
+
+  // Activer la saisie
+  inputEl.disabled = false;
+  sendBtn.disabled = false;
+  inputEl.focus();
+
+  // Message d'intro IA (premier message automatique)
+  showTyping();
+  fetch(API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": apiKey,
+      "anthropic-version": "2023-06-01"
+    },
+    body: JSON.stringify({
+      model: MODEL,
+      max_tokens: 200,
+      system: SYSTEM_PROMPT,
+      messages: [{ role: "user", content: "Bonjour, je veux définir mes objectifs de vie." }]
+    })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    removeTyping();
+    var text = (data.content && data.content[0] && data.content[0].text) || "Bonjour ! Je suis là pour t'aider à clarifier ce qui compte vraiment pour toi. Pour commencer : qu'est-ce que tu voudrais changer ou construire dans ta vie dans les 2-3 prochaines années ?";
+    history.push({ role: "user", content: "Bonjour, je veux définir mes objectifs de vie." });
+    history.push({ role: "assistant", content: text });
+    addMessage("assistant", cleanText(text), false);
+    inputEl.focus();
+  })
+  .catch(function() {
+    removeTyping();
+    var fallback = "Bonjour ! Je suis là pour t'aider à clarifier ce qui compte vraiment. Pour commencer : qu'est-ce que tu voudrais changer ou construire dans ta vie dans les 2-3 prochaines années ?";
+    history.push({ role: "user", content: "Bonjour, je veux définir mes objectifs de vie." });
+    history.push({ role: "assistant", content: fallback });
+    addMessage("assistant", fallback, false);
+  });
+});
+</script>
+</body>
+</html>
