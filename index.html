@@ -4623,6 +4623,8 @@
     if (id === 's-param-ambitions' && typeof renderMyAmbitions === 'function') {
       renderMyAmbitions();
     }
+    // Réveil du compagnon à l'arrivée sur le home
+    if (id === 's-home' && typeof _wakeUpFox === 'function') _wakeUpFox();
     // Re-render home chips à l'entrée du dashboard
     if ((id === 's-home' || id === 's-comp') && typeof renderHomeAmbitions === 'function') {
       renderHomeAmbitions();
@@ -5267,6 +5269,14 @@
     // Filtre couleur sur les IMAGES fond + mosaïque (orange → couleur compagnon)
     root.style.setProperty('--bg-filter', t.bgFilter);
 
+    // Vision-card thumbnails : endormis (décoratifs, pas le compagnon actif)
+    var bkT = COMP_BLINK_SPRITES[key];
+    if(bkT && bkT.sleep) {
+      document.querySelectorAll('.vision-thumb .dyn-comp, .vision-card .dyn-comp').forEach(function(img){
+        img.src = bkT.sleep;
+      });
+    }
+
     // Démarrer l'animation de clignement si des sprites existent
     _startBlink(key);
   }
@@ -5275,32 +5285,55 @@
   const COMP_BLINK_SPRITES = {
     foxy: {
       close: 'assets/comp-foxy-close-eyes.png',
+      sleep: 'assets/comp-foxy-sleep.png',
       dirs:  ['assets/comp-foxy-upright-eyes.png','assets/comp-foxy-downright-eyes.png','assets/comp-foxy-downleft-eyes.png']
     }
   };
   let _blinkT = null;
+  let _wakeT  = null;
   let _lastActivity = 0;
-  document.addEventListener('scroll', function(){ _lastActivity = Date.now(); }, true);
+  document.addEventListener('scroll',     function(){ _lastActivity = Date.now(); }, true);
   document.addEventListener('touchstart', function(){ _lastActivity = Date.now(); }, true);
-  document.addEventListener('touchmove', function(){ _lastActivity = Date.now(); }, true);
+  document.addEventListener('touchmove',  function(){ _lastActivity = Date.now(); }, true);
 
   function _stopBlink(){ if(_blinkT){ clearTimeout(_blinkT); _blinkT = null; } }
 
+  // Swap uniquement les renards principaux (pas les vision-thumbs qui restent endormis)
+  function _swapMain(src){
+    document.querySelectorAll('.dyn-comp').forEach(function(img){
+      if(!img.closest('.vision-thumb') && !img.closest('.vision-card')) img.src = src;
+    });
+  }
+
+  // Réveil : sleep → cligne → éveillé, puis démarre le blink loop
+  function _wakeUpFox(){
+    var bk = COMP_BLINK_SPRITES[currentTheme];
+    var normalSrc = themes[currentTheme] ? themes[currentTheme].img : null;
+    if(!normalSrc) return;
+    if(_wakeT){ clearTimeout(_wakeT); _wakeT = null; }
+    _stopBlink();
+    _swapMain(bk && bk.sleep ? bk.sleep : normalSrc);
+    _wakeT = setTimeout(function(){
+      if(bk && bk.close) _swapMain(bk.close);
+      _wakeT = setTimeout(function(){
+        _swapMain(normalSrc);
+        _startBlink(currentTheme);
+      }, 200);
+    }, 500);
+  }
+
   function _startBlink(key){
     _stopBlink();
-    const bk = COMP_BLINK_SPRITES[key];
+    var bk = COMP_BLINK_SPRITES[key];
     if(!bk) return;
-    const normalSrc = themes[key].img;
-
-    function swap(src){ document.querySelectorAll('.dyn-comp').forEach(function(img){ if(!img.closest('.vision-thumb') && !img.closest('.vision-card')) img.src = src; }); }
+    var normalSrc = themes[key].img;
 
     function doBlink(cb){
-      swap(bk.close);
-      setTimeout(function(){ swap(normalSrc); if(cb) cb(); }, 150);
+      _swapMain(bk.close);
+      setTimeout(function(){ _swapMain(normalSrc); if(cb) cb(); }, 150);
     }
 
     function schedule(){
-      // Plus de délai si l'utilisateur vient d'interagir (lecture en cours)
       var idle = Date.now() - _lastActivity;
       var base = idle < 3000 ? 4500 : 2500;
       var delay = base + Math.random() * 3000;
@@ -5308,17 +5341,12 @@
       _blinkT = setTimeout(function(){
         var r = Math.random();
         if(r < 0.25){
-          // Regard directionnel (yeux bougent sans cligner)
           var dir = bk.dirs[Math.floor(Math.random() * bk.dirs.length)];
-          swap(dir);
-          setTimeout(function(){ swap(normalSrc); schedule(); }, 700 + Math.random() * 800);
+          _swapMain(dir);
+          setTimeout(function(){ _swapMain(normalSrc); schedule(); }, 700 + Math.random() * 800);
         } else if(r < 0.45){
-          // Double clignement (naturel)
-          doBlink(function(){
-            setTimeout(function(){ doBlink(schedule); }, 100);
-          });
+          doBlink(function(){ setTimeout(function(){ doBlink(schedule); }, 100); });
         } else {
-          // Clignement simple
           doBlink(schedule);
         }
       }, delay);
