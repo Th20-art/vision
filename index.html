@@ -2117,12 +2117,7 @@
   @media (min-width: 481px) {
     .dyn-isl { top: 16px; }
   }
-  .dyn-isl.exp{
-    height:253px;width:213px;
-    box-shadow:0 0 0 2px var(--og),
-               0 0 28px color-mix(in srgb,var(--og) 40%,transparent),
-               0 16px 40px rgba(0,0,0,.55)
-  }
+  .dyn-isl.exp{height:253px;width:213px;box-shadow:none}
   @keyframes dynIn{0%{opacity:0;transform:translate(-50%,-14px) scale(.85)}100%{opacity:1;transform:translate(-50%,0) scale(1)}}
 
   /* 5 states absolument positionnés (un seul .on visible) */
@@ -2232,23 +2227,23 @@
     opacity:0;pointer-events:none;z-index:6;
     transition:opacity .22s ease
   }
-  .dyn-isl.exp .dyn-state.on .dyn-exp-svg{opacity:1;transition-delay:.16s}
-  /* En développé, le SVG remplace tout → masque tous les éléments HTML compacts */
-  .dyn-isl.exp .dyn-extra{display:none}
-  .dyn-isl.exp .dyn-dots{display:none}
-  .dyn-isl.exp .dyn-l,
-  .dyn-isl.exp .dyn-bar,
-  .dyn-isl.exp .dyn-sc,
-  .dyn-isl.exp .dyn-warn,
-  .dyn-isl.exp .dyn-q,
-  .dyn-isl.exp .dyn-btn-or,
-  .dyn-isl.exp .dyn-alt-l,
-  .dyn-isl.exp .dyn-alt-n,
-  .dyn-isl.exp .dyn-alt-sub,
-  .dyn-isl.exp .dyn-badge,
-  .dyn-isl.exp .dyn-alt-zero { display:none }
-  /* Compagnon au-dessus du SVG en mode étendu — taille et position identiques au compact */
-  .dyn-isl.exp .dyn-fox{ z-index:7 }
+  /* En étendu : SVG masqué, HTML + couleurs compagnon prennent le relais */
+  .dyn-isl.exp .dyn-state.on .dyn-exp-svg{opacity:0}
+  .dyn-isl.exp .dyn-fox{z-index:7}
+
+  /* ── Couleurs compagnon sur les éléments internes ── */
+  .dyn-isl.exp .dx-h{color:var(--og)}
+  .dyn-isl.exp .dx-vl-pct{color:var(--og)}
+  .dyn-isl.exp .dx-vl-fill{background:var(--og)}
+  .dyn-isl.exp .dx-link{
+    color:var(--og);
+    background:color-mix(in srgb,var(--og) 12%,transparent);
+    border:1px solid color-mix(in srgb,var(--og) 35%,transparent)
+  }
+  .dyn-isl.exp .dyn-badge{
+    background:color-mix(in srgb,var(--og) 18%,#0a0a0a);
+    color:var(--og)
+  }
 
   /* Typographie commune expanded */
   .dx-h{
