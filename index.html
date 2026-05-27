@@ -5269,13 +5269,16 @@
     // Filtre couleur sur les IMAGES fond + mosaïque (orange → couleur compagnon)
     root.style.setProperty('--bg-filter', t.bgFilter);
 
-    // Comp-cards : toujours leur propre image (jamais remplacée par le thème actif)
+    // Comp-cards : image propre + sleep si pas sélectionnée
     document.querySelectorAll('.comp-card').forEach(function(card) {
       var k = card.dataset.comp;
       var th = themes[k];
       if(!th) return;
       var img = card.querySelector('img');
-      if(img) img.src = th.img;
+      if(!img) return;
+      var isSelected = card.classList.contains('active');
+      var bkCard = COMP_BLINK_SPRITES[k];
+      img.src = (!isSelected && bkCard && bkCard.sleep) ? bkCard.sleep : th.img;
     });
 
     // Vision-card thumbnails : endormis (décoratifs, pas le compagnon actif)
@@ -5329,6 +5332,31 @@
         _startBlink(currentTheme);
       }, 200);
     }, 500);
+  }
+
+  // Réveil/sommeil des vision-thumbs selon le nombre de cartes actives
+  function _updateVisionThumbs() {
+    var bk  = COMP_BLINK_SPRITES[currentTheme];
+    var normalSrc = themes[currentTheme] ? themes[currentTheme].img : null;
+    var sleepSrc  = bk && bk.sleep ? bk.sleep : null;
+    if(!normalSrc) return;
+    var activeCount = document.querySelectorAll('.vision-card.active').length;
+
+    document.querySelectorAll('.vision-card').forEach(function(card) {
+      var img = card.querySelector('.vision-thumb img');
+      if(!img) return;
+      var isActive = card.classList.contains('active');
+      if(activeCount >= MAX_VISIONS && isActive) {
+        // Réveil animé : sleep → close-eyes → normal
+        if(sleepSrc) img.src = sleepSrc;
+        setTimeout(function(){
+          if(bk && bk.close) img.src = bk.close;
+          setTimeout(function(){ img.src = normalSrc; }, 200);
+        }, 400);
+      } else {
+        img.src = sleepSrc || normalSrc;
+      }
+    });
   }
 
   function _startBlink(key){
@@ -5678,6 +5706,8 @@
         if (first) first.classList.remove('active');
         this.classList.add('active');
       }
+      // Réveil du compagnon quand 2 objectifs sélectionnés, sleep sinon
+      _updateVisionThumbs();
     });
   });
 
