@@ -4159,7 +4159,7 @@
         <div class="dyn-extra">
           <!-- Image produit gauche -->
           <div id="dx2-img" style="position:absolute;left:13px;top:101px;width:91px;height:107px;border-radius:14px;overflow:hidden;background:#1c1c1a">
-            <img src="assets/dyn-watch.jpg" alt="Samsung Galaxy Fit 3" style="width:100%;height:100%;object-fit:cover;display:block">
+            <img id="dx2-img-el" src="assets/dyn-watch.jpg" alt="Alternative" style="width:100%;height:100%;object-fit:cover;display:block">
           </div>
           <!-- Texte droite -->
           <p id="dx2-prod-name" style="position:absolute;top:104px;left:109px;right:21px;font-family:'Inter',sans-serif;font-weight:700;font-size:10px;color:#fff;margin:0;line-height:1.3">Samsung R390<br>Galaxy fit 3</p>
@@ -4203,14 +4203,14 @@
         <!-- Expanded — État 4 : Apps alternatives -->
         <div class="dyn-extra">
           <!-- App 1 -->
-          <div id="dx4-a1-icon" style="position:absolute;top:93px;left:20px;width:36px;height:36px;border-radius:8px;overflow:hidden"><img src="assets/dyn-strava.png" alt="Strava" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+          <div id="dx4-a1-icon" style="position:absolute;top:93px;left:20px;width:36px;height:36px;border-radius:8px;overflow:hidden;background:#fff"><img id="dx4-a1-img" src="assets/dyn-strava.png" alt="App 1" style="width:100%;height:100%;object-fit:cover;display:block"></div>
           <p id="dx4-a1-name" style="position:absolute;top:93px;left:61px;font-family:'Inter',sans-serif;font-weight:700;font-size:10px;color:#fff;margin:0;line-height:1.1">Strava</p>
           <p id="dx4-a1-desc" style="position:absolute;top:107px;left:61px;right:20px;font-family:'Inter',sans-serif;font-size:10px;color:#bbb;margin:0;line-height:1.35">Calcule vos kcal lors de vos déplacements.</p>
           <div style="position:absolute;top:132px;left:57px;width:84px;height:17px;background:#323232;border-radius:7px;display:flex;align-items:center;justify-content:center">
             <span id="dx4-a1-link" style="font-family:'Inter',sans-serif;font-size:8px;color:#bbb">↗ playstore.com</span>
           </div>
           <!-- App 2 -->
-          <div id="dx4-a2-icon" style="position:absolute;top:166px;left:20px;width:36px;height:36px;border-radius:8px;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center"><img src="assets/dyn-gfit.png" alt="Google Fit" style="width:88%;height:88%;object-fit:contain;display:block"></div>
+          <div id="dx4-a2-icon" style="position:absolute;top:166px;left:20px;width:36px;height:36px;border-radius:8px;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center"><img id="dx4-a2-img" src="assets/dyn-gfit.png" alt="App 2" style="width:88%;height:88%;object-fit:contain;display:block"></div>
           <p id="dx4-a2-name" style="position:absolute;top:166px;left:61px;font-family:'Inter',sans-serif;font-weight:700;font-size:10px;color:#fff;margin:0;line-height:1.1">Google fit</p>
           <p id="dx4-a2-desc" style="position:absolute;top:180px;left:61px;right:20px;font-family:'Inter',sans-serif;font-size:10px;color:#bbb;margin:0;line-height:1.35">Remplace une montre connectée.</p>
           <div style="position:absolute;top:205px;left:57px;width:84px;height:17px;background:#323232;border-radius:7px;display:flex;align-items:center;justify-content:center">
@@ -4721,8 +4721,8 @@
     const mainAmb = userAmbitions[0]?.label || 'épargne';
     const reply = await _claudeOneShot(
       `Génère des alternatives d'achat conscient. JSON uniquement, sans texte autour :
-{"alt_smart":{"name":"nom court","saving":"économie ex: -15 €","price":"prix","detail":"1 phrase","url":"domaine.com"},"alt_free":{"name":"nom court","detail":"1 phrase gratuite"}}`,
-      `Produit: ${info.name}${info.brand?' de '+info.brand:''}, prix: ${info.price}, catégorie: ${info.category}. Objectif: ${mainAmb}. Alt_smart = moins cher (reconditionné/comparateur). Alt_free = gratuit lié à l'objectif.`
+{"alt_smart":{"name":"nom court","saving":"économie ex: -15 €","price":"prix","detail":"1 phrase","url":"domaine marchand ex: backmarket.fr","brand_domain":"domaine officiel de la marque ex: samsung.com"},"apps":[{"name":"nom app","detail":"1 phrase gratuite","domain":"domaine officiel ex: strava.com"},{"name":"nom app 2","detail":"1 phrase gratuite","domain":"domaine officiel ex: google.com"}]}`,
+      `Produit: ${info.name}${info.brand?' de '+info.brand:''}, prix: ${info.price}, catégorie: ${info.category}. Objectif: ${mainAmb}. Alt_smart = même produit moins cher (reconditionné/comparateur). apps = 2 applis/services GRATUITS pertinents pour ce type de produit ou l'objectif. brand_domain et domain doivent être les vrais domaines officiels (pour récupérer les logos).`
     );
     if (!reply) return;
     let alts;
@@ -4737,20 +4737,60 @@
       const pn = document.getElementById('dx2-prod-name'); if (pn && info.name) pn.innerHTML = info.name + (info.brand ? '<br>' + info.brand : '');
       const pr = document.getElementById('dx2-price'); if (pr && alts.alt_smart.price) pr.textContent = alts.alt_smart.price;
       const lk = document.getElementById('dx2-link');  if (lk && alts.alt_smart.url) lk.textContent = '↗ ' + alts.alt_smart.url;
+      // Image réelle : logo de la marque (repli marchand → démo)
+      setDynLogo(document.getElementById('dx2-img-el'), alts.alt_smart.brand_domain || alts.alt_smart.url, 'assets/dyn-watch.jpg');
     }
     // State 3 — objectif épargne
     const st3sub = document.getElementById('dyn-st3-sub');
     if (st3sub) st3sub.textContent = 'pour ' + mainAmb.toLowerCase();
-    // State 4 — alternatives gratuites (IDs dx4-a1-* / dx4-a2-*)
+    // State 4 — applis/services gratuits réels (IDs dx4-a1-* / dx4-a2-*)
     const st4 = document.querySelector('#dyn-isl .dyn-state[data-st="4"]');
-    if (st4 && alts.alt_free) {
-      const n = st4.querySelector('.dyn-alt-n'); if (n) n.textContent = alts.alt_free.name || n.textContent;
-      const a1n = document.getElementById('dx4-a1-name'); if (a1n) a1n.textContent = alts.alt_free.name || a1n.textContent;
-      const a1d = document.getElementById('dx4-a1-desc'); if (a1d) a1d.textContent = alts.alt_free.detail || a1d.textContent;
+    const apps = Array.isArray(alts.apps) ? alts.apps : (alts.alt_free ? [alts.alt_free] : []);
+    if (st4 && apps[0]) {
+      const a1n = document.getElementById('dx4-a1-name'); if (a1n) a1n.textContent = apps[0].name || a1n.textContent;
+      const a1d = document.getElementById('dx4-a1-desc'); if (a1d) a1d.textContent = apps[0].detail || a1d.textContent;
+      setDynLogo(document.getElementById('dx4-a1-img'), apps[0].domain, 'assets/dyn-strava.png');
+    }
+    if (st4 && apps[1]) {
+      const a2n = document.getElementById('dx4-a2-name'); if (a2n) a2n.textContent = apps[1].name || a2n.textContent;
+      const a2d = document.getElementById('dx4-a2-desc'); if (a2d) a2d.textContent = apps[1].detail || a2d.textContent;
+      setDynLogo(document.getElementById('dx4-a2-img'), apps[1].domain, 'assets/dyn-gfit.png');
     }
     // State 1 — rappel objectif
     const objTxt = document.getElementById('dyn-obj-txt');
     if (objTxt) objTxt.textContent = 'Je veux ' + mainAmb.toLowerCase() + ' !';
+  }
+
+  /* ── Logo réel d'un domaine : icon.horse → favicon Google → image embarquée ──
+     Permet à l'îlot d'afficher la VRAIE marque/app analysée plutôt qu'un
+     visuel mis en scène. Aucune clé requise (chargement direct <img src>). */
+  function setDynLogo(imgEl, domain, fallbackSrc) {
+    if (!imgEl) return;
+    if (!domain) { if (fallbackSrc) { imgEl.src = fallbackSrc; } return; }
+    domain = String(domain).replace(/^https?:\/\//, '').replace(/\/.*$/, '').trim();
+    if (!domain) { if (fallbackSrc) { imgEl.src = fallbackSrc; } return; }
+    const sources = [
+      'https://icon.horse/icon/' + domain,
+      'https://www.google.com/s2/favicons?domain=' + domain + '&sz=128'
+    ];
+    // logo cadré + fond blanc tant qu'on affiche un logo distant
+    imgEl.style.objectFit = 'contain';
+    imgEl.style.background = '#fff';
+    imgEl.style.padding = '6px';
+    let stage = 0;
+    imgEl.onerror = function () {
+      stage++;
+      if (stage < sources.length) {            // source suivante
+        imgEl.src = sources[stage];
+      } else {                                 // tout a échoué → image de démo
+        imgEl.onerror = null;
+        imgEl.style.objectFit = 'cover';
+        imgEl.style.background = '';
+        imgEl.style.padding = '0';
+        if (fallbackSrc) imgEl.src = fallbackSrc;
+      }
+    };
+    imgEl.src = sources[0];
   }
 
   /* ── Scan page Amazon avec Claude Vision ── */
