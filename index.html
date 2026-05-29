@@ -4790,10 +4790,11 @@
     const base64 = await _imgToBase64(amznImg.src);
     if (!base64) return null;
     try {
-      const res = await fetch('/api/claude', {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01',
-                   'content-type': 'application/json' },
+                   'content-type': 'application/json',
+                   'anthropic-dangerous-direct-browser-ipc': 'true' },
         body: JSON.stringify({
           model: 'claude-3-5-sonnet-20241022',
           max_tokens: 150,
@@ -4823,24 +4824,23 @@
     if (btn) btn.textContent = '…';
     if (status) status.textContent = '';
     try {
-      const res = await fetch('/api/claude', {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01',
-                   'content-type': 'application/json' },
+                   'content-type': 'application/json',
+                   'anthropic-dangerous-direct-browser-ipc': 'true' },
         body: JSON.stringify({ model: 'claude-3-5-haiku-20241022', max_tokens: 5,
           messages: [{ role: 'user', content: 'Hi' }] })
       });
       if (res.ok) {
         if (status) { status.textContent = '✓ Clé valide — IA activée'; status.style.color = '#42c47e'; }
-      } else if (res.status === 404) {
-        if (status) { status.textContent = '✗ Lance d\'abord : python server.py'; status.style.color = '#ef4444'; }
       } else {
         let msg = 'Clé invalide';
         try { const d = await res.json(); msg = d?.error?.message || msg; } catch(_){}
         if (status) { status.textContent = '✗ ' + msg; status.style.color = '#ef4444'; }
       }
     } catch(e) {
-      if (status) { status.textContent = '✗ Lance server.py (python server.py)'; status.style.color = '#ef4444'; }
+      if (status) { status.textContent = '✗ Connexion impossible (CORS ?)'; status.style.color = '#ef4444'; }
     }
     if (btn) btn.textContent = 'Tester';
   }
@@ -6202,7 +6202,7 @@ Règles ABSOLUES : max 3 phrases courtes · toujours en français · 1 seule que
     if(!key) return null;
     chatHistory.push({ role:'user', content:userText });
     try {
-      const res = await fetch('/api/claude', {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
         method:'POST',
         headers:{
           'x-api-key': key,
@@ -6547,10 +6547,11 @@ Règles ABSOLUES : max 3 phrases courtes · toujours en français · 1 seule que
     const key = getClaudeKey();
     if (!key) return null;
     try {
-      const res = await fetch('/api/claude', {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01',
-                   'content-type': 'application/json' },
+                   'content-type': 'application/json',
+                   'anthropic-dangerous-direct-browser-ipc': 'true' },
         body: JSON.stringify({ model: 'claude-3-5-haiku-20241022', max_tokens: 150,
           system: systemPrompt, messages: [{ role: 'user', content: userText }] })
       });
