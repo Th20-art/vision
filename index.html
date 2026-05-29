@@ -2199,15 +2199,15 @@
 
   /* ─── EXPANDED — visible quand .dyn-isl.exp ─── */
   .dyn-extra{
-    position:absolute;top:92px;left:13px;right:13px;bottom:22px;
+    position:absolute;inset:0;          /* couvre tout le card */
     opacity:0;pointer-events:none;
     transition:opacity .25s ease
   }
   .dyn-isl.exp .dyn-state.on .dyn-extra{
-    opacity:1;pointer-events:auto;transition-delay:.2s
+    opacity:1;pointer-events:auto;transition-delay:.2s;z-index:7
   }
 
-  /* ─── SVG plein écran de l'état développé (maquette officielle) ─── */
+  /* ─── SVG plein écran — caché en étendu (HTML prend le relais) ─── */
   .dyn-exp-svg{
     position:absolute;inset:0;
     width:100%;height:100%;object-fit:fill;
@@ -2215,8 +2215,8 @@
     opacity:0;pointer-events:none;z-index:6;
     transition:opacity .22s ease
   }
-  /* En développé : SVG visible pour le design, dyn-extra masqué */
-  .dyn-isl.exp .dyn-state.on .dyn-exp-svg{opacity:1;transition-delay:.16s}
+  /* SVG masqué en mode étendu — dyn-extra HTML (z-index:7) est seul visible */
+  .dyn-isl.exp .dyn-state.on .dyn-exp-svg{opacity:0}
   .dyn-isl.exp .dyn-dots{display:none}
   .dyn-isl.exp .dyn-l,
   .dyn-isl.exp .dyn-bar,
@@ -4169,12 +4169,16 @@
           <rect x="10.5" y="7" width="2" height="7" fill="#fff" rx="1"/>
           <circle cx="11.5" cy="17" r="1.1" fill="#fff"/>
         </svg>
-        <!-- Expanded -->
+        <!-- Expanded — État 0 : Score + insights -->
         <div class="dyn-extra">
-          <div class="dx-h">💰 41€ pour un gadget</div>
-          <div class="dx-b">Ce bracelet connecté rejoint souvent le tiroir après quelques mois d'utilisation. L'argent pourrait servir à des expériences plus durables.</div>
-          <div class="dx-h">🤔 Vraiment nécessaire&nbsp;?</div>
-          <div class="dx-b">Smartphone déjà capable de suivre activité et santé. Cette technologie répond-elle à un besoin réel ou à une envie créée&nbsp;?</div>
+          <div style="position:absolute;top:92px;left:13px;right:21px">
+            <p style="font-family:'Inter',sans-serif;font-weight:700;font-size:12px;color:#fff;line-height:1.1;margin:0 0 5px">💰 41€ pour un gadget</p>
+            <p style="font-family:'Inter',sans-serif;font-size:10px;color:#585858;line-height:1.4;margin:0">Ce bracelet connecté rejoint souvent le tiroir après quelques mois d'utilisation. L'argent pourrait servir à des expériences plus durables.</p>
+          </div>
+          <div style="position:absolute;top:162px;left:13px;right:21px">
+            <p style="font-family:'Inter',sans-serif;font-weight:700;font-size:12px;color:#fff;line-height:1.1;margin:0 0 5px">🤔 Vraiment nécessaire&nbsp;?</p>
+            <p style="font-family:'Inter',sans-serif;font-size:10px;color:#585858;line-height:1.4;margin:0">Smartphone déjà capable de suivre activité et santé. Cette technologie répond-elle à un besoin réel ou à une envie créée&nbsp;?</p>
+          </div>
         </div>
       </div>
 
@@ -4184,10 +4188,12 @@
         <!-- Compact -->
         <p class="dyn-q">Es-tu sûr(e) d'en avoir besoin&nbsp;?</p>
         <div class="dyn-btn-or" id="dyn-obj-txt">Je veux pouvoir voyager&nbsp;!</div>
-        <!-- Expanded -->
-        <div class="dyn-extra" style="top:88px;">
-          <div class="dx-h" style="margin-bottom:8px;">Prends le temps de réfléchir</div>
-          <div class="dx-b">Ce bracelet connecté rejoint souvent le tiroir après quelques mois d'utilisation. L'argent pourrait servir à des expériences plus durables.</div>
+        <!-- Expanded — État 1 : Réflexion -->
+        <div class="dyn-extra">
+          <div style="position:absolute;top:88px;left:13px;right:21px">
+            <p style="font-family:'Inter',sans-serif;font-weight:700;font-size:12px;color:#fff;line-height:1.1;margin:0 0 8px">Prends le temps de réfléchir</p>
+            <p style="font-family:'Inter',sans-serif;font-size:10px;color:#585858;line-height:1.4;margin:0">Ce bracelet connecté rejoint souvent le tiroir après quelques mois d'utilisation. L'argent pourrait servir à des expériences plus durables.</p>
+          </div>
         </div>
       </div>
 
@@ -4199,23 +4205,23 @@
         <p class="dyn-alt-l">Alternative trouvée&nbsp;!</p>
         <p class="dyn-alt-n">Back Market</p>
         <span class="dyn-badge">+20$</span>
-        <!-- Expanded : montre (CSS mock) + texte produit -->
+        <!-- Expanded — État 2 : Alternative moins chère -->
         <div class="dyn-extra">
-          <div class="dx-2col">
-            <div class="dx-watch-mock">
+          <!-- Image produit gauche -->
+          <div id="dx2-img" style="position:absolute;left:13px;top:101px;width:91px;height:107px;border-radius:14px;overflow:hidden;background:#1c1c1a">
+            <div class="dx-watch-mock" style="width:100%;height:100%;border-radius:14px;border:none">
               <div class="dx-watch-face">
-                <div class="dx-watch-t">10</div>
-                <div class="dx-watch-t">58</div>
+                <div class="dx-watch-t">10</div><div class="dx-watch-t">58</div>
                 <div class="dx-watch-d">Fri, 26</div>
               </div>
             </div>
-            <div class="dx-text-r">
-              <div class="dx-h">Samsung R390</div>
-              <div class="dx-h" style="margin-bottom:0;">Galaxy fit 3</div>
-              <div class="dx-price">20$</div>
-              <div class="dx-guarantee">Garantis 3 mois</div>
-              <span class="dx-link">↗ backmarket.fr</span>
-            </div>
+          </div>
+          <!-- Texte droite -->
+          <p id="dx2-prod-name" style="position:absolute;top:104px;left:109px;right:21px;font-family:'Inter',sans-serif;font-weight:700;font-size:10px;color:#fff;margin:0;line-height:1.3">Samsung R390<br>Galaxy fit 3</p>
+          <p id="dx2-price" style="position:absolute;top:135px;left:109px;font-family:'Inter',sans-serif;font-weight:600;font-size:11px;color:#fff;margin:0">20$</p>
+          <p id="dx2-guarantee" style="position:absolute;top:148px;left:109px;font-family:'Inter',sans-serif;font-size:10px;color:#fff;margin:0">Garantis 3 mois</p>
+          <div style="position:absolute;top:169px;left:108px;right:28px;height:22px;background:#323232;border-radius:7px;display:flex;align-items:center;justify-content:center">
+            <span id="dx2-link" style="font-family:'Inter',sans-serif;font-size:8px;color:#bbb">↗ backmarket.fr</span>
           </div>
         </div>
       </div>
@@ -4228,17 +4234,16 @@
         <p class="dyn-alt-l">Alternative trouvée&nbsp;!</p>
         <p class="dyn-alt-n">Place plutôt ton argent</p>
         <p class="dyn-alt-sub" id="dyn-st3-sub">pour ton objectif</p>
-        <!-- Expanded : VOYAGE 8% + image plage -->
+        <!-- Expanded — État 3 : Épargne vers objectif -->
         <div class="dyn-extra">
-          <div class="dx-2col">
-            <div class="dx-voyage-l">
-              <div class="dx-vl-lbl" id="dyn-vl-lbl">VOYAGE</div>
-              <div class="dx-vl-pct" id="dyn-vl-pct">8%</div>
-              <div class="dx-vl-bar"><div class="dx-vl-fill" id="dyn-vl-fill" style="width:8%"></div></div>
-              <div class="dx-vl-sub" id="dyn-vl-sub">Il manque 1&nbsp;376&nbsp;€. Continue comme ça.</div>
-            </div>
-            <div class="dx-beach"></div>
+          <div id="dyn-vl-lbl" style="position:absolute;top:104px;left:13px;font-family:'Work Sans',sans-serif;font-weight:400;font-size:13px;color:#fff;line-height:1">VOYAGE</div>
+          <div id="dyn-vl-pct" style="position:absolute;top:116px;left:13px;font-family:'Work Sans',sans-serif;font-weight:700;font-size:22px;color:#38bdf8;line-height:1">8%</div>
+          <div style="position:absolute;top:141px;left:13px;width:84px;height:6px;background:#323232;border-radius:8px;overflow:hidden">
+            <div id="dyn-vl-fill" style="height:100%;width:8%;background:#4eb8ff;border-radius:8px"></div>
           </div>
+          <div id="dyn-vl-sub" style="position:absolute;top:156px;left:13px;right:113px;font-family:'Inter',sans-serif;font-size:10px;color:#fff;line-height:1.3">Il manque 1&nbsp;376&nbsp;€. Continue comme ça.</div>
+          <!-- Photo plage droite -->
+          <div class="dx-beach" style="position:absolute;top:101px;left:114px;width:86px;height:108px;flex-shrink:0"></div>
         </div>
       </div>
 
@@ -4250,23 +4255,21 @@
         <p class="dyn-alt-l">Alternative trouvée&nbsp;!</p>
         <p class="dyn-alt-n">Application</p>
         <p class="dyn-alt-zero">0$</p>
-        <!-- Expanded : 2 app cards stacked -->
+        <!-- Expanded — État 4 : Apps alternatives -->
         <div class="dyn-extra">
-          <div class="dx-app-row">
-            <div class="dx-app-icon strava">A</div>
-            <div class="dx-app-body">
-              <div class="dx-app-name">Strava</div>
-              <div class="dx-app-desc">Calcule vos kcal lors de vos déplacement.</div>
-              <span class="dx-app-link">↗ playstore.com</span>
-            </div>
+          <!-- App 1 -->
+          <div id="dx4-a1-icon" style="position:absolute;top:93px;left:20px;width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#fc5200,#fc4c02);display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:800;font-family:'Inter',sans-serif">A</div>
+          <p id="dx4-a1-name" style="position:absolute;top:93px;left:61px;font-family:'Inter',sans-serif;font-weight:700;font-size:10px;color:#fff;margin:0;line-height:1.1">Strava</p>
+          <p id="dx4-a1-desc" style="position:absolute;top:107px;left:61px;right:20px;font-family:'Inter',sans-serif;font-size:10px;color:#bbb;margin:0;line-height:1.35">Calcule vos kcal lors de vos déplacements.</p>
+          <div style="position:absolute;top:132px;left:57px;width:84px;height:17px;background:#323232;border-radius:7px;display:flex;align-items:center;justify-content:center">
+            <span id="dx4-a1-link" style="font-family:'Inter',sans-serif;font-size:8px;color:#bbb">↗ playstore.com</span>
           </div>
-          <div class="dx-app-row">
-            <div class="dx-app-icon gfit"></div>
-            <div class="dx-app-body">
-              <div class="dx-app-name">Google fit</div>
-              <div class="dx-app-desc">Remplace une montre connecté.</div>
-              <span class="dx-app-link">↗ playstore.com</span>
-            </div>
+          <!-- App 2 -->
+          <div id="dx4-a2-icon" style="position:absolute;top:166px;left:20px;width:36px;height:36px;border-radius:8px;background:conic-gradient(from 0deg,#EA4335 90deg,#FBBC04 90deg 180deg,#34A853 180deg 270deg,#4285F4 270deg)"></div>
+          <p id="dx4-a2-name" style="position:absolute;top:166px;left:61px;font-family:'Inter',sans-serif;font-weight:700;font-size:10px;color:#fff;margin:0;line-height:1.1">Google fit</p>
+          <p id="dx4-a2-desc" style="position:absolute;top:180px;left:61px;right:20px;font-family:'Inter',sans-serif;font-size:10px;color:#bbb;margin:0;line-height:1.35">Remplace une montre connectée.</p>
+          <div style="position:absolute;top:205px;left:57px;width:84px;height:17px;background:#323232;border-radius:7px;display:flex;align-items:center;justify-content:center">
+            <span id="dx4-a2-link" style="font-family:'Inter',sans-serif;font-size:8px;color:#bbb">↗ playstore.com</span>
           </div>
         </div>
       </div>
@@ -4781,26 +4784,24 @@
     try { alts = JSON.parse(reply.match(/\{[\s\S]*\}/)?.[0]); } catch(e) { return; }
     if (!alts) return;
 
-    // State 2 — alternative moins chère
+    // State 2 — alternative moins chère (IDs dx2-*)
     const st2 = document.querySelector('#dyn-isl .dyn-state[data-st="2"]');
     if (st2 && alts.alt_smart) {
       const n = st2.querySelector('.dyn-alt-n'); if (n) n.textContent = alts.alt_smart.name || n.textContent;
       const b = st2.querySelector('.dyn-badge');  if (b) b.textContent = alts.alt_smart.saving || b.textContent;
-      const heads = st2.querySelectorAll('.dx-h');
-      if (heads[0]) heads[0].textContent = info.name;
-      if (heads[1]) heads[1].textContent = info.brand || '';
-      const p2 = st2.querySelector('.dx-price'); if (p2 && alts.alt_smart.price) p2.textContent = alts.alt_smart.price;
-      const lk = st2.querySelector('.dx-link');  if (lk && alts.alt_smart.url) lk.textContent = '↗ ' + alts.alt_smart.url;
+      const pn = document.getElementById('dx2-prod-name'); if (pn && info.name) pn.innerHTML = info.name + (info.brand ? '<br>' + info.brand : '');
+      const pr = document.getElementById('dx2-price'); if (pr && alts.alt_smart.price) pr.textContent = alts.alt_smart.price;
+      const lk = document.getElementById('dx2-link');  if (lk && alts.alt_smart.url) lk.textContent = '↗ ' + alts.alt_smart.url;
     }
     // State 3 — objectif épargne
     const st3sub = document.getElementById('dyn-st3-sub');
     if (st3sub) st3sub.textContent = 'pour ' + mainAmb.toLowerCase();
-    // State 4 — alternative gratuite
+    // State 4 — alternatives gratuites (IDs dx4-a1-* / dx4-a2-*)
     const st4 = document.querySelector('#dyn-isl .dyn-state[data-st="4"]');
     if (st4 && alts.alt_free) {
       const n = st4.querySelector('.dyn-alt-n'); if (n) n.textContent = alts.alt_free.name || n.textContent;
-      const an = st4.querySelector('.dx-app-name'); if (an) an.textContent = alts.alt_free.name || an.textContent;
-      const ad = st4.querySelector('.dx-app-desc'); if (ad) ad.textContent = alts.alt_free.detail || ad.textContent;
+      const a1n = document.getElementById('dx4-a1-name'); if (a1n) a1n.textContent = alts.alt_free.name || a1n.textContent;
+      const a1d = document.getElementById('dx4-a1-desc'); if (a1d) a1d.textContent = alts.alt_free.detail || a1d.textContent;
     }
     // State 1 — rappel objectif
     const objTxt = document.getElementById('dyn-obj-txt');
