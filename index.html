@@ -2215,9 +2215,16 @@
     opacity:0;pointer-events:none;z-index:6;
     transition:opacity .22s ease
   }
-  .dyn-isl.exp .dyn-state.on .dyn-exp-svg{opacity:1;transition-delay:.16s}
-  /* En développé, le SVG remplace tout → masque tous les éléments HTML compacts */
-  .dyn-isl.exp .dyn-extra{display:none}
+  /* En développé : SVG caché, dyn-extra HTML prend le relais avec données IA */
+  .dyn-isl.exp .dyn-state.on .dyn-exp-svg{opacity:0}
+  .dyn-isl.exp .dyn-state.on .dyn-extra{opacity:1;pointer-events:auto;transition-delay:.2s}
+
+  /* Couleurs compagnon sur le contenu étendu */
+  .dyn-isl.exp .dx-h{color:var(--og)}
+  .dyn-isl.exp .dx-vl-pct{color:var(--og)}
+  .dyn-isl.exp .dx-vl-fill{background:var(--og)}
+  .dyn-isl.exp .dx-link{color:var(--og);background:color-mix(in srgb,var(--og) 12%,transparent);border:1px solid color-mix(in srgb,var(--og) 30%,transparent)}
+  .dyn-isl.exp .dyn-badge{background:color-mix(in srgb,var(--og) 18%,#0a0a0a);color:var(--og)}
   .dyn-isl.exp .dyn-dots{display:none}
   .dyn-isl.exp .dyn-l,
   .dyn-isl.exp .dyn-bar,
