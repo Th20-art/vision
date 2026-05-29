@@ -4795,7 +4795,7 @@
         headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01',
                    'content-type': 'application/json' },
         body: JSON.stringify({
-          model: 'claude-opus-4-5',
+          model: 'claude-3-5-sonnet-20241022',
           max_tokens: 150,
           messages: [{ role: 'user', content: [
             { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: base64 } },
@@ -4827,17 +4827,20 @@
         method: 'POST',
         headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01',
                    'content-type': 'application/json' },
-        body: JSON.stringify({ model: 'claude-haiku-4-5', max_tokens: 5,
+        body: JSON.stringify({ model: 'claude-3-5-haiku-20241022', max_tokens: 5,
           messages: [{ role: 'user', content: 'Hi' }] })
       });
       if (res.ok) {
-        if (status) { status.textContent = '✓ Clé valide — scan & chat activés'; status.style.color = '#42c47e'; }
+        if (status) { status.textContent = '✓ Clé valide — IA activée'; status.style.color = '#42c47e'; }
+      } else if (res.status === 404) {
+        if (status) { status.textContent = '✗ Lance d\'abord : python server.py'; status.style.color = '#ef4444'; }
       } else {
-        const err = await res.json().catch(() => ({}));
-        if (status) { status.textContent = '✗ ' + (err.error?.message || 'Clé invalide'); status.style.color = '#ef4444'; }
+        let msg = 'Clé invalide';
+        try { const d = await res.json(); msg = d?.error?.message || msg; } catch(_){}
+        if (status) { status.textContent = '✗ ' + msg; status.style.color = '#ef4444'; }
       }
     } catch(e) {
-      if (status) { status.textContent = '✗ Connexion impossible'; status.style.color = '#ef4444'; }
+      if (status) { status.textContent = '✗ Lance server.py (python server.py)'; status.style.color = '#ef4444'; }
     }
     if (btn) btn.textContent = 'Tester';
   }
@@ -6208,7 +6211,7 @@ Règles ABSOLUES : max 3 phrases courtes · toujours en français · 1 seule que
           'anthropic-dangerous-direct-browser-ipc': 'true'
         },
         body: JSON.stringify({
-          model: 'claude-haiku-4-5',
+          model: 'claude-3-5-haiku-20241022',
           max_tokens: 300,
           system: _chatSystemPrompt(),
           messages: chatHistory
@@ -6548,7 +6551,7 @@ Règles ABSOLUES : max 3 phrases courtes · toujours en français · 1 seule que
         method: 'POST',
         headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01',
                    'content-type': 'application/json' },
-        body: JSON.stringify({ model: 'claude-haiku-4-5', max_tokens: 150,
+        body: JSON.stringify({ model: 'claude-3-5-haiku-20241022', max_tokens: 150,
           system: systemPrompt, messages: [{ role: 'user', content: userText }] })
       });
       if (!res.ok) return null;
