@@ -4790,11 +4790,10 @@
     const base64 = await _imgToBase64(amznImg.src);
     if (!base64) return null;
     try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
+      const res = await fetch('/api/claude', {
         method: 'POST',
         headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01',
-                   'content-type': 'application/json',
-                   'anthropic-dangerous-direct-browser-ipc': 'true' },
+                   'content-type': 'application/json' },
         body: JSON.stringify({
           model: 'claude-opus-4-5',
           max_tokens: 150,
@@ -4824,11 +4823,10 @@
     if (btn) btn.textContent = '…';
     if (status) status.textContent = '';
     try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
+      const res = await fetch('/api/claude', {
         method: 'POST',
         headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01',
-                   'content-type': 'application/json',
-                   'anthropic-dangerous-direct-browser-ipc': 'true' },
+                   'content-type': 'application/json' },
         body: JSON.stringify({ model: 'claude-haiku-4-5', max_tokens: 5,
           messages: [{ role: 'user', content: 'Hi' }] })
       });
@@ -6201,7 +6199,7 @@ Règles ABSOLUES : max 3 phrases courtes · toujours en français · 1 seule que
     if(!key) return null;
     chatHistory.push({ role:'user', content:userText });
     try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
+      const res = await fetch('/api/claude', {
         method:'POST',
         headers:{
           'x-api-key': key,
@@ -6546,11 +6544,10 @@ Règles ABSOLUES : max 3 phrases courtes · toujours en français · 1 seule que
     const key = getClaudeKey();
     if (!key) return null;
     try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
+      const res = await fetch('/api/claude', {
         method: 'POST',
         headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01',
-                   'content-type': 'application/json',
-                   'anthropic-dangerous-direct-browser-ipc': 'true' },
+                   'content-type': 'application/json' },
         body: JSON.stringify({ model: 'claude-haiku-4-5', max_tokens: 150,
           system: systemPrompt, messages: [{ role: 'user', content: userText }] })
       });
