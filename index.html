@@ -4917,9 +4917,25 @@
     go('s-home');
   }
 
-  /* Hook: log resistance event (no-op stub — extend if journal exists) */
+  /* Hook: log resistance — ajoute le prix évité à l'épargne de l'objectif principal */
   function logAmznResist(){
-    try { if(typeof addJournalLine === 'function') addJournalLine('resist','Résisté à Amazon — +39€'); } catch(e){}
+    // Capture le prix depuis l'overlay d'impact
+    const priceEl = document.querySelector('.imp-pd-p');
+    const raw = priceEl ? priceEl.textContent.replace(/[^\d,]/g,'').replace(',','.') : '';
+    const priceNum = parseFloat(raw) || 0;
+
+    if (typeof userAmbitions !== 'undefined' && userAmbitions.length > 0 && priceNum > 0) {
+      const label = userAmbitions[0].label;
+      const key = 'vision_saved_' + label;
+      const current = parseFloat(localStorage.getItem(key) || '0');
+      localStorage.setItem(key, String(+(current + priceNum).toFixed(2)));
+      updateDynIsland();
+    }
+    try {
+      const lbl = (userAmbitions && userAmbitions[0]) ? userAmbitions[0].label : 'objectif';
+      if(typeof addJournalLine === 'function')
+        addJournalLine('resist', 'Résisté → +' + (priceNum || 39).toFixed(0) + ' € vers ' + lbl);
+    } catch(e){}
   }
 
   /* ── Toggle catégorie (s-param-sites) ── */
@@ -5822,6 +5838,11 @@
       }
     }
     userAmbitions = selected;
+    // Initialise les compteurs d'épargne à 0 pour les nouveaux objectifs
+    selected.forEach(s => {
+      const k = 'vision_saved_' + s.label;
+      if (localStorage.getItem(k) === null) localStorage.setItem(k, '0');
+    });
     renderHomeAmbitions();
     if (typeof renderHomeMetrics === 'function') renderHomeMetrics();
     updateDynIsland();
@@ -6453,6 +6474,12 @@ Règles ABSOLUES : max 3 phrases courtes · toujours en français · 1 seule que
         else interim += e.results[i][0].transcript;
       }
       capsuleTranscript = (finalText + interim).trim();
+      // Affiche la vraie transcription dans la box d'enregistrement
+      const box = document.getElementById('rec-transcript-text');
+      if (box) {
+        box.innerHTML = capsuleTranscript + '<span class="rec-cursor"></span>';
+        if (box.parentElement) box.parentElement.scrollTop = box.parentElement.scrollHeight;
+      }
     };
     try { _capsuleSpeechRec.start(); } catch(e) {}
   }
@@ -6553,11 +6580,14 @@ Règles ABSOLUES : max 3 phrases courtes · toujours en français · 1 seule que
       const timerEl = document.getElementById('rec-timer');
       if (timerEl) timerEl.textContent = m + ':' + String(s).padStart(2,'0');
 
-      const wordsThisTick = Math.min(2, CAPSULE_WORDS.length - recState.transcriptIdx);
-      for (let i = 0; i < wordsThisTick; i++) {
-        if (recState.transcriptIdx < CAPSULE_WORDS.length) {
-          addTranscriptWord(CAPSULE_WORDS[recState.transcriptIdx]);
-          recState.transcriptIdx++;
+      // Mock uniquement si la transcription réelle (Web Speech API) n'a rien capturé encore
+      if (!capsuleTranscript) {
+        const wordsThisTick = Math.min(2, CAPSULE_WORDS.length - recState.transcriptIdx);
+        for (let i = 0; i < wordsThisTick; i++) {
+          if (recState.transcriptIdx < CAPSULE_WORDS.length) {
+            addTranscriptWord(CAPSULE_WORDS[recState.transcriptIdx]);
+            recState.transcriptIdx++;
+          }
         }
       }
     }, 1000);
