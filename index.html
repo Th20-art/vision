@@ -4759,6 +4759,55 @@
   const EMO_CIRC = 2 * Math.PI * 38;  // r=38 → ~238.76
   let capSubT = null;  // timer des sous-titres de la capsule
 
+  /* ── Analyse complète : scan vision → alternatives IA → mise à jour DI + overlay ── */
+  async function _updateDIFromScan() {
+    const info = await scanAmazonPage();
+    if (info) {
+      const nameEl = document.querySelector('.imp-pd-n');
+      const priceEl = document.querySelector('.imp-pd-p');
+      if (nameEl && info.name) nameEl.textContent = info.name + (info.brand ? ' · ' + info.brand : '');
+      if (priceEl && info.price) priceEl.textContent = info.price;
+      window._scanInfo = info;
+    }
+    if (!info || !getClaudeKey()) return;
+
+    const mainAmb = userAmbitions[0]?.label || 'épargne';
+    const reply = await _claudeOneShot(
+      `Génère des alternatives d'achat conscient. JSON uniquement, sans texte autour :
+{"alt_smart":{"name":"nom court","saving":"économie ex: -15 €","price":"prix","detail":"1 phrase","url":"domaine.com"},"alt_free":{"name":"nom court","detail":"1 phrase gratuite"}}`,
+      `Produit: ${info.name}${info.brand?' de '+info.brand:''}, prix: ${info.price}, catégorie: ${info.category}. Objectif: ${mainAmb}. Alt_smart = moins cher (reconditionné/comparateur). Alt_free = gratuit lié à l'objectif.`
+    );
+    if (!reply) return;
+    let alts;
+    try { alts = JSON.parse(reply.match(/\{[\s\S]*\}/)?.[0]); } catch(e) { return; }
+    if (!alts) return;
+
+    // State 2 — alternative moins chère
+    const st2 = document.querySelector('#dyn-isl .dyn-state[data-st="2"]');
+    if (st2 && alts.alt_smart) {
+      const n = st2.querySelector('.dyn-alt-n'); if (n) n.textContent = alts.alt_smart.name || n.textContent;
+      const b = st2.querySelector('.dyn-badge');  if (b) b.textContent = alts.alt_smart.saving || b.textContent;
+      const heads = st2.querySelectorAll('.dx-h');
+      if (heads[0]) heads[0].textContent = info.name;
+      if (heads[1]) heads[1].textContent = info.brand || '';
+      const p2 = st2.querySelector('.dx-price'); if (p2 && alts.alt_smart.price) p2.textContent = alts.alt_smart.price;
+      const lk = st2.querySelector('.dx-link');  if (lk && alts.alt_smart.url) lk.textContent = '↗ ' + alts.alt_smart.url;
+    }
+    // State 3 — objectif épargne
+    const st3sub = document.getElementById('dyn-st3-sub');
+    if (st3sub) st3sub.textContent = 'pour ' + mainAmb.toLowerCase();
+    // State 4 — alternative gratuite
+    const st4 = document.querySelector('#dyn-isl .dyn-state[data-st="4"]');
+    if (st4 && alts.alt_free) {
+      const n = st4.querySelector('.dyn-alt-n'); if (n) n.textContent = alts.alt_free.name || n.textContent;
+      const an = st4.querySelector('.dx-app-name'); if (an) an.textContent = alts.alt_free.name || an.textContent;
+      const ad = st4.querySelector('.dx-app-desc'); if (ad) ad.textContent = alts.alt_free.detail || ad.textContent;
+    }
+    // State 1 — rappel objectif
+    const objTxt = document.getElementById('dyn-obj-txt');
+    if (objTxt) objTxt.textContent = 'Je veux ' + mainAmb.toLowerCase() + ' !';
+  }
+
   /* ── Scan page Amazon avec Claude Vision ── */
   async function _imgToBase64(src) {
     return new Promise(resolve => {
@@ -4859,17 +4908,8 @@
     if(AMZN.capT) clearTimeout(AMZN.capT);
     if(capSubT){ clearInterval(capSubT); capSubT = null; }
     if(pbf) pbf.style.width = '0%';
-    // Scan Claude Vision en arrière-plan — met à jour l'overlay impact dès que prêt
-    scanAmazonPage().then(info => {
-      if (!info) return;
-      const nameEl = document.querySelector('.imp-pd-n');
-      const priceEl = document.querySelector('.imp-pd-p');
-      if (nameEl && info.name) nameEl.textContent = info.name + (info.brand ? ' · ' + info.brand : '');
-      if (priceEl && info.price) priceEl.textContent = info.price;
-      // Met à jour le journal si résistance
-      if (typeof window._scanInfo === 'undefined') window._scanInfo = {};
-      window._scanInfo = info;
-    });
+    // Analyse IA en arrière-plan — met à jour DI + overlay impact
+    _updateDIFromScan();
     // Reset visuals
     if(v) v.style.display = 'none';
     if(ph) ph.style.display = 'none';
