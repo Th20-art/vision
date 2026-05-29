@@ -4188,7 +4188,7 @@
           <div id="dyn-vl-sub" style="position:absolute;top:156px;left:13px;right:113px;font-family:'Inter',sans-serif;font-size:10px;color:#fff;line-height:1.3">Il manque 1&nbsp;376&nbsp;€. Continue comme ça.</div>
           <!-- Photo plage droite -->
           <div style="position:absolute;top:101px;left:114px;width:86px;height:108px;border-radius:9px;overflow:hidden">
-            <img src="assets/dyn-beach.jpg" alt="Voyage" style="width:100%;height:100%;object-fit:cover;display:block">
+            <img id="dx3-img-el" src="assets/dyn-beach.jpg" alt="Objectif" style="width:100%;height:100%;object-fit:cover;display:block">
           </div>
         </div>
       </div>
@@ -5978,6 +5978,67 @@
     go('s-intro-analyse');
   }
 
+  /* ── Image d'objectif (état 3) : photo libre réelle selon l'objectif ──
+     Mappe l'objectif (texte FR) vers une requête photo pertinente puis
+     pioche une image gratuite Creative Commons via Openverse (Flickr & co.).
+     Sans clé API. Repli sur l'image embarquée si indisponible. */
+  function _objImageQuery(label) {
+    const l = (label || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+    // Mot-clé UNIQUE = bien meilleure pertinence sur Openverse
+    const map = [
+      [/voyag|vacance|tour du monde|partir|decouvr/, 'beach'],
+      [/maison|appart|immobili|logement|chez moi/,   'house'],
+      [/voiture|auto|vehicule|conduire/,             'car'],
+      [/moto/,                                       'motorcycle'],
+      [/maria|noce/,                                 'wedding'],
+      [/bebe|enfant|naissance|famille/,              'baby'],
+      [/etude|formation|diplome|ecole|universit|apprendre/, 'library'],
+      [/retraite/,                                   'mountains'],
+      [/velo|bicyclette/,                            'bicycle'],
+      [/sport|fitness|muscu|salle|courir|marathon/,  'running'],
+      [/business|entreprise|startup|projet|creer/,   'office'],
+      [/epargne|argent|economi|budget|fond/,         'money'],
+      [/ordinateur|\bpc\b|informatique|tech|materiel/, 'laptop'],
+      [/guitare|musique|piano|instrument/,           'guitar'],
+      [/jardin|nature|potager/,                      'garden'],
+    ];
+    for (const [re, q] of map) { if (re.test(l)) return q; }
+    // Défaut : premier mot de l'objectif (repli sur image embarquée si flou)
+    return l.replace(/[^a-z0-9 ]/g, ' ').trim().split(/\s+/)[0] || 'landscape';
+  }
+
+  let _lastObjImgQuery = null;
+  async function setObjectiveImage(label) {
+    const imgEl = document.getElementById('dx3-img-el');
+    if (!imgEl) return;
+    const q = _objImageQuery(label);
+    if (q === _lastObjImgQuery) return;   // évite de re-piocher pour le même objectif
+    _lastObjImgQuery = q;
+    try {
+      const r = await fetch('https://api.openverse.org/v1/images/?q=' + encodeURIComponent(q) +
+        '&page_size=10&category=photograph&mature=false');
+      if (r.ok) {
+        const j = await r.json();
+        const list = (j.results || []).filter(x => x.url || x.thumbnail);
+        // Priorité aux photos dont le titre/les tags contiennent le mot-clé
+        const kw = q.toLowerCase();
+        const relevant = list.find(x => {
+          const t = (x.title || '').toLowerCase();
+          const tags = (x.tags || []).map(g => (g.name || '').toLowerCase()).join(' ');
+          return t.includes(kw) || tags.includes(kw);
+        });
+        const hit = relevant || list[0];
+        if (hit) {
+          const src = hit.url || hit.thumbnail;
+          imgEl.onerror = function () { imgEl.onerror = null; imgEl.src = 'assets/dyn-beach.jpg'; };
+          imgEl.src = src;
+          return;
+        }
+      }
+    } catch (e) { /* réseau coupé → repli */ }
+    imgEl.src = 'assets/dyn-beach.jpg';
+  }
+
   /* ── Dynamic Island : mise à jour depuis les objectifs ── */
   function updateDynIsland() {
     if (!userAmbitions.length) return;
@@ -6010,6 +6071,8 @@
     if (vlSub) vlSub.innerHTML = target > 0
       ? 'Il manque ' + missing.toLocaleString('fr-FR') + ' €. Continue !'
       : 'Définis un montant cible pour suivre ta progression.';
+    // Image d'objectif réelle (photo libre selon l'objectif)
+    setObjectiveImage(label);
   }
 
   /* ── Toggles sites ── */
