@@ -4873,10 +4873,14 @@
     if(v) v.style.display = 'none';
     if(ph) ph.style.display = 'none';
     if(aph) aph.style.display = 'none';
-    // Mots pour les sous-titres : transcription réelle si dispo, sinon mock
+    // Mots pour les sous-titres :
+    // - transcription réelle si dispo
+    // - null si vraie capsule sans transcript (micro pris par MediaRecorder)
+    // - mock CAPSULE_WORDS seulement si aucune capsule enregistrée
+    const hasCapsule = !!(capsuleVideoURL || capsuleAudioURL);
     const words = capsuleTranscript
       ? capsuleTranscript.split(/\s+/).filter(Boolean)
-      : CAPSULE_WORDS;
+      : hasCapsule ? null : CAPSULE_WORDS;
 
     if(capsuleMode === 'audio' && capsuleAudioURL && a){
       /* ── Mode AUDIO ── */
@@ -4888,8 +4892,7 @@
         const dur = (isFinite(a.duration) && a.duration > 0) ? a.duration : 12;
         const ratio = Math.min(1, a.currentTime / dur);
         if(pbf) pbf.style.width = (ratio * 100) + '%';
-        const n = Math.max(1, Math.round(ratio * words.length));
-        if(subs) subs.textContent = words.slice(0, n).join(' ');
+        if(words && subs){ const n = Math.max(1, Math.round(ratio * words.length)); subs.textContent = words.slice(0, n).join(' '); }
       }, 150);
       a.onended = () => closeCapsule();
       AMZN.capT = setTimeout(closeCapsule, 60000); // garde-fou audio
@@ -4904,8 +4907,7 @@
         const dur = (isFinite(v.duration) && v.duration > 0) ? v.duration : 24;
         const ratio = Math.min(1, v.currentTime / dur);
         if(pbf) pbf.style.width = (ratio * 100) + '%';
-        const n = Math.max(1, Math.round(ratio * words.length));
-        if(subs) subs.textContent = words.slice(0, n).join(' ');
+        if(words && subs){ const n = Math.max(1, Math.round(ratio * words.length)); subs.textContent = words.slice(0, n).join(' '); }
       }, 150);
       v.onended = () => closeCapsule();
       AMZN.capT = setTimeout(closeCapsule, 14000);
