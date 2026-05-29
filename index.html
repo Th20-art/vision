@@ -543,22 +543,7 @@
     color: var(--dark);
     line-height: 1.3;
   }
-  .vision-input-area {
-    background: #2a2a28;
-    border-radius: 0 0 12px 12px;
-    padding: 8px;
-  }
-  .vision-input {
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 6px;
-    padding: 6px 8px;
-    font-size: 10px;
-    color: white;
-    width: 100%;
-    outline: none;
-  }
-  .vision-input::placeholder { color: rgba(255,255,255,0.3); }
+  .vision-input-area,.vision-input { display:none }
 
   .vision-footer {
     position: absolute;
@@ -2121,6 +2106,7 @@
     height:253px;width:213px;
     box-shadow: none}
   @keyframes dynIn{0%{opacity:0;transform:translate(-50%,-14px) scale(.85)}100%{opacity:1;transform:translate(-50%,0) scale(1)}}
+  @keyframes dotPulse{0%,80%,100%{transform:scale(.55);opacity:.4}40%{transform:scale(1);opacity:1}}
 
   /* 5 states absolument positionnés (un seul .on visible) */
   .dyn-state{
@@ -3514,6 +3500,13 @@
             </div>
             <span class="param-chevron">›</span>
           </div>
+          <div class="param-item" style="flex-direction:column;align-items:flex-start;gap:8px;">
+            <span class="param-lbl">CLÉ API CLAUDE</span>
+            <input id="claude-key-input" type="password" placeholder="sk-ant-api03-..."
+              oninput="localStorage.setItem('vision_claude_key',this.value)"
+              style="width:100%;background:#f5f5f5;border:1.5px solid #e8e8e8;border-radius:10px;padding:9px 13px;font-size:12px;font-family:'Inter',sans-serif;outline:none;color:#1a1a1a;box-sizing:border-box;">
+            <div style="font-size:10px;color:var(--muted);">Active le chat IA avec ton compagnon</div>
+          </div>
         </div>
         <!-- Toggle Esprit critique (Figma 73:52) — bordure violette -->
         <div style="margin:14px 20px 0;background:#fff;border:1.5px solid #a78bfa;border-radius:14px;padding:14px 16px;">
@@ -4160,8 +4153,8 @@
         <!-- Compact -->
         <div class="dyn-fox"><img src="assets/comp-foxy.png" class="dyn-comp" alt=""></div>
         <p class="dyn-l">Score d'alignement</p>
-        <div class="dyn-bar"><div class="dyn-bar-fill"></div></div>
-        <p class="dyn-sc">4/<span>10</span></p>
+        <div class="dyn-bar"><div class="dyn-bar-fill" id="dyn-score-fill" style="width:40%"></div></div>
+        <p class="dyn-sc" id="dyn-score">4/<span>10</span></p>
         <svg class="dyn-warn" viewBox="0 0 23 21" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <path d="M11.5 1.5 L21.2 18.8 Q21.5 19.5 20.8 19.5 L2.2 19.5 Q1.5 19.5 1.8 18.8 Z"
                 fill="var(--og)" stroke="#090909" stroke-width=".4" stroke-linejoin="round"/>
@@ -4182,7 +4175,7 @@
         <img class="dyn-exp-svg" src="assets/dyn-exp-1.svg" alt="">
         <!-- Compact -->
         <p class="dyn-q">Es-tu sûr(e) d'en avoir besoin&nbsp;?</p>
-        <div class="dyn-btn-or">Je veux pouvoir voyager&nbsp;!</div>
+        <div class="dyn-btn-or" id="dyn-obj-txt">Je veux pouvoir voyager&nbsp;!</div>
         <!-- Expanded -->
         <div class="dyn-extra" style="top:88px;">
           <div class="dx-h" style="margin-bottom:8px;">Prends le temps de réfléchir</div>
@@ -4226,15 +4219,15 @@
         <div class="dyn-fox"><img src="assets/comp-foxy.png" class="dyn-comp" alt=""></div>
         <p class="dyn-alt-l">Alternative trouvée&nbsp;!</p>
         <p class="dyn-alt-n">Place plutôt ton argent</p>
-        <p class="dyn-alt-sub">pour ton objectif</p>
+        <p class="dyn-alt-sub" id="dyn-st3-sub">pour ton objectif</p>
         <!-- Expanded : VOYAGE 8% + image plage -->
         <div class="dyn-extra">
           <div class="dx-2col">
             <div class="dx-voyage-l">
-              <div class="dx-vl-lbl">VOYAGE</div>
-              <div class="dx-vl-pct">8%</div>
-              <div class="dx-vl-bar"><div class="dx-vl-fill" style="width:8%"></div></div>
-              <div class="dx-vl-sub">Il manque 1&nbsp;376&nbsp;€. Continue comme ça.</div>
+              <div class="dx-vl-lbl" id="dyn-vl-lbl">VOYAGE</div>
+              <div class="dx-vl-pct" id="dyn-vl-pct">8%</div>
+              <div class="dx-vl-bar"><div class="dx-vl-fill" id="dyn-vl-fill" style="width:8%"></div></div>
+              <div class="dx-vl-sub" id="dyn-vl-sub">Il manque 1&nbsp;376&nbsp;€. Continue comme ça.</div>
             </div>
             <div class="dx-beach"></div>
           </div>
@@ -4635,6 +4628,19 @@
     // Refresh Mes Ambitions list à l'entrée
     if (id === 's-param-ambitions' && typeof renderMyAmbitions === 'function') {
       renderMyAmbitions();
+    }
+    // DynIsland réactif à chaque arrivée home
+    if (id === 's-home') updateDynIsland();
+    // Chat : reset historique + message initial à chaque entrée
+    if (id === 's-chat') {
+      chatHistory = [];
+      const initMsg = `Salut ! Je suis là pour t'aider à définir ta vision. Qu'est-ce que tu veux vraiment construire dans ta vie ? 🌟`;
+      chatHistory.push({ role:'assistant', content: initMsg });
+    }
+    // Profil : restaure la clé API dans le champ
+    if (id === 's-profil') {
+      const kInput = document.getElementById('claude-key-input');
+      if (kInput) kInput.value = getClaudeKey();
     }
     // Réveil du compagnon : une seule fois par session (fin tuto ou ouverture app)
     if (id === 's-home' && typeof _wakeUpFox === 'function') {
@@ -5772,7 +5778,42 @@
     userAmbitions = selected;
     renderHomeAmbitions();
     if (typeof renderHomeMetrics === 'function') renderHomeMetrics();
+    updateDynIsland();
     go('s-intro-analyse');
+  }
+
+  /* ── Dynamic Island : mise à jour depuis les objectifs ── */
+  function updateDynIsland() {
+    if (!userAmbitions.length) return;
+    const main = userAmbitions[0];
+    const label = main.label || 'objectif';
+    // Score state 0 (1pt/ambition + 2pts si smartLabel défini + base 1)
+    const score = Math.min(10, userAmbitions.length * 3 + (main.smartLabel ? 1 : 0) + 1);
+    const fill = document.getElementById('dyn-score-fill');
+    if (fill) fill.style.width = (score * 10) + '%';
+    const sc = document.getElementById('dyn-score');
+    if (sc) sc.innerHTML = score + '/<span>10</span>';
+    // State 1 rappel objectif
+    const objTxt = document.getElementById('dyn-obj-txt');
+    if (objTxt) objTxt.textContent = 'Je veux ' + label.toLowerCase() + ' !';
+    // State 3 compact sous-titre
+    const st3sub = document.getElementById('dyn-st3-sub');
+    if (st3sub) st3sub.textContent = 'pour ' + label.toLowerCase();
+    // State 3 dyn-extra
+    const vlLbl = document.getElementById('dyn-vl-lbl');
+    if (vlLbl) vlLbl.textContent = label.toUpperCase();
+    const target = main.amount || 0;
+    const saved  = parseFloat(localStorage.getItem('vision_saved_' + label) || '0');
+    const pct    = target > 0 ? Math.round(Math.min(100, saved / target * 100)) : 0;
+    const missing = target > 0 ? Math.max(0, target - saved) : 0;
+    const vlPct = document.getElementById('dyn-vl-pct');
+    if (vlPct) vlPct.textContent = pct + '%';
+    const vlFill = document.getElementById('dyn-vl-fill');
+    if (vlFill) vlFill.style.width = pct + '%';
+    const vlSub = document.getElementById('dyn-vl-sub');
+    if (vlSub) vlSub.innerHTML = target > 0
+      ? 'Il manque ' + missing.toLocaleString('fr-FR') + ' €. Continue !'
+      : 'Définis un montant cible pour suivre ta progression.';
   }
 
   /* ── Toggles sites ── */
@@ -5960,34 +6001,100 @@
     go('s-home');
   }
 
-  /* ── Chat IA ── */
-  function addChatMessage(suggestion) {
-    const text = suggestion.textContent;
+  /* ── Claude API + Chat IA ── */
+  const CLAUDE_KEY_LS = 'vision_claude_key';
+  function getClaudeKey(){ return (localStorage.getItem(CLAUDE_KEY_LS)||'').trim(); }
+  let chatHistory = [];
+
+  function _chatSystemPrompt(){
+    const persoMap = { foxy:'curieux, motivant, enthousiaste', malo:'calme, stratège, posé', elio:'fun, décalé, créatif', ryo:'sérieux, rigoureux, discipliné' };
+    const name = themes[currentTheme]?.name || 'Foxy';
+    const perso = persoMap[currentTheme] || 'bienveillant';
+    const objs = userAmbitions.length ? userAmbitions.map(a=>a.label).join(', ') : 'non encore définis';
+    return `Tu es ${name}, compagnon IA de l'app Vision. Personnalité : ${perso}. Objectifs de l'utilisateur : ${objs}.
+Mission : aider l'utilisateur à visualiser son futur dans 90 jours, affiner ses objectifs et résister aux dépenses impulsives.
+Règles ABSOLUES : max 3 phrases courtes · toujours en français · 1 seule question à la fin · emojis rares · pas de listes.`;
+  }
+
+  function _chatMockReply(text){
+    const objs = userAmbitions.length ? userAmbitions[0].label : 'ton objectif';
+    const r = [
+      `Pour ${objs}, quelle est la première action concrète que tu pourrais faire cette semaine ? 🎯`,
+      `Intéressant ! En 90 jours, tu te vois où concrètement par rapport à ${objs} ?`,
+      `J'ai noté ça. Quel montant ou quelle étape te permettrait de savoir que tu avances vers ${objs} ? 📊`,
+      `${objs}, c'est important pour toi. Quelle dépense pourrais-tu éviter cette semaine pour t'en rapprocher ? 💰`,
+    ];
+    return r[Math.floor(Math.random()*r.length)];
+  }
+
+  async function callClaude(userText){
+    const key = getClaudeKey();
+    if(!key) return null;
+    chatHistory.push({ role:'user', content:userText });
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method:'POST',
+        headers:{
+          'x-api-key': key,
+          'anthropic-version': '2023-06-01',
+          'content-type': 'application/json',
+          'anthropic-dangerous-direct-browser-ipc': 'true'
+        },
+        body: JSON.stringify({
+          model: 'claude-haiku-4-5',
+          max_tokens: 300,
+          system: _chatSystemPrompt(),
+          messages: chatHistory
+        })
+      });
+      if(!res.ok) return null;
+      const data = await res.json();
+      const reply = data.content?.[0]?.text || '';
+      if(reply) chatHistory.push({ role:'assistant', content:reply });
+      return reply || null;
+    } catch(e){ return null; }
+  }
+
+  function _appendCompMsg(text){
     const msgs = document.getElementById('chatMessages');
-    // Message utilisateur
+    const t = themes[currentTheme];
+    const el = document.createElement('div');
+    el.style.cssText = 'display:flex;gap:8px;align-items:flex-end;';
+    el.innerHTML = `<div style="width:28px;height:28px;border-radius:50%;overflow:hidden;position:relative;flex-shrink:0;background:#ffe5cc;"><img src="${t.img}" style="width:100%;height:100%;object-fit:contain;image-rendering:pixelated;" alt=""></div><div style="background:white;border-radius:16px 16px 16px 4px;padding:12px 14px;max-width:230px;box-shadow:none;"><p style="font-size:13px;color:#1a1a1a;line-height:1.5;margin:0;">${text}</p></div>`;
+    msgs.appendChild(el);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function _appendTypingDots(){
+    const msgs = document.getElementById('chatMessages');
+    const t = themes[currentTheme];
+    const el = document.createElement('div');
+    el.id = 'chat-typing';
+    el.style.cssText = 'display:flex;gap:8px;align-items:flex-end;';
+    const dot = 'width:7px;height:7px;border-radius:50%;background:#ccc;display:inline-block;';
+    el.innerHTML = `<div style="width:28px;height:28px;border-radius:50%;overflow:hidden;position:relative;flex-shrink:0;background:#ffe5cc;"><img src="${t.img}" style="width:100%;height:100%;object-fit:contain;image-rendering:pixelated;" alt=""></div><div style="background:white;border-radius:16px 16px 16px 4px;padding:12px 14px;box-shadow:none;display:flex;gap:5px;align-items:center;"><span style="${dot}animation:dotPulse 1.2s ease-in-out infinite;"></span><span style="${dot}animation:dotPulse 1.2s ease-in-out .2s infinite;"></span><span style="${dot}animation:dotPulse 1.2s ease-in-out .4s infinite;"></span></div>`;
+    msgs.appendChild(el);
+    msgs.scrollTop = msgs.scrollHeight;
+    return el;
+  }
+
+  async function _sendText(text){
+    const msgs = document.getElementById('chatMessages');
     const userMsg = document.createElement('div');
     userMsg.style.cssText = 'display:flex;justify-content:flex-end;';
-    userMsg.innerHTML = `<div style="background:linear-gradient(90deg,var(--og),var(--og2));color:white;border-radius:16px 16px 4px 16px;padding:10px 14px;max-width:220px;font-size:13px;line-height:1.4;">${text}</div>`;
+    userMsg.innerHTML = `<div style="background:linear-gradient(90deg,var(--og),var(--og2));color:white;border-radius:16px 16px 4px 16px;padding:10px 14px;max-width:230px;font-size:13px;line-height:1.4;">${text}</div>`;
     msgs.appendChild(userMsg);
-    // Réponse compagnon
-    setTimeout(() => {
-      const t = themes[currentTheme];
-      const compMsg = document.createElement('div');
-      compMsg.style.cssText = 'display:flex;gap:8px;align-items:flex-end;';
-      const imgStyle = t.clip
-        ? 'position:absolute;width:576%;height:650%;left:-183%;top:-369%;image-rendering:pixelated;'
-        : 'width:100%;height:100%;object-fit:contain;image-rendering:pixelated;';
-      compMsg.innerHTML = `
-        <div style="width:28px;height:28px;border-radius:50%;overflow:hidden;position:relative;flex-shrink:0;background:#ffe5cc;">
-          <img src="${t.img}" style="${imgStyle}" alt="">
-        </div>
-        <div style="background:white;border-radius:16px 16px 16px 4px;padding:12px 14px;max-width:220px;box-shadow: none;">
-          <p style="font-size:13px;color:#1a1a1a;line-height:1.5;margin:0;">Super choix ! 🔥 Je vais t'aider à construire un plan pour <strong>${text.replace(/^[^\s]+\s/,'')}</strong>. Commence par l'ajouter à tes visions !</p>
-        </div>`;
-      msgs.appendChild(compMsg);
-      msgs.scrollTop = msgs.scrollHeight;
-    }, 600);
     msgs.scrollTop = msgs.scrollHeight;
+    const dots = _appendTypingDots();
+    const reply = await callClaude(text);
+    dots.remove();
+    _appendCompMsg(reply || _chatMockReply(text));
+  }
+
+  function addChatMessage(el){
+    const text = el.textContent;
+    el.parentElement?.remove(); // retire les chips de suggestions
+    _sendText(text);
   }
 
   /* ── SMART Objective Flow ── */
@@ -6192,6 +6299,7 @@
       renderHomeAmbitions();
       if (typeof renderMyAmbitions === 'function') renderMyAmbitions();
       if (typeof renderHomeMetrics === 'function') renderHomeMetrics();
+      updateDynIsland();
     }
     closeSmart();
   }
@@ -6204,6 +6312,7 @@
     if (!confirm('Supprimer cet objectif ?')) return;
     userAmbitions = userAmbitions.filter(a => a.key !== key);
     renderHomeAmbitions();
+    updateDynIsland();
     closeSmart();
   }
 
@@ -6235,35 +6344,12 @@
     if (el) el.style.display = 'none';
   }
 
-  function sendChatMessage() {
+  function sendChatMessage(){
     const input = document.getElementById('chatInput');
     const text = input.value.trim();
-    if (!text) return;
-    const msgs = document.getElementById('chatMessages');
-    const userMsg = document.createElement('div');
-    userMsg.style.cssText = 'display:flex;justify-content:flex-end;';
-    userMsg.innerHTML = `<div style="background:linear-gradient(90deg,var(--og),var(--og2));color:white;border-radius:16px 16px 4px 16px;padding:10px 14px;max-width:220px;font-size:13px;line-height:1.4;">${text}</div>`;
-    msgs.appendChild(userMsg);
+    if(!text) return;
     input.value = '';
-    const reply = `J'ai bien noté ta vision : <strong>"${text}"</strong>. Ajoute-la à ton étape 3 pour qu'on puisse travailler dessus ensemble ! 💪`;
-    setTimeout(() => {
-      const t = themes[currentTheme];
-      const compMsg = document.createElement('div');
-      compMsg.style.cssText = 'display:flex;gap:8px;align-items:flex-end;';
-      const imgStyle = t.clip
-        ? 'position:absolute;width:576%;height:650%;left:-183%;top:-369%;image-rendering:pixelated;'
-        : 'width:100%;height:100%;object-fit:contain;image-rendering:pixelated;';
-      compMsg.innerHTML = `
-        <div style="width:28px;height:28px;border-radius:50%;overflow:hidden;position:relative;flex-shrink:0;background:#ffe5cc;">
-          <img src="${t.img}" style="${imgStyle}" alt="">
-        </div>
-        <div style="background:white;border-radius:16px 16px 16px 4px;padding:12px 14px;max-width:220px;box-shadow: none;">
-          <p style="font-size:13px;color:#1a1a1a;line-height:1.5;margin:0;">${reply}</p>
-        </div>`;
-      msgs.appendChild(compMsg);
-      msgs.scrollTop = msgs.scrollHeight;
-    }, 600);
-    msgs.scrollTop = msgs.scrollHeight;
+    _sendText(text);
   }
 
   /* ════════════════════════════════════════════════════════════
@@ -6702,12 +6788,16 @@
     });
   }
 
-  /* Au chargement : restaure le compagnon choisi (persisté) → toutes les images suivent */
+  /* Au chargement : restaure le compagnon + DynIsland + clé Claude */
   (function restoreComp(){
     try {
       const saved = localStorage.getItem('visionComp');
       if (saved && typeof themes !== 'undefined' && themes[saved]) applyTheme(saved);
     } catch(e) {}
+    updateDynIsland();
+    // Ajoute listener Enter sur le chat input
+    const ci = document.getElementById('chatInput');
+    if (ci) ci.addEventListener('keydown', e => { if(e.key==='Enter') sendChatMessage(); });
   })();
 
   /* Au chargement : si le bureau Android est l'écran actif → notification simulée */
