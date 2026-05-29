@@ -2462,6 +2462,11 @@
   .cap-vd{flex:1;margin-top:14px;background:#2c2c2c;border-radius:16px;position:relative;display:flex;align-items:flex-end;padding:16px;overflow:visible;min-height:200px;box-shadow: none}
   .cap-bb{background:rgba(255,255,255,.16);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.12);border-radius:13px;padding:10px 13px;color:#fff;font-size:12.5px;font-style:italic;line-height:1.45;width:100%}
   .cap-mt{text-align:center;color:rgba(255,255,255,.75);font-size:12px;margin-top:14px;font-style:italic}
+  /* Mode audio capsule */
+  #cap-audio-ph{position:absolute;inset:0;z-index:2;display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px}
+  .cap-wave-bar{width:3px;border-radius:3px;background:rgba(255,255,255,.6);height:6px;animation:capWave .7s ease-in-out infinite alternate}
+  @keyframes capWave{to{height:22px;background:rgba(255,255,255,.9)}}
+  @keyframes capAudioPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.7;transform:scale(.93)}}
 
   /* ───── IMPACT BOTTOM SHEET (444:1545) — DARK ───── */
   .imp-ov{position:absolute;inset:0;z-index:75;background:rgba(0,0,0,0);pointer-events:none;transition:background .35s}
@@ -4310,6 +4315,20 @@
       <div class="cap-vd">
         <!-- Vidéo enregistrée -->
         <video id="cap-video" playsinline webkit-playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:16px;display:none;background:#1c1c1a;"></video>
+        <!-- Audio enregistré -->
+        <audio id="cap-audio"></audio>
+        <div id="cap-audio-ph">
+          <img class="dyn-comp" style="width:70px;height:62px;object-fit:contain;image-rendering:pixelated;animation:capAudioPulse 2s ease-in-out infinite;" alt="">
+          <div style="display:flex;gap:4px;align-items:center;">
+            <span class="cap-wave-bar" style="animation-delay:0s"></span>
+            <span class="cap-wave-bar" style="animation-delay:.12s"></span>
+            <span class="cap-wave-bar" style="animation-delay:.24s"></span>
+            <span class="cap-wave-bar" style="animation-delay:.36s"></span>
+            <span class="cap-wave-bar" style="animation-delay:.24s"></span>
+            <span class="cap-wave-bar" style="animation-delay:.12s"></span>
+            <span class="cap-wave-bar" style="animation-delay:0s"></span>
+          </div>
+        </div>
         <!-- Placeholder si aucune capsule -->
         <div id="cap-vd-ph" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2;text-align:center;">
           <div style="font-size:11px;color:rgba(255,255,255,0.45);">Aucune capsule enregistrée</div>
@@ -4736,38 +4755,63 @@
   const EMO_CIRC = 2 * Math.PI * 38;  // r=38 → ~238.76
   let capSubT = null;  // timer des sous-titres de la capsule
 
-  /* "Passer la commande" yellow button → open capsule overlay (vidéo + sous-titres) */
+  /* "Passer la commande" yellow button → open capsule overlay (vidéo / audio / placeholder) */
   function openCapsule(){
     const ov = document.getElementById('cap-overlay');
     if(!ov) return;
     ov.classList.add('on');
-    const v = document.getElementById('cap-video');
-    const ph = document.getElementById('cap-vd-ph');
+    const v   = document.getElementById('cap-video');
+    const a   = document.getElementById('cap-audio');
+    const ph  = document.getElementById('cap-vd-ph');
+    const aph = document.getElementById('cap-audio-ph');
     const subs = document.getElementById('cap-subs');
-    const pbf = ov.querySelector('.cap-pb-f');
+    const pbf  = ov.querySelector('.cap-pb-f');
     if(AMZN.capT) clearTimeout(AMZN.capT);
     if(capSubT){ clearInterval(capSubT); capSubT = null; }
     if(pbf) pbf.style.width = '0%';
+    // Reset visuals
+    if(v) v.style.display = 'none';
+    if(ph) ph.style.display = 'none';
+    if(aph) aph.style.display = 'none';
+    // Mots pour les sous-titres : transcription réelle si dispo, sinon mock
+    const words = capsuleTranscript
+      ? capsuleTranscript.split(/\s+/).filter(Boolean)
+      : CAPSULE_WORDS;
 
-    if(capsuleVideoURL && v){
-      // Vidéo enregistrée disponible → lecture + sous-titres + barre synchronisés
+    if(capsuleMode === 'audio' && capsuleAudioURL && a){
+      /* ── Mode AUDIO ── */
+      a.src = capsuleAudioURL;
+      aph.style.display = 'flex';
+      if(subs) subs.textContent = '';
+      try { a.currentTime = 0; a.play(); } catch(e){}
+      capSubT = setInterval(() => {
+        const dur = (isFinite(a.duration) && a.duration > 0) ? a.duration : 12;
+        const ratio = Math.min(1, a.currentTime / dur);
+        if(pbf) pbf.style.width = (ratio * 100) + '%';
+        const n = Math.max(1, Math.round(ratio * words.length));
+        if(subs) subs.textContent = words.slice(0, n).join(' ');
+      }, 150);
+      a.onended = () => closeCapsule();
+      AMZN.capT = setTimeout(closeCapsule, 60000); // garde-fou audio
+
+    } else if(capsuleVideoURL && v){
+      /* ── Mode VIDÉO ── */
       v.src = capsuleVideoURL;
       v.style.display = 'block';
-      if(ph) ph.style.display = 'none';
       if(subs) subs.textContent = '';
       try { v.currentTime = 0; v.play(); } catch(e){}
       capSubT = setInterval(() => {
         const dur = (isFinite(v.duration) && v.duration > 0) ? v.duration : 24;
         const ratio = Math.min(1, v.currentTime / dur);
         if(pbf) pbf.style.width = (ratio * 100) + '%';
-        const n = Math.max(1, Math.round(ratio * CAPSULE_WORDS.length));
-        if(subs) subs.textContent = CAPSULE_WORDS.slice(0, n).join(' ');
+        const n = Math.max(1, Math.round(ratio * words.length));
+        if(subs) subs.textContent = words.slice(0, n).join(' ');
       }, 150);
       v.onended = () => closeCapsule();
-      AMZN.capT = setTimeout(closeCapsule, 14000); // garde-fou
+      AMZN.capT = setTimeout(closeCapsule, 14000);
+
     } else {
-      // Pas de vidéo → placeholder + barre animée sur 3.5 s
-      if(v) v.style.display = 'none';
+      /* ── Aucune capsule ── */
       if(ph) ph.style.display = 'block';
       if(subs) subs.textContent = '« Salut, c\'est moi dans 90 jours. Je prends des engagements pour partir… »';
       const PH_DUR = 3500;
@@ -4787,6 +4831,8 @@
     if(capSubT){ clearInterval(capSubT); capSubT = null; }
     const v = document.getElementById('cap-video');
     if(v){ try { v.pause(); } catch(e){} }
+    const a = document.getElementById('cap-audio');
+    if(a){ try { a.pause(); a.src = ''; } catch(e){} }
     const ov = document.getElementById('cap-overlay');
     if(ov) ov.classList.remove('on');
     setTimeout(() => {
@@ -6369,6 +6415,61 @@ Règles ABSOLUES : max 3 phrases courtes · toujours en français · 1 seule que
   // Capture réelle de la capsule (MediaRecorder) — pour réafficher la vidéo/audio dans "Ta capsule"
   let capsuleRecorder = null, capsuleChunks = [], capsuleVideoURL = null;
   let capsuleAudioURL = null, capsuleMode = null;  // 'video' | 'audio'
+  let capsuleTranscript = '';          // texte retranscrit (Web Speech + Claude)
+  let _capsuleSpeechRec = null;
+
+  /* Appel Claude one-shot (sans historique chat) — pour enhancement transcript */
+  async function _claudeOneShot(systemPrompt, userText) {
+    const key = getClaudeKey();
+    if (!key) return null;
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01',
+                   'content-type': 'application/json',
+                   'anthropic-dangerous-direct-browser-ipc': 'true' },
+        body: JSON.stringify({ model: 'claude-haiku-4-5', max_tokens: 150,
+          system: systemPrompt, messages: [{ role: 'user', content: userText }] })
+      });
+      if (!res.ok) return null;
+      const d = await res.json();
+      return d.content?.[0]?.text?.trim() || null;
+    } catch(e) { return null; }
+  }
+
+  function _startCapsuleTranscription() {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) return;
+    capsuleTranscript = '';
+    _capsuleSpeechRec = new SR();
+    _capsuleSpeechRec.lang = 'fr-FR';
+    _capsuleSpeechRec.continuous = true;
+    _capsuleSpeechRec.interimResults = true;
+    let finalText = '';
+    _capsuleSpeechRec.onresult = e => {
+      let interim = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        if (e.results[i].isFinal) finalText += e.results[i][0].transcript + ' ';
+        else interim += e.results[i][0].transcript;
+      }
+      capsuleTranscript = (finalText + interim).trim();
+    };
+    try { _capsuleSpeechRec.start(); } catch(e) {}
+  }
+
+  async function _stopCapsuleTranscription() {
+    if (_capsuleSpeechRec) {
+      try { _capsuleSpeechRec.stop(); } catch(e) {}
+      _capsuleSpeechRec = null;
+    }
+    if (!capsuleTranscript) return;
+    // Améliore le texte brut via Claude (fire & forget)
+    const enhanced = await _claudeOneShot(
+      `Tu améliores des messages vocaux motivants. Réécris le texte fourni en 1-2 phrases naturelles et percutantes à la 1ère personne du singulier. Renvoie uniquement le texte amélioré, sans guillemets ni commentaire.`,
+      capsuleTranscript
+    );
+    if (enhanced) capsuleTranscript = enhanced;
+  }
 
   /* Click sur le bouton record principal : démarre (idle) ou arrête (recording) */
   function handleRecordClick() {
@@ -6386,6 +6487,7 @@ Règles ABSOLUES : max 3 phrases courtes · toujours en français · 1 seule que
     recState.secs = 0;
     recState.transcriptIdx = 0;
     recState.active = true;
+    _startCapsuleTranscription(); // transcription temps réel (Web Speech API)
 
     // Toggle états cam-area
     document.getElementById('cam-state-idle').style.display = 'none';
@@ -6548,6 +6650,7 @@ Règles ABSOLUES : max 3 phrases courtes · toujours en français · 1 seule que
   function stopRecordingInline() {
     if (recState.timer) { clearInterval(recState.timer); recState.timer = null; }
     recState.active = false;
+    _stopCapsuleTranscription(); // stoppe SR + améliore via Claude (async, non bloquant)
 
     // Stoppe l'enregistrement de la capsule (flush du blob avant de couper le stream)
     if (capsuleRecorder && capsuleRecorder.state !== 'inactive') {
