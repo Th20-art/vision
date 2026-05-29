@@ -4794,9 +4794,9 @@
         method: 'POST',
         headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01',
                    'content-type': 'application/json',
-                   'anthropic-dangerous-direct-browser-ipc': 'true' },
+                   'anthropic-dangerous-direct-browser-access': 'true' },
         body: JSON.stringify({
-          model: 'claude-3-5-sonnet-20241022',
+          model: 'claude-sonnet-4-20250514',
           max_tokens: 150,
           messages: [{ role: 'user', content: [
             { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: base64 } },
@@ -4828,8 +4828,8 @@
         method: 'POST',
         headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01',
                    'content-type': 'application/json',
-                   'anthropic-dangerous-direct-browser-ipc': 'true' },
-        body: JSON.stringify({ model: 'claude-3-5-haiku-20241022', max_tokens: 5,
+                   'anthropic-dangerous-direct-browser-access': 'true' },
+        body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 5,
           messages: [{ role: 'user', content: 'Hi' }] })
       });
       if (res.ok) {
@@ -6208,10 +6208,10 @@ Règles ABSOLUES : max 3 phrases courtes · toujours en français · 1 seule que
           'x-api-key': key,
           'anthropic-version': '2023-06-01',
           'content-type': 'application/json',
-          'anthropic-dangerous-direct-browser-ipc': 'true'
+          'anthropic-dangerous-direct-browser-access': 'true'
         },
         body: JSON.stringify({
-          model: 'claude-3-5-haiku-20241022',
+          model: 'claude-haiku-4-5-20251001',
           max_tokens: 300,
           system: _chatSystemPrompt(),
           messages: chatHistory
@@ -6551,8 +6551,8 @@ Règles ABSOLUES : max 3 phrases courtes · toujours en français · 1 seule que
         method: 'POST',
         headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01',
                    'content-type': 'application/json',
-                   'anthropic-dangerous-direct-browser-ipc': 'true' },
-        body: JSON.stringify({ model: 'claude-3-5-haiku-20241022', max_tokens: 150,
+                   'anthropic-dangerous-direct-browser-access': 'true' },
+        body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 150,
           system: systemPrompt, messages: [{ role: 'user', content: userText }] })
       });
       if (!res.ok) return null;
