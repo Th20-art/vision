@@ -84,6 +84,13 @@ class VisionHandler(http.server.SimpleHTTPRequestHandler):
 
 
 if __name__ == '__main__':
+    # Sortie console en UTF-8 (évite UnicodeEncodeError sous Windows/cp1252)
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+        sys.stderr.reconfigure(encoding='utf-8')
+    except Exception:
+        pass
+
     # Se place dans le répertoire du script (racine du projet)
     os.chdir(os.path.dirname(os.path.abspath(__file__)) or '.')
 
