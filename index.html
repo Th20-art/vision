@@ -3507,10 +3507,14 @@
           </div>
           <div class="param-item" style="flex-direction:column;align-items:flex-start;gap:8px;">
             <span class="param-lbl">CLÉ API CLAUDE</span>
-            <input id="claude-key-input" type="password" placeholder="sk-ant-api03-..."
-              oninput="localStorage.setItem('vision_claude_key',this.value)"
-              style="width:100%;background:#f5f5f5;border:1.5px solid #e8e8e8;border-radius:10px;padding:9px 13px;font-size:12px;font-family:'Inter',sans-serif;outline:none;color:#1a1a1a;box-sizing:border-box;">
-            <div style="font-size:10px;color:var(--muted);">Active le chat IA avec ton compagnon</div>
+            <div style="display:flex;gap:8px;align-items:center;width:100%;">
+              <input id="claude-key-input" type="password" placeholder="sk-ant-api03-..."
+                oninput="localStorage.setItem('vision_claude_key',this.value)"
+                style="flex:1;background:#f5f5f5;border:1.5px solid #e8e8e8;border-radius:10px;padding:9px 13px;font-size:12px;font-family:'Inter',sans-serif;outline:none;color:#1a1a1a;min-width:0;">
+              <button id="claude-key-btn" onclick="validateClaudeKey()"
+                style="flex-shrink:0;background:linear-gradient(90deg,var(--og),var(--og2));color:#fff;border:none;border-radius:10px;padding:9px 14px;font-size:12px;font-family:'Inter',sans-serif;font-weight:600;cursor:pointer;">Tester</button>
+            </div>
+            <div id="claude-key-status" style="font-size:10px;color:var(--muted);min-height:14px;"></div>
           </div>
         </div>
         <!-- Toggle Esprit critique (Figma 73:52) — bordure violette -->
@@ -4755,6 +4759,91 @@
   const EMO_CIRC = 2 * Math.PI * 38;  // r=38 → ~238.76
   let capSubT = null;  // timer des sous-titres de la capsule
 
+  /* ── Scan page Amazon avec Claude Vision ── */
+  async function _imgToBase64(src) {
+    return new Promise(resolve => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        const maxW = 1000;
+        const scale = Math.min(1, maxW / img.naturalWidth);
+        const canvas = document.createElement('canvas');
+        canvas.width  = Math.round(img.naturalWidth  * scale);
+        canvas.height = Math.round(img.naturalHeight * scale);
+        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+        try { resolve(canvas.toDataURL('image/jpeg', 0.75).split(',')[1]); }
+        catch(e) { resolve(null); }
+      };
+      img.onerror = () => resolve(null);
+      img.src = src;
+    });
+  }
+
+  async function scanAmazonPage() {
+    const key = getClaudeKey();
+    if (!key) return null;
+    // Image Amazon visible (écran actif ou dernier écran Amazon)
+    const amznImg = document.querySelector('.screen.active .amzn-img')
+                 || document.querySelector('#s-amazon-cart .amzn-img')
+                 || document.querySelector('#s-amazon .amzn-img');
+    if (!amznImg) return null;
+    const base64 = await _imgToBase64(amznImg.src);
+    if (!base64) return null;
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01',
+                   'content-type': 'application/json',
+                   'anthropic-dangerous-direct-browser-ipc': 'true' },
+        body: JSON.stringify({
+          model: 'claude-opus-4-5',
+          max_tokens: 150,
+          messages: [{ role: 'user', content: [
+            { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: base64 } },
+            { type: 'text', text: 'Analyse cette page Amazon et renvoie uniquement ce JSON sans texte autour :\n{"name":"<nom produit>","brand":"<marque>","price":"<prix avec devise>","category":"<catégorie courte>"}' }
+          ]}]
+        })
+      });
+      if (!res.ok) return null;
+      const d = await res.json();
+      const txt = d.content?.[0]?.text?.trim() || '';
+      const m = txt.match(/\{[\s\S]*\}/);
+      return m ? JSON.parse(m[0]) : null;
+    } catch(e) { return null; }
+  }
+
+  /* Validation de la clé API */
+  async function validateClaudeKey() {
+    const btn = document.getElementById('claude-key-btn');
+    const status = document.getElementById('claude-key-status');
+    const key = getClaudeKey();
+    if (!key) {
+      if (status) { status.textContent = '⚠ Saisis une clé d\'abord'; status.style.color = '#f59e0b'; }
+      return;
+    }
+    if (btn) btn.textContent = '…';
+    if (status) status.textContent = '';
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01',
+                   'content-type': 'application/json',
+                   'anthropic-dangerous-direct-browser-ipc': 'true' },
+        body: JSON.stringify({ model: 'claude-haiku-4-5', max_tokens: 5,
+          messages: [{ role: 'user', content: 'Hi' }] })
+      });
+      if (res.ok) {
+        if (status) { status.textContent = '✓ Clé valide — scan & chat activés'; status.style.color = '#42c47e'; }
+      } else {
+        const err = await res.json().catch(() => ({}));
+        if (status) { status.textContent = '✗ ' + (err.error?.message || 'Clé invalide'); status.style.color = '#ef4444'; }
+      }
+    } catch(e) {
+      if (status) { status.textContent = '✗ Connexion impossible'; status.style.color = '#ef4444'; }
+    }
+    if (btn) btn.textContent = 'Tester';
+  }
+
   /* "Passer la commande" yellow button → open capsule overlay (vidéo / audio / placeholder) */
   function openCapsule(){
     const ov = document.getElementById('cap-overlay');
@@ -4769,6 +4858,17 @@
     if(AMZN.capT) clearTimeout(AMZN.capT);
     if(capSubT){ clearInterval(capSubT); capSubT = null; }
     if(pbf) pbf.style.width = '0%';
+    // Scan Claude Vision en arrière-plan — met à jour l'overlay impact dès que prêt
+    scanAmazonPage().then(info => {
+      if (!info) return;
+      const nameEl = document.querySelector('.imp-pd-n');
+      const priceEl = document.querySelector('.imp-pd-p');
+      if (nameEl && info.name) nameEl.textContent = info.name + (info.brand ? ' · ' + info.brand : '');
+      if (priceEl && info.price) priceEl.textContent = info.price;
+      // Met à jour le journal si résistance
+      if (typeof window._scanInfo === 'undefined') window._scanInfo = {};
+      window._scanInfo = info;
+    });
     // Reset visuals
     if(v) v.style.display = 'none';
     if(ph) ph.style.display = 'none';
