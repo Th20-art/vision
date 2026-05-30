@@ -1423,6 +1423,117 @@
     font-size: 10px;
     color: rgba(255,255,255,0.8);
   }
+
+  /* ─── Apps ajoutées en overlay sur le bureau Android (s-widget) ─── */
+  .home-app{
+    position:absolute;top:368px;width:66px;
+    display:flex;flex-direction:column;align-items:center;gap:6px;
+    cursor:pointer;z-index:20;
+  }
+  .home-app-ic{
+    width:58px;height:58px;border-radius:15px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:28px;box-shadow:0 2px 6px rgba(0,0,0,.25);overflow:hidden;
+  }
+  .home-app-lbl{
+    font-size:11px;color:#fff;line-height:1;
+    text-shadow:0 1px 3px rgba(0,0,0,.5);font-family:'Inter',sans-serif;
+  }
+
+  /* ─── Écrans navigateur "Esprit critique" (article + vidéo) ─── */
+  .cb-screen{position:absolute;inset:0;background:#0f0f0f;overflow-y:auto;overflow-x:hidden;}
+  .cb-urlbar{
+    display:flex;align-items:center;gap:8px;padding:48px 14px 10px;
+    background:#1a1a1a;position:sticky;top:0;z-index:5;
+  }
+  .cb-url{
+    flex:1;background:#2a2a2a;border-radius:18px;padding:7px 14px;
+    font-size:12px;color:#bbb;font-family:'Inter',sans-serif;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .cb-back{background:none;border:none;color:#fff;font-size:22px;cursor:pointer;line-height:1;padding:2px 4px;}
+  /* Article */
+  .art-tag{display:inline-block;background:#e8563a;color:#fff;font-size:10px;font-weight:700;
+    letter-spacing:.5px;text-transform:uppercase;padding:3px 9px;border-radius:4px;font-family:'Inter',sans-serif;}
+  .art-h1{font-family:'Work Sans',sans-serif;font-weight:700;font-size:22px;line-height:1.2;color:#fff;margin:12px 0 8px;}
+  .art-meta{font-size:11px;color:#888;font-family:'Inter',sans-serif;margin-bottom:14px;}
+  .art-hero{width:100%;height:170px;border-radius:12px;object-fit:cover;display:block;margin-bottom:14px;background:#222;}
+  .art-p{font-size:14px;line-height:1.6;color:#d4d4d4;font-family:'Inter',sans-serif;margin:0 0 13px;}
+  .art-claim{background:rgba(255,213,79,.22);border-bottom:2px solid #ffd54f;padding:1px 2px;border-radius:2px;cursor:pointer;}
+  .art-claim.flagged{background:rgba(232,86,58,.28);border-bottom-color:#e8563a;}
+  /* YouTube */
+  .yt-player{position:relative;width:100%;height:200px;background:#000;overflow:hidden;cursor:pointer;}
+  .yt-player img{width:100%;height:100%;object-fit:cover;display:block;opacity:.9;}
+  .yt-play{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    transition:opacity .25s;
+  }
+  .yt-play svg{width:62px;height:44px;filter:drop-shadow(0 2px 8px rgba(0,0,0,.5));}
+  .yt-player.playing .yt-play{opacity:0;pointer-events:none;}
+  .yt-prog{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(255,255,255,.25);}
+  .yt-prog-fill{height:100%;width:0;background:#FF0000;}
+  .yt-player.playing .yt-prog-fill{animation:ytProg 22s linear forwards;}
+  @keyframes ytProg{from{width:0}to{width:100%}}
+  .yt-meta{padding:14px 16px;}
+  .yt-title{font-family:'Inter',sans-serif;font-weight:700;font-size:15px;color:#fff;line-height:1.3;margin:0 0 8px;}
+  .yt-chan{display:flex;align-items:center;gap:9px;}
+  .yt-ch-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#e8563a,#ff7e00);
+    display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px;flex-shrink:0;}
+  .yt-ch-n{font-size:13px;color:#fff;font-family:'Inter',sans-serif;}
+  .yt-ch-s{font-size:11px;color:#888;font-family:'Inter',sans-serif;}
+  .yt-spons{display:inline-block;margin-top:10px;background:#1f1f1f;color:#ffd54f;font-size:10px;
+    padding:3px 9px;border-radius:5px;font-family:'Inter',sans-serif;}
+  /* ═══ DYNAMIC ISLAND CRITIQUE (.ci-*) — bouton "Analyser" → 5 slides ═══ */
+  .ci-isl{
+    position:absolute;top:8px;left:50%;transform:translateX(-50%);
+    background:#090909;border-radius:22px;z-index:80;overflow:hidden;
+    width:auto;max-width:330px;
+    box-shadow:0 10px 34px rgba(0,0,0,.5);
+    transition:width .42s cubic-bezier(.32,1.1,.5,1),height .42s cubic-bezier(.32,1.1,.5,1),border-radius .3s;
+    user-select:none;-webkit-user-select:none;
+  }
+  .ci-compact{
+    display:flex;align-items:center;gap:9px;padding:7px 9px 7px 12px;height:40px;
+    white-space:nowrap;cursor:pointer;
+  }
+  .ci-fox{width:30px;height:26px;overflow:hidden;flex-shrink:0;}
+  .ci-fox img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated;}
+  .ci-compact-tx{color:#fff;font-size:12px;font-family:'Inter',sans-serif;}
+  .ci-an-btn{
+    background:linear-gradient(90deg,var(--og),var(--og2));color:#fff;border:none;border-radius:14px;
+    padding:6px 13px;font-size:11px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;
+  }
+  .ci-isl.exp{width:314px;height:380px;border-radius:28px;}
+  .ci-isl.exp .ci-compact{opacity:0;pointer-events:none;height:0;padding:0;overflow:hidden;}
+  .ci-exp{
+    position:absolute;inset:0;opacity:0;pointer-events:none;
+    transition:opacity .25s ease .12s;display:flex;flex-direction:column;
+  }
+  .ci-isl.exp .ci-exp{opacity:1;pointer-events:auto;}
+  .ci-exp-hd{display:flex;align-items:center;gap:9px;padding:15px 15px 6px;}
+  .ci-exp-hd .ci-fox{width:34px;height:30px;}
+  .ci-exp-ti{color:#fff;font-size:13px;font-weight:700;font-family:'Inter',sans-serif;flex:1;line-height:1.2;}
+  .ci-close{background:none;border:none;color:#888;font-size:19px;cursor:pointer;line-height:1;padding:0 2px;}
+  .ci-slides{position:relative;flex:1;overflow:hidden;touch-action:pan-y;}
+  .ci-slide{position:absolute;inset:0;padding:8px 18px 6px;opacity:0;pointer-events:none;transition:opacity .22s;overflow-y:auto;}
+  .ci-slide.on{opacity:1;pointer-events:auto;}
+  .ci-k{font-size:10px;color:var(--og);font-weight:700;letter-spacing:.6px;text-transform:uppercase;font-family:'Inter',sans-serif;margin-bottom:7px;}
+  .ci-h{font-size:16px;color:#fff;font-weight:700;font-family:'Work Sans',sans-serif;margin:0 0 8px;line-height:1.2;}
+  .ci-p{font-size:12.5px;color:#bbb;line-height:1.5;font-family:'Inter',sans-serif;margin:0 0 8px;}
+  .ci-p b{color:#fff;font-weight:600;}
+  .ci-big{font-size:36px;font-weight:700;color:#fff;font-family:'Work Sans',sans-serif;line-height:1;margin:4px 0 6px;}
+  .ci-big.warn{color:#f59e0b;}
+  .ci-row{display:flex;align-items:center;gap:8px;font-size:12px;color:#ddd;font-family:'Inter',sans-serif;margin:0 0 6px;}
+  .ci-ai-bar{height:9px;background:#2a2a2a;border-radius:6px;overflow:hidden;margin:6px 0 4px;}
+  .ci-ai-fill{height:100%;background:linear-gradient(90deg,#f59e0b,#ef4444);border-radius:6px;}
+  .ci-sugg{display:flex;gap:11px;align-items:flex-start;background:#1a1a1a;border-radius:12px;padding:11px;margin-top:8px;cursor:pointer;}
+  .ci-sugg-ic{width:38px;height:38px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:19px;background:#262626;}
+  .ci-sugg-src{font-size:10px;color:var(--og);font-family:'Inter',sans-serif;margin-bottom:3px;}
+  .ci-sugg-ti{font-size:12.5px;color:#fff;font-family:'Inter',sans-serif;line-height:1.35;}
+  .ci-dots{display:flex;gap:5px;justify-content:center;align-items:center;padding:6px 0 13px;}
+  .ci-dot{width:6px;height:6px;border-radius:50%;background:#3a3a3a;cursor:pointer;transition:background .2s,width .2s;}
+  .ci-dot.on{background:var(--og);width:17px;border-radius:3px;}
+
   .pagination-dots {
     display: flex;
     justify-content: center;
@@ -3453,7 +3564,7 @@
           <div class="param-item" onclick="go('s-param-sites')" style="cursor:pointer;">
             <div>
               <span class="param-lbl">SITES ANALYSÉS PAR L'APPLICATION</span>
-              <div style="font-size:10px;color:var(--muted);margin-top:3px;">6 sites surveillés</div>
+              <div id="sites-count-sum" style="font-size:10px;color:var(--muted);margin-top:3px;">Catégories selon tes objectifs</div>
             </div>
             <span class="param-chevron">›</span>
           </div>
@@ -3857,6 +3968,7 @@
       <div style="padding:0 0 0 24px;margin-top:-4px;font-size:11px;color:var(--muted);">retour</div>
 
       <div style="padding:14px 20px 0;font-size:13px;color:var(--muted);line-height:1.45;">Vision analyse ces sites pour te redonner le pouvoir contre le marketing et te permettre de prendre du recule.</div>
+      <div id="sites-obj-note" style="margin:10px 20px 0;background:#fff;border-left:3px solid var(--og);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--dark);line-height:1.45;"></div>
 
       <!-- 5 category toggles -->
       <div style="overflow-y:auto;padding:14px 20px 96px;max-height:calc(100% - 150px);display:flex;flex-direction:column;gap:8px;">
@@ -3867,7 +3979,7 @@
             <div style="font-weight:700;font-size:14px;color:var(--dark);">Achat</div>
             <div style="font-size:11px;color:var(--muted);margin-top:2px;">(Amazon, Zara, Sephora…)</div>
           </div>
-          <span class="cat-tog on locked" onclick="toggleCat(this)">
+          <span class="cat-tog on locked" data-cat="achat" onclick="toggleCat(this)">
             <span class="cat-tog-knob"><img src="assets/lock.svg" class="lock-ic" alt="verrouillé"></span>
           </span>
         </div>
@@ -3878,7 +3990,7 @@
             <div style="font-weight:700;font-size:14px;color:var(--dark);">Food & Livraison</div>
             <div style="font-size:11px;color:var(--muted);margin-top:2px;">(UberEats, Deliveroo, McDo…)</div>
           </div>
-          <span class="cat-tog on" onclick="toggleCat(this)">
+          <span class="cat-tog" data-cat="food" onclick="toggleCat(this)">
             <span class="cat-tog-knob"></span>
           </span>
         </div>
@@ -3889,7 +4001,7 @@
             <div style="font-weight:700;font-size:14px;color:var(--dark);">Réseaux & Streaming</div>
             <div style="font-size:11px;color:var(--muted);margin-top:2px;">(TikTok, Instagram, Youtube…)</div>
           </div>
-          <span class="cat-tog" onclick="toggleCat(this)">
+          <span class="cat-tog" data-cat="reseaux" onclick="toggleCat(this)">
             <span class="cat-tog-knob"></span>
           </span>
         </div>
@@ -3900,7 +4012,7 @@
             <div style="font-weight:700;font-size:14px;color:var(--dark);">Voyage & Divertissement</div>
             <div style="font-size:11px;color:var(--muted);margin-top:2px;">(Airbnb, Booking, SNCF Connect…)</div>
           </div>
-          <span class="cat-tog" onclick="toggleCat(this)">
+          <span class="cat-tog" data-cat="voyage" onclick="toggleCat(this)">
             <span class="cat-tog-knob"></span>
           </span>
         </div>
@@ -3911,7 +4023,7 @@
             <div style="font-weight:700;font-size:14px;color:var(--dark);">Abonnements & Services</div>
             <div style="font-size:11px;color:var(--muted);margin-top:2px;">(Spotify, Netflix, Amazon Prime…)</div>
           </div>
-          <span class="cat-tog" onclick="toggleCat(this)">
+          <span class="cat-tog" data-cat="abo" onclick="toggleCat(this)">
             <span class="cat-tog-knob"></span>
           </span>
         </div>
@@ -4056,6 +4168,18 @@
     <div onclick="go('s-splash')" style="position:absolute;top:368px;left:93px;width:66px;height:68px;cursor:pointer;border-radius:16px;" title="Ouvrir Vision"></div>
     <!-- Icône Chrome (2ème icône, droite → démo Amazon, y≈368-435) -->
     <div onclick="go('s-amazon')" style="position:absolute;top:368px;left:197px;width:66px;height:68px;cursor:pointer;border-radius:16px;" title="Amazon démo"></div>
+    <!-- App Actu (esprit critique — article de presse) -->
+    <div class="home-app" style="left:18px;" onclick="go('s-article')" title="Actu — démo esprit critique">
+      <div class="home-app-ic" style="background:linear-gradient(135deg,#3b82f6,#1e3a8a);">📰</div>
+      <span class="home-app-lbl">Actu</span>
+    </div>
+    <!-- App YouTube (esprit critique — vidéo interactive) -->
+    <div class="home-app" style="left:272px;" onclick="go('s-youtube')" title="YouTube — démo esprit critique">
+      <div class="home-app-ic" style="background:#fff;">
+        <svg width="40" height="28" viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" rx="6" fill="#FF0000"/><path d="M11 6 L19 10 L11 14 Z" fill="#fff"/></svg>
+      </div>
+      <span class="home-app-lbl">YouTube</span>
+    </div>
     <!-- Zone barre d'état : cliquer en haut réaffiche les notifications -->
     <div onclick="showAndroidNotif()" style="position:absolute;top:0;left:0;right:0;height:44px;cursor:pointer;z-index:25;" title="Afficher les notifications"></div>
     <!-- Notification Android simulée (Vision) -->
@@ -4067,6 +4191,197 @@
       </div>
       <div class="and-notif-ti">La communauté</div>
       <div class="and-notif-tx" id="and-notif-tx">Plusieurs personnes ont économisé 240 € en revendant ce qu'elles n'utilisaient plus.</div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════
+       SCREEN: ARTICLE DE PRESSE — démo Esprit critique
+  ════════════════════════════════════════════════════════════ -->
+  <div class="screen" id="s-article">
+    <div class="cb-screen">
+      <div class="cb-urlbar">
+        <button class="cb-back" onclick="go('s-widget')" aria-label="Retour">←</button>
+        <div class="cb-url">🔒 actu-buzz.fr/sante/montre-miracle</div>
+      </div>
+      <div style="padding:16px 16px 90px;">
+        <span class="art-tag">Santé</span>
+        <h1 class="art-h1">Cette montre connectée détecterait 12 maladies graves avant les médecins</h1>
+        <div class="art-meta">Par la rédaction · il y a 2 h · 3 min de lecture · #partenariat</div>
+        <img class="art-hero" src="assets/dyn-watch.jpg" alt="Montre connectée">
+        <p class="art-p">Une révolution pour votre santé&nbsp;: selon le fabricant, ce nouveau bracelet connecté serait capable de <span class="art-claim" onclick="flagClaim(this)">détecter 12 maladies graves avec une fiabilité de 99&nbsp;%</span>, bien avant un diagnostic médical.</p>
+        <p class="art-p">«&nbsp;<span class="art-claim" onclick="flagClaim(this)">Des milliers de vies pourraient être sauvées dès cette année</span>&nbsp;», affirme la marque dans son communiqué. Les premiers acheteurs se disent déjà conquis.</p>
+        <p class="art-p">L'appareil, vendu à prix réduit pendant une durée limitée, connaît un succès fulgurant. <span class="art-claim" onclick="flagClaim(this)">Il ne resterait que quelques stocks disponibles</span>.</p>
+      </div>
+
+      <!-- ░░ Dynamic Island critique ░░ -->
+      <div class="ci-isl" id="ci-article">
+        <!-- Compact : bouton Analyser -->
+        <div class="ci-compact" onclick="ciToggle('ci-article',true)">
+          <div class="ci-fox"><img src="assets/comp-foxy.png" class="dyn-comp" alt="Vision"></div>
+          <span class="ci-compact-tx">Esprit critique</span>
+          <button class="ci-an-btn" onclick="event.stopPropagation();ciToggle('ci-article',true)">Analyser</button>
+        </div>
+        <!-- Expanded : 5 slides -->
+        <div class="ci-exp">
+          <div class="ci-exp-hd">
+            <div class="ci-fox"><img src="assets/comp-foxy.png" class="dyn-comp" alt="Vision"></div>
+            <span class="ci-exp-ti">Analyse de l'article<br><span style="font-weight:400;color:#888;font-size:11px;">actu-buzz.fr</span></span>
+            <button class="ci-close" onclick="ciToggle('ci-article',false)" aria-label="Fermer">✕</button>
+          </div>
+          <div class="ci-slides">
+            <!-- 1 · Temps de lecture -->
+            <div class="ci-slide on">
+              <div class="ci-k">⏱️ Temps de lecture</div>
+              <div class="ci-big"><span class="ci-time">00:00</span></div>
+              <p class="ci-p">Tu lis cet article depuis tout à l'heure. <b>Prends du recul</b> avant de le croire ou de le partager.</p>
+              <p class="ci-p">Les contenus anxiogènes retiennent l'attention&nbsp;: ça ne les rend pas plus fiables.</p>
+            </div>
+            <!-- 2 · État des lieux + IA -->
+            <div class="ci-slide">
+              <div class="ci-k">🔍 État des lieux</div>
+              <p class="ci-p">Source <b>actu-buzz.fr</b> · fiabilité <b style="color:#ef4444;">faible</b>.</p>
+              <p class="ci-p">⚠️ Titre sensationnaliste · 🏷️ article en <b>partenariat</b> · 📊 chiffres non sourcés · ⏳ urgence artificielle.</p>
+              <div class="ci-k" style="margin-top:10px;">🤖 Détection IA</div>
+              <div class="ci-ai-bar"><div class="ci-ai-fill" style="width:78%"></div></div>
+              <p class="ci-p"><b>78&nbsp;%</b> — texte probablement <b>généré ou assisté par IA</b> (tournures répétitives, aucune signature humaine).</p>
+            </div>
+            <!-- 3 · Autre angle 1 -->
+            <div class="ci-slide">
+              <div class="ci-k">↔️ Un autre angle · 1/3</div>
+              <div class="ci-h">Et si tu confrontais les sources&nbsp;?</div>
+              <div class="ci-sugg" onclick="ciOpenSource('Le Monde')">
+                <div class="ci-sugg-ic">📰</div>
+                <div><div class="ci-sugg-src">Le Monde · Santé</div><div class="ci-sugg-ti">Montres connectées&nbsp;: ce que disent vraiment les études cliniques</div></div>
+              </div>
+            </div>
+            <!-- 4 · Autre angle 2 -->
+            <div class="ci-slide">
+              <div class="ci-k">↔️ Un autre angle · 2/3</div>
+              <div class="ci-h">Le point de vue d'un organisme indépendant</div>
+              <div class="ci-sugg" onclick="ciOpenSource('UFC-Que Choisir')">
+                <div class="ci-sugg-ic">🛡️</div>
+                <div><div class="ci-sugg-src">UFC-Que Choisir</div><div class="ci-sugg-ti">Objets de santé connectés&nbsp;: fiabilité réelle et limites</div></div>
+              </div>
+            </div>
+            <!-- 5 · Autre angle 3 -->
+            <div class="ci-slide">
+              <div class="ci-k">↔️ Un autre angle · 3/3</div>
+              <div class="ci-h">L'avis de la science</div>
+              <div class="ci-sugg" onclick="ciOpenSource('Inserm')">
+                <div class="ci-sugg-ic">🔬</div>
+                <div><div class="ci-sugg-src">Inserm</div><div class="ci-sugg-ti">Auto-diagnostic&nbsp;: pourquoi un médecin reste indispensable</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="ci-dots">
+            <span class="ci-dot on" onclick="ciGo('ci-article',0)"></span>
+            <span class="ci-dot" onclick="ciGo('ci-article',1)"></span>
+            <span class="ci-dot" onclick="ciGo('ci-article',2)"></span>
+            <span class="ci-dot" onclick="ciGo('ci-article',3)"></span>
+            <span class="ci-dot" onclick="ciGo('ci-article',4)"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════
+       SCREEN: YOUTUBE — démo Esprit critique (vidéo interactive)
+  ════════════════════════════════════════════════════════════ -->
+  <div class="screen" id="s-youtube">
+    <div class="cb-screen" style="background:#0f0f0f;">
+      <div class="cb-urlbar" style="background:#0f0f0f;">
+        <button class="cb-back" onclick="go('s-widget')" aria-label="Retour">←</button>
+        <svg width="22" height="16" viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" rx="5" fill="#FF0000"/><path d="M11 6 L19 10 L11 14 Z" fill="#fff"/></svg>
+        <span style="color:#fff;font-family:'Inter',sans-serif;font-weight:700;font-size:14px;">YouTube</span>
+      </div>
+      <!-- Lecteur interactif -->
+      <div class="yt-player" id="yt-player" onclick="toggleYouTube()">
+        <img src="assets/dyn-beach.jpg" alt="miniature vidéo">
+        <div class="yt-play"><svg viewBox="0 0 68 48" aria-hidden="true"><path d="M66.5 7.7a8 8 0 0 0-5.6-5.7C56 .5 34 .5 34 .5S12 .5 7.1 2A8 8 0 0 0 1.5 7.7 83 83 0 0 0 0 24a83 83 0 0 0 1.5 16.3 8 8 0 0 0 5.6 5.7C12 47.5 34 47.5 34 47.5s22 0 26.9-1.5a8 8 0 0 0 5.6-5.7A83 83 0 0 0 68 24a83 83 0 0 0-1.5-16.3z" fill="#f00"/><path d="M27 34 44 24 27 14z" fill="#fff"/></svg></div>
+        <div class="yt-prog"><div class="yt-prog-fill" id="yt-prog-fill"></div></div>
+      </div>
+      <div class="yt-meta">
+        <p class="yt-title">JE DEVIENS RICHE EN 30 JOURS 🤑 (méthode secrète, ça MARCHE à 100%)</p>
+        <div class="yt-chan">
+          <div class="yt-ch-av">M</div>
+          <div style="flex:1;min-width:0;">
+            <div class="yt-ch-n">MoneyBoss Officiel</div>
+            <div class="yt-ch-s">847 k abonnés · 1,2 M de vues</div>
+          </div>
+        </div>
+        <span class="yt-spons">Inclut une promotion payante</span>
+      </div>
+
+      <!-- ░░ Dynamic Island critique ░░ -->
+      <div class="ci-isl" id="ci-youtube">
+        <!-- Compact : bouton Analyser -->
+        <div class="ci-compact" onclick="ciToggle('ci-youtube',true)">
+          <div class="ci-fox"><img src="assets/comp-foxy.png" class="dyn-comp" alt="Vision"></div>
+          <span class="ci-compact-tx">Esprit critique</span>
+          <button class="ci-an-btn" onclick="event.stopPropagation();ciToggle('ci-youtube',true)">Analyser</button>
+        </div>
+        <!-- Expanded : 5 slides -->
+        <div class="ci-exp">
+          <div class="ci-exp-hd">
+            <div class="ci-fox"><img src="assets/comp-foxy.png" class="dyn-comp" alt="Vision"></div>
+            <span class="ci-exp-ti">Analyse de la vidéo<br><span style="font-weight:400;color:#888;font-size:11px;">youtube.com</span></span>
+            <button class="ci-close" onclick="ciToggle('ci-youtube',false)" aria-label="Fermer">✕</button>
+          </div>
+          <div class="ci-slides">
+            <!-- 1 · Temps de scroll / visionnage -->
+            <div class="ci-slide on">
+              <div class="ci-k">⏱️ Temps de visionnage</div>
+              <div class="ci-big"><span class="ci-time">00:00</span></div>
+              <p class="ci-p"><b>Scroll infini détecté</b>&nbsp;: chaque vidéo en lance une autre pour te garder ici.</p>
+              <p class="ci-p">Tu regardes depuis tout à l'heure — c'est peut-être le moment de faire une pause.</p>
+            </div>
+            <!-- 2 · État des lieux + IA -->
+            <div class="ci-slide">
+              <div class="ci-k">🔍 État des lieux</div>
+              <p class="ci-p">Chaîne <b>MoneyBoss Officiel</b> · contenu <b style="color:#ef4444;">à risque</b>.</p>
+              <p class="ci-p">🎣 Titre clickbait · 💸 <b>promotion payante</b> · 🚫 aucune méthode vérifiable.</p>
+              <div class="ci-k" style="margin-top:10px;">🤖 Détection IA</div>
+              <div class="ci-ai-bar"><div class="ci-ai-fill" style="width:64%"></div></div>
+              <p class="ci-p"><b>64&nbsp;%</b> — voix et script <b>probablement générés par IA</b> (intonation synthétique détectée).</p>
+            </div>
+            <!-- 3 · Autre avis 1 -->
+            <div class="ci-slide">
+              <div class="ci-k">↔️ Un autre avis · 1/3</div>
+              <div class="ci-h">Repérer les arnaques "argent facile"</div>
+              <div class="ci-sugg" onclick="ciOpenSource('France Info')">
+                <div class="ci-sugg-ic">📺</div>
+                <div><div class="ci-sugg-src">France Info</div><div class="ci-sugg-ti">«&nbsp;Devenir riche vite&nbsp;»&nbsp;: comment reconnaître une arnaque</div></div>
+              </div>
+            </div>
+            <!-- 4 · Autre avis 2 -->
+            <div class="ci-slide">
+              <div class="ci-k">↔️ Un autre avis · 2/3</div>
+              <div class="ci-h">Ce que dit le régulateur</div>
+              <div class="ci-sugg" onclick="ciOpenSource('AMF')">
+                <div class="ci-sugg-ic">🏛️</div>
+                <div><div class="ci-sugg-src">AMF · Autorité des marchés financiers</div><div class="ci-sugg-ti">Promesses de gains rapides&nbsp;: un signal d'alerte</div></div>
+              </div>
+            </div>
+            <!-- 5 · Autre avis 3 -->
+            <div class="ci-slide">
+              <div class="ci-k">↔️ Un autre avis · 3/3</div>
+              <div class="ci-h">Une approche pédagogique</div>
+              <div class="ci-sugg" onclick="ciOpenSource('Heu?reka')">
+                <div class="ci-sugg-ic">🎓</div>
+                <div><div class="ci-sugg-src">Heu?reka · vulgarisation</div><div class="ci-sugg-ti">La vérité sur les «&nbsp;méthodes secrètes&nbsp;» pour s'enrichir</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="ci-dots">
+            <span class="ci-dot on" onclick="ciGo('ci-youtube',0)"></span>
+            <span class="ci-dot" onclick="ciGo('ci-youtube',1)"></span>
+            <span class="ci-dot" onclick="ciGo('ci-youtube',2)"></span>
+            <span class="ci-dot" onclick="ciGo('ci-youtube',3)"></span>
+            <span class="ci-dot" onclick="ciGo('ci-youtube',4)"></span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -4633,14 +4948,99 @@
     if (id === 's-param-video' && typeof loadCapsuleVideo === 'function') {
       loadCapsuleVideo();
     }
-    // Rend la liste des sites exclus à l'entrée de "Sites analysés"
-    if (id === 's-param-sites' && typeof renderExclList === 'function') {
-      renderExclList();
+    // Rend la liste des sites exclus + applique les objectifs à l'entrée de "Sites analysés"
+    if (id === 's-param-sites') {
+      if (typeof renderExclList === 'function') renderExclList();
+      if (typeof applyObjectiveSites === 'function') applyObjectiveSites();
+    }
+    // Démos Esprit critique : reset + île critique repliée + compteur de temps
+    if (id === 's-youtube' || id === 's-article') {
+      if (id === 's-youtube' && typeof resetYouTube === 'function') resetYouTube();
+      if (id === 's-article' && typeof resetArticle === 'function') resetArticle();
+      const islId = (id === 's-youtube') ? 'ci-youtube' : 'ci-article';
+      if (typeof ciToggle === 'function') ciToggle(islId, false);
+      if (typeof ciStartTimer === 'function') ciStartTimer();
+    } else if (typeof ciStopTimer === 'function') {
+      ciStopTimer();
     }
     // Simule l'arrivée d'une notification sur le bureau Android
     if (id === 's-widget' && typeof showAndroidNotif === 'function') {
       showAndroidNotif();
     }
+  }
+
+  /* ════════════════════════════════════════════════════════════
+     DÉMO ESPRIT CRITIQUE — article de presse + vidéo YouTube
+     · Dynamic Island critique : bouton "Analyser" → 5 slides
+     · Slides : temps de scroll · état des lieux + détection IA · 3 autres angles
+  ════════════════════════════════════════════════════════════ */
+  // Vidéo YouTube : play/pause du lecteur
+  function toggleYouTube(){
+    const p = document.getElementById('yt-player');
+    if(p) p.classList.toggle('playing');
+  }
+  function resetYouTube(){
+    const p = document.getElementById('yt-player');
+    const fill = document.getElementById('yt-prog-fill');
+    if(p) p.classList.remove('playing');
+    if(fill){ fill.style.animation='none'; void fill.offsetWidth; fill.style.animation=''; }  // reset barre
+  }
+  // Article : surligne en rouge un passage douteux cliqué
+  function flagClaim(el){ if(el) el.classList.toggle('flagged'); }
+  function resetArticle(){
+    document.querySelectorAll('#s-article .art-claim.flagged').forEach(c=>c.classList.remove('flagged'));
+  }
+
+  /* ── Dynamic Island critique : expand/collapse + navigation slides ── */
+  function ciToggle(id, force){
+    const el = document.getElementById(id);
+    if(!el) return;
+    const willExp = (force !== undefined) ? force : !el.classList.contains('exp');
+    el.classList.toggle('exp', willExp);
+    if(willExp) ciGo(id, 0);
+  }
+  function ciGo(id, i){
+    const el = document.getElementById(id);
+    if(!el) return;
+    const slides = [...el.querySelectorAll('.ci-slide')];
+    const dots   = [...el.querySelectorAll('.ci-dot')];
+    if(!slides.length) return;
+    i = Math.max(0, Math.min(slides.length - 1, i));
+    slides.forEach((s, k) => s.classList.toggle('on', k === i));
+    dots.forEach((d, k)   => d.classList.toggle('on', k === i));
+    el._ci = i;
+  }
+  function ciOpenSource(name){
+    alert('Vision t\'ouvrirait : ' + name + '\n\nConfronter plusieurs sources fiables = sortir de sa bulle et se forger un avis éclairé.');
+  }
+  // Swipe gauche/droite sur les slides
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.ci-slides').forEach(box => {
+      const isl = box.closest('.ci-isl'); if(!isl) return;
+      let sx = 0, sw = false;
+      box.addEventListener('touchstart', e => { sx = e.touches[0].clientX; sw = true; }, {passive:true});
+      box.addEventListener('touchend', e => {
+        if(!sw) return; sw = false;
+        const dx = e.changedTouches[0].clientX - sx;
+        if(Math.abs(dx) > 36) ciGo(isl.id, (isl._ci || 0) + (dx < 0 ? 1 : -1));
+      }, {passive:true});
+    });
+  });
+
+  /* ── Compteur de temps passé (slides "temps de scroll") ── */
+  let _ciTimerStart = 0, _ciTimerInt = null;
+  function ciStartTimer(){
+    _ciTimerStart = Date.now();
+    if(_ciTimerInt) clearInterval(_ciTimerInt);
+    _ciTimerInt = setInterval(ciTickTimer, 1000);
+    ciTickTimer();
+  }
+  function ciStopTimer(){ if(_ciTimerInt){ clearInterval(_ciTimerInt); _ciTimerInt = null; } }
+  function ciTickTimer(){
+    const s = Math.floor((Date.now() - _ciTimerStart) / 1000);
+    const mm = String(Math.floor(s / 60)).padStart(2, '0');
+    const ss = String(s % 60).padStart(2, '0');
+    document.querySelectorAll('.ci-time').forEach(e => e.textContent = mm + ':' + ss);
   }
 
   /* Notification Android simulée : texte (comparaison sociale) + arrivée + auto-disparition + swipe */
@@ -5072,6 +5472,47 @@
     // Toggle verrouillé (cadenas) → non modifiable par l'utilisateur
     if(el.classList.contains('locked')) return;
     el.classList.toggle('on');
+  }
+
+  /* ── Sites analysés pilotés par les objectifs ──
+     Chaque objectif active les catégories de sites les plus à risque pour lui. */
+  const OBJ_SITE_MAP = {
+    voyage:   ['voyage'],
+    liberte:  ['abo'],
+    impact:   ['food'],
+    projet:   ['abo'],
+    formation:['reseaux', 'abo'],
+    sante:    ['food', 'reseaux'],
+    logement: ['abo'],
+    societal: ['reseaux']
+  };
+  const CAT_LABELS = {
+    achat: 'Achat', food: 'Food & Livraison', reseaux: 'Réseaux & Streaming',
+    voyage: 'Voyage & Divertissement', abo: 'Abonnements & Services'
+  };
+  function applyObjectiveSites(){
+    const cats = new Set(['achat']);   // Achat : toujours analysé (verrouillé)
+    (userAmbitions || []).forEach(a => (OBJ_SITE_MAP[a.key] || []).forEach(c => cats.add(c)));
+    // Applique l'état aux toggles (sauf le verrouillé qui reste ON)
+    document.querySelectorAll('#s-param-sites .cat-tog').forEach(t => {
+      if (t.classList.contains('locked')) return;
+      t.classList.toggle('on', cats.has(t.getAttribute('data-cat')));
+    });
+    // Note explicative dans la page
+    const objs = (userAmbitions || []).map(a => a.label).filter(Boolean);
+    const note = document.getElementById('sites-obj-note');
+    if (note) {
+      const catNames = [...cats].map(c => CAT_LABELS[c]).filter(Boolean);
+      note.innerHTML = objs.length
+        ? '🎯 <b>Sélection adaptée à tes objectifs</b> (' + objs.join(', ') + ') : Vision surveille en priorité ' + catNames.join(', ') + '.'
+        : 'Définis un objectif pour personnaliser les catégories surveillées.';
+    }
+    // Résumé sur la page Profil
+    const sum = document.getElementById('sites-count-sum');
+    if (sum) {
+      const n = cats.size;
+      sum.textContent = n + ' catégorie' + (n > 1 ? 's' : '') + ' surveillée' + (n > 1 ? 's' : '') + ' selon tes objectifs';
+    }
   }
 
   /* ── Sélection radio transport (s-param-transport) ── */
@@ -6073,6 +6514,8 @@
       : 'Définis un montant cible pour suivre ta progression.';
     // Image d'objectif réelle (photo libre selon l'objectif)
     setObjectiveImage(label);
+    // Sites analysés pilotés par les objectifs
+    if (typeof applyObjectiveSites === 'function') applyObjectiveSites();
   }
 
   /* ── Toggles sites ── */
