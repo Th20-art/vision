@@ -4982,6 +4982,11 @@
     if (id === 's-param-video' && typeof loadCapsuleVideo === 'function') {
       loadCapsuleVideo();
     }
+    // Analyse IA de l'îlot dès l'ouverture de la page produit (selon les règles)
+    if (id === 's-amazon' && !window._amazonAnalyzed && typeof _updateDIFromScan === 'function') {
+      window._amazonAnalyzed = true;
+      _updateDIFromScan();
+    }
     // Rend la liste des sites exclus + applique les objectifs à l'entrée de "Sites analysés"
     if (id === 's-param-sites') {
       if (typeof renderExclList === 'function') renderExclList();
@@ -6328,9 +6333,7 @@
   function getUserRule(){ return (localStorage.getItem('vision_rule') || '').trim(); }
   function setUserRule(v){
     try { localStorage.setItem('vision_rule', (v || '').trim()); } catch(e){}
-    _alignScore = 4;                       // invalide le score : sera recalculé au prochain scan
-    const el = document.getElementById('ci-article'); if (el) el._analyzed = false;
-    const yt = document.getElementById('ci-youtube'); if (yt) yt._analyzed = false;
+    if (typeof _invalidateAnalyses === 'function') _invalidateAnalyses();
   }
 
   /* ── Journal persistant (résistances, analyses, craquages) ── */
@@ -6447,6 +6450,7 @@
   // Une règle a changé → invalide le score et les analyses en cache (recalcul au prochain scan)
   function _invalidateAnalyses(){
     _alignScore = 4;
+    window._amazonAnalyzed = false;   // forcera une nouvelle analyse produit selon les nouvelles règles
     const a = document.getElementById('ci-article'); if (a) a._analyzed = false;
     const y = document.getElementById('ci-youtube'); if (y) y._analyzed = false;
   }
@@ -6935,7 +6939,7 @@
     saveExcludedSites();
     renderExclList();
   }
-  function saveJournalEntry() {
+  async function saveJournalEntry() {
     const desc = document.getElementById('journal-desc').value.trim();
     const unit = document.getElementById('journal-unit').value.trim();
     if (!desc) { document.getElementById('journal-desc').focus(); return; }
@@ -6945,6 +6949,43 @@
     addJournalLine(isResist ? 'resist' : 'craq', desc + amountStr);
     closeJournal();
     go('s-home');
+    // L'IA rattache l'entrée à un objectif et ajuste l'épargne (+ ou −)
+    try { await _journalApplyToObjective(desc, unit, isResist); } catch(e){}
+  }
+
+  /* Applique une entrée de journal à un objectif (via IA, repli heuristique). */
+  async function _journalApplyToObjective(desc, unit, isResist){
+    if (!userAmbitions.length) return;
+    const numFromUnit = parseFloat(String(unit || '').replace(',', '.').replace(/[^\d.]/g, '')) || 0;
+    let label = null, delta = 0, reason = '';
+
+    if (typeof getClaudeKey === 'function' && getClaudeKey()) {
+      const reply = await _claudeOneShot(
+        `Tu rattaches une entrée de journal à UN objectif d'épargne de l'utilisateur. Réponds en JSON uniquement, sans texte autour :
+{"objectif":"libellé EXACT d'un objectif de la liste, ou null si aucun ne correspond","delta":<nombre signé en € à AJOUTER à l'épargne de cet objectif : POSITIF si l'entrée rapproche de l'objectif (résistance, économie réalisée), NÉGATIF si elle en éloigne (achat impulsif, dépense)>,"raison":"courte phrase"}`,
+        `${_userContext()}\nObjectifs : ${userAmbitions.map(a => a.label).join(' | ')}.\nEntrée de journal (${isResist ? 'résistance' : 'craquage'}) : « ${desc} ». Valeur saisie : « ${unit || '—'} ».`,
+        160
+      );
+      let d; try { d = JSON.parse(reply.match(/\{[\s\S]*\}/)?.[0]); } catch(e){}
+      if (d) {
+        if (d.objectif && String(d.objectif).toLowerCase() !== 'null') {
+          const m = userAmbitions.find(a => a.label.toLowerCase() === String(d.objectif).toLowerCase());
+          if (m) label = m.label;
+        }
+        if (!isNaN(parseFloat(d.delta))) delta = parseFloat(d.delta);
+        reason = d.raison || '';
+      }
+    }
+    // Repli heuristique : valeur saisie → objectif principal (+ si résistance, − sinon)
+    if (!label) { label = userAmbitions[0].label; if (!delta) delta = (isResist ? 1 : -1) * numFromUnit; }
+    if (label && delta) {
+      const key = 'vision_saved_' + label;
+      const cur = parseFloat(localStorage.getItem(key) || '0');
+      localStorage.setItem(key, String(Math.max(0, +(cur + delta).toFixed(2))));
+      if (typeof renderHomeMetrics === 'function') renderHomeMetrics();
+      if (typeof renderHomeAmbitions === 'function') renderHomeAmbitions();
+      updateDynIsland();
+    }
   }
 
   /* ── Claude API + Chat IA ── */
