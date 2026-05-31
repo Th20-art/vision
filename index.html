@@ -5021,8 +5021,67 @@
     if(willExp){
       ciGo(id, 0, true);
       ciStartRotation(id);   // auto-pivot APRÈS appui sur "Analyser"
+      if(typeof ciAnalyze === 'function') ciAnalyze(id);   // analyse IA réelle (si clé)
     } else {
       ciStopRotation(id);
+    }
+  }
+
+  /* ── Analyse IA RÉELLE du contenu (article/vidéo) → remplit les 5 slides ──
+     Tient compte du contexte utilisateur (objectifs + règles). Sans clé API,
+     on garde le contenu de démonstration statique. */
+  async function ciAnalyze(id){
+    const el = document.getElementById(id);
+    if(!el || el._analyzed || el._analyzing) return;
+    if(typeof getClaudeKey !== 'function' || !getClaudeKey()) return;  // pas de clé → statique
+    el._analyzing = true;
+    const isYt = (id === 'ci-youtube');
+    const screen = document.getElementById(isYt ? 's-youtube' : 's-article');
+    let pageText;
+    if(isYt){
+      const t  = (screen.querySelector('.yt-title')||{}).textContent||'';
+      const ch = (screen.querySelector('.yt-ch-n')||{}).textContent||'';
+      const sp = (screen.querySelector('.yt-spons')||{}).textContent||'';
+      pageText = `Vidéo YouTube. Titre : "${t}". Chaîne : ${ch}. ${sp}.`;
+    } else {
+      const h = (screen.querySelector('.art-h1')||{}).textContent||'';
+      const body = [...screen.querySelectorAll('.art-p')].map(p=>p.textContent).join(' ');
+      pageText = `Article de presse. Titre : "${h}". Contenu : ${body}`;
+    }
+    const slides = [...el.querySelectorAll('.ci-slide')];
+    const t0 = slides[0] && slides[0].querySelector('.ci-title');
+    const prev0 = t0 ? t0.textContent : '';
+    if(t0) t0.textContent = 'Analyse en cours…';
+    const reply = await _claudeOneShot(
+      `Tu es l'outil « esprit critique » de l'app Vision. Analyse ce contenu en tenant compte du contexte utilisateur. JSON uniquement, sans texte autour :
+{"sujet":"résumé neutre et factuel du propos en 1 phrase","biais_pct":<entier 0-100 : niveau de biais/orientation OU probabilité de contenu généré par IA>,"biais":"1 phrase expliquant pourquoi ce contenu est orienté, partial ou peu fiable","sources":[{"label":"Approfondir","name":"vrai média","detail":"1 phrase","domain":"domaine.com"},{"label":"opinion inverse","name":"vrai média","detail":"1 phrase","domain":"domaine.com"},{"label":"sujet connexe","name":"vrai média","detail":"1 phrase","domain":"domaine.com"}]}`,
+      `${_userContext()}\n${pageText}\nLes 3 sources doivent proposer des angles DIFFÉRENTS (approfondissement, opinion contraire, sujet connexe) et être de vrais médias crédibles, en lien avec les objectifs si pertinent.`,
+      450
+    );
+    el._analyzing = false;
+    let d; try { d = JSON.parse(reply.match(/\{[\s\S]*\}/)?.[0]); } catch(e){}
+    if(!d){ if(t0) t0.textContent = prev0; return; }   // échec → garde le statique
+    el._analyzed = true;
+    if(t0 && d.sujet) t0.textContent = d.sujet;
+    if(slides[1]){
+      const body = slides[1].querySelector('.ci-body'); if(body && d.biais) body.textContent = d.biais;
+      const pct = Math.max(0, Math.min(100, parseInt(d.biais_pct) || 0));
+      const fill = slides[1].querySelector('.ci-bias-fill'); if(fill) fill.style.width = pct + '%';
+      const pctEl = slides[1].querySelector('.ci-bias-pct'); if(pctEl) pctEl.textContent = pct + '%';
+    }
+    const srcs = Array.isArray(d.sources) ? d.sources : [];
+    for(let i=0;i<3;i++){
+      const s = slides[2+i], src = srcs[i];
+      if(!s || !src) continue;
+      const lab = s.querySelector('.ci-label'); if(lab && src.label) lab.textContent = src.label;
+      const ti  = s.querySelector('.ci-title'); if(ti && src.name) ti.textContent = src.name;
+      const bo  = s.querySelector('.ci-body');  if(bo && src.detail) bo.textContent = src.detail;
+      const lk  = s.querySelector('.ci-link');
+      if(lk){
+        const dom = String(src.domain || src.name || '').replace(/^https?:\/\//,'');
+        lk.textContent = '↗ ' + dom;
+        lk.onclick = function(){ ciOpenSource(src.name || dom); };
+      }
     }
   }
   function ciGo(id, i, auto){
@@ -5142,14 +5201,20 @@
 
     const mainAmb = userAmbitions[0]?.label || 'épargne';
     const reply = await _claudeOneShot(
-      `Génère des alternatives d'achat conscient. JSON uniquement, sans texte autour :
-{"alt_smart":{"name":"nom court","saving":"économie ex: -15 €","price":"prix","detail":"1 phrase","url":"domaine marchand ex: backmarket.fr","brand_domain":"domaine officiel de la marque ex: samsung.com"},"apps":[{"name":"nom app","detail":"1 phrase gratuite","domain":"domaine officiel ex: strava.com"},{"name":"nom app 2","detail":"1 phrase gratuite","domain":"domaine officiel ex: google.com"}]}`,
-      `Produit: ${info.name}${info.brand?' de '+info.brand:''}, prix: ${info.price}, catégorie: ${info.category}. Objectif: ${mainAmb}. Alt_smart = même produit moins cher (reconditionné/comparateur). apps = 2 applis/services GRATUITS pertinents pour ce type de produit ou l'objectif. brand_domain et domain doivent être les vrais domaines officiels (pour récupérer les logos).`
+      `Tu es l'assistant d'achat conscient de l'app Vision. Prends en compte TOUT le contexte utilisateur (objectifs ET règles). JSON uniquement, sans texte autour :
+{"align":<entier 0-10 : à quel point CET achat sert les objectifs de l'utilisateur, 10=indispensable à l'objectif, 0=contraire>,"alt_smart":{"name":"nom court","saving":"économie ex: -15 €","price":"prix","detail":"1 phrase","url":"domaine marchand ex: backmarket.fr","brand_domain":"domaine officiel de la marque ex: samsung.com"},"apps":[{"name":"nom app","detail":"1 phrase gratuite","domain":"domaine officiel ex: strava.com"},{"name":"nom app 2","detail":"1 phrase gratuite","domain":"domaine officiel ex: google.com"}]}`,
+      `${_userContext()}\nProduit analysé : ${info.name}${info.brand?' de '+info.brand:''}, prix : ${info.price}, catégorie : ${info.category}.\nalt_smart = même produit moins cher (reconditionné/comparateur). apps = 2 applis/services GRATUITS pertinents pour ce produit OU pour les objectifs ci-dessus. brand_domain et domain = vrais domaines officiels (pour les logos). N'ignore aucune règle de l'utilisateur.`
     );
     if (!reply) return;
     let alts;
     try { alts = JSON.parse(reply.match(/\{[\s\S]*\}/)?.[0]); } catch(e) { return; }
     if (!alts) return;
+
+    // Score d'alignement réel (calculé par l'IA selon les objectifs)
+    if (alts.align !== undefined && !isNaN(parseFloat(alts.align))) {
+      _alignScore = Math.max(0, Math.min(10, parseFloat(alts.align)));
+      updateDynIsland();
+    }
 
     // State 2 — alternative moins chère (IDs dx2-*)
     const st2 = document.querySelector('#dyn-isl .dyn-state[data-st="2"]');
@@ -6170,7 +6235,48 @@
   let userAmbitions = [
     { ...AMBITION_TYPES.find(t => t.key === 'voyage'), smartLabel: 'Je veux pouvoir voyager le mois prochain.' },
     { ...AMBITION_TYPES.find(t => t.key === 'impact') }
-  ];   // [{key, emoji, label, smartLabel?}]
+  ];   // [{key, emoji, label, smartLabel?, amount?}]
+
+  /* ── Persistance des objectifs (localStorage) ── */
+  function saveAmbitions(){
+    try { localStorage.setItem('vision_ambitions', JSON.stringify(userAmbitions)); } catch(e){}
+  }
+  function loadAmbitions(){
+    try {
+      const s = JSON.parse(localStorage.getItem('vision_ambitions') || 'null');
+      if (Array.isArray(s) && s.length) userAmbitions = s;
+    } catch(e){}
+  }
+
+  /* Score d'alignement du produit courant avec les objectifs (0–10).
+     Défini par l'analyse IA ; 4/10 par défaut (un achat d'impulsion est rarement aligné). */
+  let _alignScore = 4;
+
+  /* ── Contexte utilisateur injecté dans CHAQUE analyse IA ──
+     Objectifs (+ formulations perso) et règles ajoutées par l'utilisateur. */
+  function _userContext(){
+    const objs = (userAmbitions || []).map(a => {
+      let s = a.label;
+      if (a.smartLabel) s += ' (« ' + a.smartLabel + ' »)';
+      if (a.amount) s += ' [cible ' + a.amount + ' €]';
+      return s;
+    });
+    let ctx = 'Objectifs de l\'utilisateur : ' + (objs.join(' ; ') || 'non définis') + '.';
+    if (typeof excludedSites !== 'undefined' && excludedSites.length)
+      ctx += ' Sites/app que l\'utilisateur a explicitement exclus de l\'analyse (à ne PAS analyser ni recommander) : ' + excludedSites.join(', ') + '.';
+    if (typeof espritCritiqueOn !== 'undefined')
+      ctx += ' Esprit critique : ' + (espritCritiqueOn ? 'activé' : 'désactivé') + '.';
+    return ctx;
+  }
+
+  /* Impact CO₂ évité, dérivé du total des achats résistés (≈0,5 kg CO₂e / €). */
+  function computeImpactKg(){
+    let totalAvoided = 0;
+    (userAmbitions || []).forEach(a => {
+      totalAvoided += parseFloat(localStorage.getItem('vision_saved_' + a.label) || '0');
+    });
+    return Math.round(totalAvoided * 0.5);
+  }
 
   /* Parse "✈️ Voyager" → match AMBITION_TYPES */
   function parseVisionLabel(text) {
@@ -6302,13 +6408,15 @@
           block.className = 'home-obj';
           const isEC = /esprit critique/i.test(amb.label);
 
-          // Cas spécial impact écologique → "36 KG" + texte CO₂
+          // Cas spécial impact écologique → CO₂ évité, calculé depuis les achats résistés
           if (amb.key === 'impact') {
+            const kg = computeImpactKg();
+            const km = Math.round(kg / 0.12);   // ~0,12 kg CO₂ / km en voiture
             block.innerHTML = `
               <div class="ho-label">${(amb.label || '').toUpperCase()}</div>
-              <div class="ho-value">36 KG</div>
-              <div class="ho-sub">CO₂ évités cette semaine</div>
-              <div class="ho-sub2">${amb.smartLabel || 'Soit 288 km en voiture non parcourus.'}</div>`;
+              <div class="ho-value">${kg} KG</div>
+              <div class="ho-sub">CO₂ évités grâce à tes résistances</div>
+              <div class="ho-sub2">${kg > 0 ? ('Soit ' + km.toLocaleString('fr-FR') + ' km en voiture non parcourus.') : 'Résiste à un achat pour commencer à réduire ton impact.'}</div>`;
           } else {
             const saved  = parseFloat(localStorage.getItem('vision_saved_' + amb.label) || '0');
             const target = parseFloat(amb.amount || 0);
@@ -6431,6 +6539,7 @@
       }
     }
     userAmbitions = selected;
+    saveAmbitions();
     // Initialise les compteurs d'épargne à 0 pour les nouveaux objectifs
     selected.forEach(s => {
       localStorage.setItem('vision_saved_' + s.label, '0');
@@ -6507,8 +6616,8 @@
     if (!userAmbitions.length) return;
     const main = userAmbitions[0];
     const label = main.label || 'objectif';
-    // Score state 0 (1pt/ambition + 2pts si smartLabel défini + base 1)
-    const score = Math.min(10, userAmbitions.length * 3 + (main.smartLabel ? 1 : 0) + 1);
+    // Score d'ALIGNEMENT du produit avec l'objectif (défini par l'analyse IA, 4/10 par défaut)
+    const score = Math.max(0, Math.min(10, Math.round(_alignScore)));
     const fill = document.getElementById('dyn-score-fill');
     if (fill) fill.style.width = (score * 10) + '%';
     const sc = document.getElementById('dyn-score');
@@ -6658,8 +6767,12 @@
     document.querySelectorAll('.bell-btn').forEach(b => b.classList.remove('has-notif')); // marque comme lu
   }
 
-  /* ── Sites à ne pas analyser (liste d'exclusion) ── */
-  let excludedSites = ['Société générale', 'Netflix'];
+  /* ── Sites à ne pas analyser (liste d'exclusion) — persistée ── */
+  let excludedSites = (function(){
+    try { const s = JSON.parse(localStorage.getItem('vision_excl') || 'null'); if (Array.isArray(s)) return s; } catch(e){}
+    return ['Société générale', 'Netflix'];
+  })();
+  function saveExcludedSites(){ try { localStorage.setItem('vision_excl', JSON.stringify(excludedSites)); } catch(e){} }
   function renderExclList() {
     const list = document.getElementById('excl-list');
     if (!list) return;
@@ -6692,11 +6805,13 @@
     if (!excludedSites.some(s => s.toLowerCase() === name.toLowerCase())) {
       excludedSites.push(name);
     }
+    saveExcludedSites();
     renderExclList();
     closeExcl();
   }
   function removeExclSite(i) {
     excludedSites.splice(i, 1);
+    saveExcludedSites();
     renderExclList();
   }
   function saveJournalEntry() {
@@ -7020,6 +7135,7 @@ Règles ABSOLUES : max 3 phrases courtes · toujours en français · 1 seule que
       const entry = {...meta, smartLabel: smartAnswers.generated};
       if (existing >= 0) userAmbitions[existing] = entry;
       else userAmbitions.push(entry);
+      saveAmbitions();
       renderHomeAmbitions();
       if (typeof renderMyAmbitions === 'function') renderMyAmbitions();
       if (typeof renderHomeMetrics === 'function') renderHomeMetrics();
@@ -7035,7 +7151,9 @@ Règles ABSOLUES : max 3 phrases courtes · toujours en français · 1 seule que
     if (!key) return;
     if (!confirm('Supprimer cet objectif ?')) return;
     userAmbitions = userAmbitions.filter(a => a.key !== key);
+    saveAmbitions();
     renderHomeAmbitions();
+    if (typeof renderHomeMetrics === 'function') renderHomeMetrics();
     updateDynIsland();
     closeSmart();
   }
@@ -7097,7 +7215,7 @@ Règles ABSOLUES : max 3 phrases courtes · toujours en français · 1 seule que
   let _capsuleSpeechRec = null;
 
   /* Appel Claude one-shot (sans historique chat) — pour enhancement transcript */
-  async function _claudeOneShot(systemPrompt, userText) {
+  async function _claudeOneShot(systemPrompt, userText, maxTokens) {
     const key = getClaudeKey();
     if (!key) return null;
     try {
@@ -7106,7 +7224,7 @@ Règles ABSOLUES : max 3 phrases courtes · toujours en français · 1 seule que
         headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01',
                    'content-type': 'application/json',
                    'anthropic-dangerous-direct-browser-access': 'true' },
-        body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 150,
+        body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: maxTokens || 150,
           system: systemPrompt, messages: [{ role: 'user', content: userText }] })
       });
       if (!res.ok) return null;
@@ -7591,6 +7709,15 @@ Règles ABSOLUES : max 3 phrases courtes · toujours en français · 1 seule que
   })();
 
   /* Au chargement : si le bureau Android est l'écran actif → notification simulée */
+  /* Charge l'état persistant (objectifs) et rafraîchit toute l'UI au démarrage */
+  (function bootVisionState(){
+    if (typeof loadAmbitions === 'function') loadAmbitions();
+    if (typeof renderHomeAmbitions === 'function') renderHomeAmbitions();
+    if (typeof renderHomeMetrics === 'function') renderHomeMetrics();
+    if (typeof updateDynIsland === 'function') updateDynIsland();
+    if (typeof applyObjectiveSites === 'function') applyObjectiveSites();
+  })();
+
   (function initAndroidNotif(){
     const w = document.getElementById('s-widget');
     if (w && w.classList.contains('active') && typeof showAndroidNotif === 'function') {
