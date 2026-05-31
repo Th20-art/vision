@@ -4940,8 +4940,9 @@
     // Auto-start countdown when entering emotion screen
     if (id === 's-emo') startEmoCountdown();
     // Refresh Mes Ambitions list à l'entrée
-    if (id === 's-param-ambitions' && typeof renderMyAmbitions === 'function') {
-      renderMyAmbitions();
+    if (id === 's-param-ambitions') {
+      if (typeof renderMyAmbitions === 'function') renderMyAmbitions();
+      if (typeof renderRules === 'function') renderRules();
     }
     // DynIsland réactif à chaque arrivée home
     if (id === 's-home') { updateDynIsland(); if (typeof renderHomeJournal === 'function') renderHomeJournal(); }
@@ -6298,9 +6299,13 @@
       return s;
     });
     let ctx = 'Objectifs de l\'utilisateur : ' + (objs.join(' ; ') || 'non définis') + '.';
-    const rule = (typeof getUserRule === 'function') ? getUserRule() : '';
-    if (rule)
-      ctx += ' RÈGLE PERSONNELLE PRIORITAIRE de l\'utilisateur (à respecter absolument dans l\'analyse) : « ' + rule + ' ».';
+    // Règles personnelles : « Mes règles personnelles » (liste) + consigne Esprit critique
+    const rules = [];
+    if (typeof personalRules !== 'undefined') personalRules.forEach(r => { if (r) rules.push(r); });
+    const consigne = (typeof getUserRule === 'function') ? getUserRule() : '';
+    if (consigne && !rules.some(r => r.toLowerCase() === consigne.toLowerCase())) rules.push(consigne);
+    if (rules.length)
+      ctx += ' RÈGLES PERSONNELLES PRIORITAIRES de l\'utilisateur (à respecter ABSOLUMENT ; si l\'achat ou le contenu va à leur encontre, baisse fortement le score et préviens-le) : ' + rules.map(r => '« ' + r + ' »').join(', ') + '.';
     if (typeof excludedSites !== 'undefined' && excludedSites.length)
       ctx += ' Sites/app que l\'utilisateur a explicitement exclus de l\'analyse (à ne PAS analyser ni recommander) : ' + excludedSites.join(', ') + '.';
     if (typeof espritCritiqueOn !== 'undefined')
@@ -6431,8 +6436,18 @@
     renderRules();
   }
 
-  /* ── Règles personnelles (ce que l'utilisateur refuse) ── */
-  let personalRules = [];
+  /* ── Règles personnelles (ce que l'utilisateur refuse) — persistées ── */
+  let personalRules = (function(){
+    try { const s = JSON.parse(localStorage.getItem('vision_rules') || 'null'); if (Array.isArray(s)) return s; } catch(e){}
+    return [];
+  })();
+  function savePersonalRules(){ try { localStorage.setItem('vision_rules', JSON.stringify(personalRules)); } catch(e){} }
+  // Une règle a changé → invalide le score et les analyses en cache (recalcul au prochain scan)
+  function _invalidateAnalyses(){
+    _alignScore = 4;
+    const a = document.getElementById('ci-article'); if (a) a._analyzed = false;
+    const y = document.getElementById('ci-youtube'); if (y) y._analyzed = false;
+  }
   function renderRules() {
     const box = document.getElementById('rules-list');
     if (!box) return;
@@ -6455,10 +6470,14 @@
       personalRules.push(val);
     }
     if (inp) inp.value = '';
+    savePersonalRules();
+    _invalidateAnalyses();
     renderRules();
   }
   function removeRule(i) {
     personalRules.splice(i, 1);
+    savePersonalRules();
+    _invalidateAnalyses();
     renderRules();
   }
 
