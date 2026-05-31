@@ -1483,56 +1483,70 @@
   .yt-ch-s{font-size:11px;color:#888;font-family:'Inter',sans-serif;}
   .yt-spons{display:inline-block;margin-top:10px;background:#1f1f1f;color:#ffd54f;font-size:10px;
     padding:3px 9px;border-radius:5px;font-family:'Inter',sans-serif;}
-  /* ═══ DYNAMIC ISLAND CRITIQUE (.ci-*) — bouton "Analyser" → 5 slides ═══ */
+  /* ═══ DYNAMIC ISLAND CRITIQUE (.ci-*) — Figma 784:1210 / 784:1219 ═══
+     Mêmes dimensions que .dyn-isl : compact 214×87 ↔ étendu 213×253.
+     Accent violet #3705ff (bouton, badge IA, barre de biais). */
+  .ci-bk{position:absolute;inset:0;z-index:79;background:rgba(0,0,0,0);pointer-events:none;transition:background .3s;}
+  .ci-bk.on{background:rgba(0,0,0,.4);pointer-events:auto;}
   .ci-isl{
-    position:absolute;top:8px;left:50%;transform:translateX(-50%);
-    background:#090909;border-radius:22px;z-index:80;overflow:hidden;
-    width:auto;max-width:330px;
-    box-shadow:0 10px 34px rgba(0,0,0,.5);
-    transition:width .42s cubic-bezier(.32,1.1,.5,1),height .42s cubic-bezier(.32,1.1,.5,1),border-radius .3s;
+    position:absolute;top:10px;left:50%;transform:translateX(-50%);
+    width:214px;height:87px;background:#090909;border-radius:27px;
+    z-index:80;overflow:hidden;cursor:pointer;
+    box-shadow:0 12px 36px rgba(0,0,0,.5);
+    transition:width .42s cubic-bezier(.32,1.1,.5,1),height .42s cubic-bezier(.32,1.1,.5,1);
     user-select:none;-webkit-user-select:none;
   }
-  .ci-compact{
-    display:flex;align-items:center;gap:9px;padding:7px 9px 7px 12px;height:40px;
-    white-space:nowrap;cursor:pointer;
-  }
-  .ci-fox{width:30px;height:26px;overflow:hidden;flex-shrink:0;}
+  .ci-isl.exp{width:213px;height:253px;cursor:default;}
+  .ci-fox{overflow:hidden;}
   .ci-fox img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated;}
-  .ci-compact-tx{color:#fff;font-size:12px;font-family:'Inter',sans-serif;}
+
+  /* ── Compact idle : "Esprit critique" + Appuyer pour analyser ── */
+  .ci-compact{position:absolute;inset:0;transition:opacity .2s;}
+  .ci-isl.exp .ci-compact{opacity:0;pointer-events:none;}
+  .ci-compact .ci-fox{position:absolute;left:13px;top:22px;width:48px;height:43px;}
   .ci-an-btn{
-    background:linear-gradient(90deg,var(--og),var(--og2));color:#fff;border:none;border-radius:14px;
-    padding:6px 13px;font-size:11px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;
+    position:absolute;top:24px;left:50%;transform:translateX(-50%);
+    background:#3705ff;color:#fff;border:none;border-radius:13px;
+    padding:6px 15px;font-size:11px;font-weight:700;font-family:'Inter',sans-serif;
+    cursor:pointer;white-space:nowrap;
   }
-  .ci-isl.exp{width:314px;height:380px;border-radius:28px;}
-  .ci-isl.exp .ci-compact{opacity:0;pointer-events:none;height:0;padding:0;overflow:hidden;}
-  .ci-exp{
-    position:absolute;inset:0;opacity:0;pointer-events:none;
-    transition:opacity .25s ease .12s;display:flex;flex-direction:column;
+  .ci-compact-sub{
+    position:absolute;top:53px;left:0;right:0;text-align:center;
+    font-family:'Inter',sans-serif;font-size:10px;color:#8a8a8a;
   }
+
+  /* ── Étendu : 5 slides ── */
+  .ci-exp{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .25s ease .12s;}
   .ci-isl.exp .ci-exp{opacity:1;pointer-events:auto;}
-  .ci-exp-hd{display:flex;align-items:center;gap:9px;padding:15px 15px 6px;}
-  .ci-exp-hd .ci-fox{width:34px;height:30px;}
-  .ci-exp-ti{color:#fff;font-size:13px;font-weight:700;font-family:'Inter',sans-serif;flex:1;line-height:1.2;}
-  .ci-close{background:none;border:none;color:#888;font-size:19px;cursor:pointer;line-height:1;padding:0 2px;}
-  .ci-slides{position:relative;flex:1;overflow:hidden;touch-action:pan-y;}
-  .ci-slide{position:absolute;inset:0;padding:8px 18px 6px;opacity:0;pointer-events:none;transition:opacity .22s;overflow-y:auto;}
+  .ci-slides{position:absolute;inset:0;touch-action:pan-y;}
+  .ci-slide{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .22s;}
   .ci-slide.on{opacity:1;pointer-events:auto;}
-  .ci-k{font-size:10px;color:var(--og);font-weight:700;letter-spacing:.6px;text-transform:uppercase;font-family:'Inter',sans-serif;margin-bottom:7px;}
-  .ci-h{font-size:16px;color:#fff;font-weight:700;font-family:'Work Sans',sans-serif;margin:0 0 8px;line-height:1.2;}
-  .ci-p{font-size:12.5px;color:#bbb;line-height:1.5;font-family:'Inter',sans-serif;margin:0 0 8px;}
-  .ci-p b{color:#fff;font-weight:600;}
-  .ci-big{font-size:36px;font-weight:700;color:#fff;font-family:'Work Sans',sans-serif;line-height:1;margin:4px 0 6px;}
-  .ci-big.warn{color:#f59e0b;}
-  .ci-row{display:flex;align-items:center;gap:8px;font-size:12px;color:#ddd;font-family:'Inter',sans-serif;margin:0 0 6px;}
-  .ci-ai-bar{height:9px;background:#2a2a2a;border-radius:6px;overflow:hidden;margin:6px 0 4px;}
-  .ci-ai-fill{height:100%;background:linear-gradient(90deg,#f59e0b,#ef4444);border-radius:6px;}
-  .ci-sugg{display:flex;gap:11px;align-items:flex-start;background:#1a1a1a;border-radius:12px;padding:11px;margin-top:8px;cursor:pointer;}
-  .ci-sugg-ic{width:38px;height:38px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:19px;background:#262626;}
-  .ci-sugg-src{font-size:10px;color:var(--og);font-family:'Inter',sans-serif;margin-bottom:3px;}
-  .ci-sugg-ti{font-size:12.5px;color:#fff;font-family:'Inter',sans-serif;line-height:1.35;}
-  .ci-dots{display:flex;gap:5px;justify-content:center;align-items:center;padding:6px 0 13px;}
-  .ci-dot{width:6px;height:6px;border-radius:50%;background:#3a3a3a;cursor:pointer;transition:background .2s,width .2s;}
-  .ci-dot.on{background:var(--og);width:17px;border-radius:3px;}
+  .ci-slide .ci-fox{position:absolute;left:11px;top:13px;width:50px;height:44px;z-index:2;}
+  .ci-ia{
+    position:absolute;left:15px;top:16px;z-index:2;
+    background:#3705ff;border-radius:6px;padding:3px 7px;
+    font-family:'Inter',sans-serif;font-weight:700;font-size:10px;color:#fff;line-height:1;
+  }
+  .ci-label{
+    position:absolute;top:22px;left:0;right:0;text-align:center;
+    font-family:'Work Sans',sans-serif;font-size:10px;color:#fff;line-height:1;
+  }
+  .ci-cont{position:absolute;top:54px;left:15px;right:15px;}
+  .ci-title{text-align:center;font-family:'Inter',sans-serif;font-weight:700;font-size:12px;color:#fff;line-height:1.2;margin:0 0 8px;}
+  .ci-body{text-align:left;font-family:'Inter',sans-serif;font-size:10px;color:#585858;line-height:1.45;margin:0;}
+  .ci-link{
+    position:absolute;left:50%;transform:translateX(-50%);bottom:31px;
+    background:#323232;border-radius:7px;padding:6px 15px;
+    font-family:'Inter',sans-serif;font-size:8px;color:#bbb;white-space:nowrap;cursor:pointer;
+  }
+  .ci-bias-track{position:absolute;left:42px;right:66px;top:166px;height:8px;background:#3d3d3b;border-radius:8px;overflow:hidden;}
+  .ci-bias-fill{height:100%;background:#3705ff;border-radius:8px;}
+  .ci-bias-pct{position:absolute;right:18px;top:162px;font-family:'Inter',sans-serif;font-weight:700;font-size:11px;color:#927beb;}
+
+  /* Pagination dots (violet) */
+  .ci-dots{position:absolute;left:50%;bottom:11px;transform:translateX(-50%);display:flex;gap:5px;z-index:3;}
+  .ci-dot{width:5px;height:5px;border-radius:50%;background:#3d3d3b;cursor:pointer;transition:background .2s,width .2s;}
+  .ci-dot.on{background:#3705ff;width:15px;border-radius:3px;}
 
   .pagination-dots {
     display: flex;
@@ -4198,88 +4212,91 @@
        SCREEN: ARTICLE DE PRESSE — démo Esprit critique
   ════════════════════════════════════════════════════════════ -->
   <div class="screen" id="s-article">
+    <!-- Contenu scrollable -->
     <div class="cb-screen">
       <div class="cb-urlbar">
         <button class="cb-back" onclick="go('s-widget')" aria-label="Retour">←</button>
-        <div class="cb-url">🔒 actu-buzz.fr/sante/montre-miracle</div>
+        <div class="cb-url">🔒 actu-flash.fr/societe/teletravail</div>
       </div>
       <div style="padding:16px 16px 90px;">
-        <span class="art-tag">Santé</span>
-        <h1 class="art-h1">Cette montre connectée détecterait 12 maladies graves avant les médecins</h1>
-        <div class="art-meta">Par la rédaction · il y a 2 h · 3 min de lecture · #partenariat</div>
-        <img class="art-hero" src="assets/dyn-watch.jpg" alt="Montre connectée">
-        <p class="art-p">Une révolution pour votre santé&nbsp;: selon le fabricant, ce nouveau bracelet connecté serait capable de <span class="art-claim" onclick="flagClaim(this)">détecter 12 maladies graves avec une fiabilité de 99&nbsp;%</span>, bien avant un diagnostic médical.</p>
-        <p class="art-p">«&nbsp;<span class="art-claim" onclick="flagClaim(this)">Des milliers de vies pourraient être sauvées dès cette année</span>&nbsp;», affirme la marque dans son communiqué. Les premiers acheteurs se disent déjà conquis.</p>
-        <p class="art-p">L'appareil, vendu à prix réduit pendant une durée limitée, connaît un succès fulgurant. <span class="art-claim" onclick="flagClaim(this)">Il ne resterait que quelques stocks disponibles</span>.</p>
+        <span class="art-tag">Société</span>
+        <h1 class="art-h1">Le télétravail améliore la qualité de vie des salariés</h1>
+        <div class="art-meta">Par la rédaction · il y a 1 h · 2 min de lecture</div>
+        <div class="art-hero" style="display:flex;align-items:center;justify-content:center;font-size:52px;background:linear-gradient(135deg,#1e293b,#334155);">🏠💻</div>
+        <p class="art-p">De plus en plus d'entreprises adoptent le télétravail. Selon cet article, <span class="art-claim" onclick="flagClaim(this)">il améliorerait nettement la qualité de vie des salariés</span>&nbsp;: moins de transport, plus de flexibilité.</p>
+        <p class="art-p"><span class="art-claim" onclick="flagClaim(this)">9 salariés sur 10 se diraient plus heureux</span> en travaillant de chez eux, d'après les témoignages recueillis.</p>
+        <p class="art-p">Les bénéfices avancés&nbsp;: meilleur équilibre entre vie professionnelle et personnelle, gain de temps et autonomie accrue.</p>
       </div>
+    </div>
 
-      <!-- ░░ Dynamic Island critique ░░ -->
-      <div class="ci-isl" id="ci-article">
-        <!-- Compact : bouton Analyser -->
-        <div class="ci-compact" onclick="ciToggle('ci-article',true)">
-          <div class="ci-fox"><img src="assets/comp-foxy.png" class="dyn-comp" alt="Vision"></div>
-          <span class="ci-compact-tx">Esprit critique</span>
-          <button class="ci-an-btn" onclick="event.stopPropagation();ciToggle('ci-article',true)">Analyser</button>
-        </div>
-        <!-- Expanded : 5 slides -->
-        <div class="ci-exp">
-          <div class="ci-exp-hd">
+    <!-- ░░ Dynamic Island critique (fixe au-dessus du contenu) ░░ -->
+    <div class="ci-bk" id="ci-article-bk" onclick="ciToggle('ci-article',false)"></div>
+    <div class="ci-isl" id="ci-article">
+      <!-- Compact idle : Esprit critique + Appuyer pour analyser -->
+      <div class="ci-compact" onclick="ciToggle('ci-article',true)">
+        <div class="ci-fox"><img src="assets/comp-foxy.png" class="dyn-comp" alt="Vision"></div>
+        <button class="ci-an-btn" onclick="event.stopPropagation();ciToggle('ci-article',true)">Esprit critique</button>
+        <div class="ci-compact-sub">Appuyer pour analyser</div>
+      </div>
+      <!-- Étendu : 5 slides (Figma 784:1219) -->
+      <div class="ci-exp">
+        <div class="ci-slides">
+          <!-- 1 · Sujet -->
+          <div class="ci-slide on">
             <div class="ci-fox"><img src="assets/comp-foxy.png" class="dyn-comp" alt="Vision"></div>
-            <span class="ci-exp-ti">Analyse de l'article<br><span style="font-weight:400;color:#888;font-size:11px;">actu-buzz.fr</span></span>
-            <button class="ci-close" onclick="ciToggle('ci-article',false)" aria-label="Fermer">✕</button>
-          </div>
-          <div class="ci-slides">
-            <!-- 1 · Temps de lecture -->
-            <div class="ci-slide on">
-              <div class="ci-k">⏱️ Temps de lecture</div>
-              <div class="ci-big"><span class="ci-time">00:00</span></div>
-              <p class="ci-p">Tu lis cet article depuis tout à l'heure. <b>Prends du recul</b> avant de le croire ou de le partager.</p>
-              <p class="ci-p">Les contenus anxiogènes retiennent l'attention&nbsp;: ça ne les rend pas plus fiables.</p>
-            </div>
-            <!-- 2 · État des lieux + IA -->
-            <div class="ci-slide">
-              <div class="ci-k">🔍 État des lieux</div>
-              <p class="ci-p">Source <b>actu-buzz.fr</b> · fiabilité <b style="color:#ef4444;">faible</b>.</p>
-              <p class="ci-p">⚠️ Titre sensationnaliste · 🏷️ article en <b>partenariat</b> · 📊 chiffres non sourcés · ⏳ urgence artificielle.</p>
-              <div class="ci-k" style="margin-top:10px;">🤖 Détection IA</div>
-              <div class="ci-ai-bar"><div class="ci-ai-fill" style="width:78%"></div></div>
-              <p class="ci-p"><b>78&nbsp;%</b> — texte probablement <b>généré ou assisté par IA</b> (tournures répétitives, aucune signature humaine).</p>
-            </div>
-            <!-- 3 · Autre angle 1 -->
-            <div class="ci-slide">
-              <div class="ci-k">↔️ Un autre angle · 1/3</div>
-              <div class="ci-h">Et si tu confrontais les sources&nbsp;?</div>
-              <div class="ci-sugg" onclick="ciOpenSource('Le Monde')">
-                <div class="ci-sugg-ic">📰</div>
-                <div><div class="ci-sugg-src">Le Monde · Santé</div><div class="ci-sugg-ti">Montres connectées&nbsp;: ce que disent vraiment les études cliniques</div></div>
-              </div>
-            </div>
-            <!-- 4 · Autre angle 2 -->
-            <div class="ci-slide">
-              <div class="ci-k">↔️ Un autre angle · 2/3</div>
-              <div class="ci-h">Le point de vue d'un organisme indépendant</div>
-              <div class="ci-sugg" onclick="ciOpenSource('UFC-Que Choisir')">
-                <div class="ci-sugg-ic">🛡️</div>
-                <div><div class="ci-sugg-src">UFC-Que Choisir</div><div class="ci-sugg-ti">Objets de santé connectés&nbsp;: fiabilité réelle et limites</div></div>
-              </div>
-            </div>
-            <!-- 5 · Autre angle 3 -->
-            <div class="ci-slide">
-              <div class="ci-k">↔️ Un autre angle · 3/3</div>
-              <div class="ci-h">L'avis de la science</div>
-              <div class="ci-sugg" onclick="ciOpenSource('Inserm')">
-                <div class="ci-sugg-ic">🔬</div>
-                <div><div class="ci-sugg-src">Inserm</div><div class="ci-sugg-ti">Auto-diagnostic&nbsp;: pourquoi un médecin reste indispensable</div></div>
-              </div>
+            <div class="ci-label">Sujet</div>
+            <div class="ci-cont">
+              <div class="ci-title">Le télétravail améliore la qualité de vie des salariés</div>
+              <p class="ci-body">L'article met en avant les bénéfices du télétravail&nbsp;: réduction du temps de transport, meilleure flexibilité et meilleur équilibre entre vie professionnelle et personnelle.</p>
             </div>
           </div>
-          <div class="ci-dots">
-            <span class="ci-dot on" onclick="ciGo('ci-article',0)"></span>
-            <span class="ci-dot" onclick="ciGo('ci-article',1)"></span>
-            <span class="ci-dot" onclick="ciGo('ci-article',2)"></span>
-            <span class="ci-dot" onclick="ciGo('ci-article',3)"></span>
-            <span class="ci-dot" onclick="ciGo('ci-article',4)"></span>
+          <!-- 2 · Cet article est biaisé + IA 78% -->
+          <div class="ci-slide">
+            <div class="ci-ia">IA</div>
+            <div class="ci-label">Cet article est biaisé</div>
+            <div class="ci-cont">
+              <p class="ci-body">L'article s'appuie principalement sur des témoignages de salariés satisfaits et des études favorables au télétravail. Les impacts négatifs, comme l'isolement ou les difficultés de collaboration, sont peu abordés.</p>
+            </div>
+            <div class="ci-bias-track"><div class="ci-bias-fill" style="width:78%"></div></div>
+            <div class="ci-bias-pct">78%</div>
           </div>
+          <!-- 3 · Approfondir -->
+          <div class="ci-slide">
+            <div class="ci-fox"><img src="assets/comp-foxy.png" class="dyn-comp" alt="Vision"></div>
+            <div class="ci-label">Approfondir</div>
+            <div class="ci-cont">
+              <div class="ci-title">Les Echos</div>
+              <p class="ci-body">Cet article examine les conséquences du télétravail à long terme sur les entreprises&nbsp;: évolution du management, transformation des espaces de travail et coordination des équipes distribuées.</p>
+            </div>
+            <div class="ci-link" onclick="ciOpenSource('Les Echos')">↗ Les Echos</div>
+          </div>
+          <!-- 4 · opinion inverse -->
+          <div class="ci-slide">
+            <div class="ci-fox"><img src="assets/comp-foxy.png" class="dyn-comp" alt="Vision"></div>
+            <div class="ci-label">opinion inverse</div>
+            <div class="ci-cont">
+              <div class="ci-title">Figaro</div>
+              <p class="ci-body">Cette analyse met en lumière les critiques adressées au télétravail&nbsp;: effets sur la cohésion des équipes, la créativité collective et le sentiment d'appartenance à l'entreprise.</p>
+            </div>
+            <div class="ci-link" onclick="ciOpenSource('Le Figaro')">↗ Figaro</div>
+          </div>
+          <!-- 5 · sujet connexe -->
+          <div class="ci-slide">
+            <div class="ci-fox"><img src="assets/comp-foxy.png" class="dyn-comp" alt="Vision"></div>
+            <div class="ci-label">sujet connexe</div>
+            <div class="ci-cont">
+              <div class="ci-title">Usbek &amp; Rica</div>
+              <p class="ci-body">Plutôt que d'opposer bureau et domicile, cet article explore les modèles hybrides et les espaces de coworking, qui concilient flexibilité, interactions sociales et efficacité.</p>
+            </div>
+            <div class="ci-link" onclick="ciOpenSource('Usbek & Rica')">↗ Usbek &amp; Rica</div>
+          </div>
+        </div>
+        <div class="ci-dots">
+          <span class="ci-dot on" onclick="ciGo('ci-article',0)"></span>
+          <span class="ci-dot" onclick="ciGo('ci-article',1)"></span>
+          <span class="ci-dot" onclick="ciGo('ci-article',2)"></span>
+          <span class="ci-dot" onclick="ciGo('ci-article',3)"></span>
+          <span class="ci-dot" onclick="ciGo('ci-article',4)"></span>
         </div>
       </div>
     </div>
@@ -4289,6 +4306,7 @@
        SCREEN: YOUTUBE — démo Esprit critique (vidéo interactive)
   ════════════════════════════════════════════════════════════ -->
   <div class="screen" id="s-youtube">
+    <!-- Contenu scrollable -->
     <div class="cb-screen" style="background:#0f0f0f;">
       <div class="cb-urlbar" style="background:#0f0f0f;">
         <button class="cb-back" onclick="go('s-widget')" aria-label="Retour">←</button>
@@ -4312,74 +4330,76 @@
         </div>
         <span class="yt-spons">Inclut une promotion payante</span>
       </div>
+    </div>
 
-      <!-- ░░ Dynamic Island critique ░░ -->
-      <div class="ci-isl" id="ci-youtube">
-        <!-- Compact : bouton Analyser -->
-        <div class="ci-compact" onclick="ciToggle('ci-youtube',true)">
-          <div class="ci-fox"><img src="assets/comp-foxy.png" class="dyn-comp" alt="Vision"></div>
-          <span class="ci-compact-tx">Esprit critique</span>
-          <button class="ci-an-btn" onclick="event.stopPropagation();ciToggle('ci-youtube',true)">Analyser</button>
-        </div>
-        <!-- Expanded : 5 slides -->
-        <div class="ci-exp">
-          <div class="ci-exp-hd">
+    <!-- ░░ Dynamic Island critique (fixe au-dessus du contenu) ░░ -->
+    <div class="ci-bk" id="ci-youtube-bk" onclick="ciToggle('ci-youtube',false)"></div>
+    <div class="ci-isl" id="ci-youtube">
+      <!-- Compact idle : Esprit critique + Appuyer pour analyser -->
+      <div class="ci-compact" onclick="ciToggle('ci-youtube',true)">
+        <div class="ci-fox"><img src="assets/comp-foxy.png" class="dyn-comp" alt="Vision"></div>
+        <button class="ci-an-btn" onclick="event.stopPropagation();ciToggle('ci-youtube',true)">Esprit critique</button>
+        <div class="ci-compact-sub">Appuyer pour analyser</div>
+      </div>
+      <!-- Étendu : 5 slides -->
+      <div class="ci-exp">
+        <div class="ci-slides">
+          <!-- 1 · Sujet -->
+          <div class="ci-slide on">
             <div class="ci-fox"><img src="assets/comp-foxy.png" class="dyn-comp" alt="Vision"></div>
-            <span class="ci-exp-ti">Analyse de la vidéo<br><span style="font-weight:400;color:#888;font-size:11px;">youtube.com</span></span>
-            <button class="ci-close" onclick="ciToggle('ci-youtube',false)" aria-label="Fermer">✕</button>
-          </div>
-          <div class="ci-slides">
-            <!-- 1 · Temps de scroll / visionnage -->
-            <div class="ci-slide on">
-              <div class="ci-k">⏱️ Temps de visionnage</div>
-              <div class="ci-big"><span class="ci-time">00:00</span></div>
-              <p class="ci-p"><b>Scroll infini détecté</b>&nbsp;: chaque vidéo en lance une autre pour te garder ici.</p>
-              <p class="ci-p">Tu regardes depuis tout à l'heure — c'est peut-être le moment de faire une pause.</p>
-            </div>
-            <!-- 2 · État des lieux + IA -->
-            <div class="ci-slide">
-              <div class="ci-k">🔍 État des lieux</div>
-              <p class="ci-p">Chaîne <b>MoneyBoss Officiel</b> · contenu <b style="color:#ef4444;">à risque</b>.</p>
-              <p class="ci-p">🎣 Titre clickbait · 💸 <b>promotion payante</b> · 🚫 aucune méthode vérifiable.</p>
-              <div class="ci-k" style="margin-top:10px;">🤖 Détection IA</div>
-              <div class="ci-ai-bar"><div class="ci-ai-fill" style="width:64%"></div></div>
-              <p class="ci-p"><b>64&nbsp;%</b> — voix et script <b>probablement générés par IA</b> (intonation synthétique détectée).</p>
-            </div>
-            <!-- 3 · Autre avis 1 -->
-            <div class="ci-slide">
-              <div class="ci-k">↔️ Un autre avis · 1/3</div>
-              <div class="ci-h">Repérer les arnaques "argent facile"</div>
-              <div class="ci-sugg" onclick="ciOpenSource('France Info')">
-                <div class="ci-sugg-ic">📺</div>
-                <div><div class="ci-sugg-src">France Info</div><div class="ci-sugg-ti">«&nbsp;Devenir riche vite&nbsp;»&nbsp;: comment reconnaître une arnaque</div></div>
-              </div>
-            </div>
-            <!-- 4 · Autre avis 2 -->
-            <div class="ci-slide">
-              <div class="ci-k">↔️ Un autre avis · 2/3</div>
-              <div class="ci-h">Ce que dit le régulateur</div>
-              <div class="ci-sugg" onclick="ciOpenSource('AMF')">
-                <div class="ci-sugg-ic">🏛️</div>
-                <div><div class="ci-sugg-src">AMF · Autorité des marchés financiers</div><div class="ci-sugg-ti">Promesses de gains rapides&nbsp;: un signal d'alerte</div></div>
-              </div>
-            </div>
-            <!-- 5 · Autre avis 3 -->
-            <div class="ci-slide">
-              <div class="ci-k">↔️ Un autre avis · 3/3</div>
-              <div class="ci-h">Une approche pédagogique</div>
-              <div class="ci-sugg" onclick="ciOpenSource('Heu?reka')">
-                <div class="ci-sugg-ic">🎓</div>
-                <div><div class="ci-sugg-src">Heu?reka · vulgarisation</div><div class="ci-sugg-ti">La vérité sur les «&nbsp;méthodes secrètes&nbsp;» pour s'enrichir</div></div>
-              </div>
+            <div class="ci-label">Sujet</div>
+            <div class="ci-cont">
+              <div class="ci-title">Devenir riche en 30 jours avec une méthode secrète</div>
+              <p class="ci-body">La vidéo promet un enrichissement rapide et garanti grâce à une méthode présentée comme infaillible et accessible à tous.</p>
             </div>
           </div>
-          <div class="ci-dots">
-            <span class="ci-dot on" onclick="ciGo('ci-youtube',0)"></span>
-            <span class="ci-dot" onclick="ciGo('ci-youtube',1)"></span>
-            <span class="ci-dot" onclick="ciGo('ci-youtube',2)"></span>
-            <span class="ci-dot" onclick="ciGo('ci-youtube',3)"></span>
-            <span class="ci-dot" onclick="ciGo('ci-youtube',4)"></span>
+          <!-- 2 · Cette vidéo est biaisée + IA 64% -->
+          <div class="ci-slide">
+            <div class="ci-ia">IA</div>
+            <div class="ci-label">Cette vidéo est biaisée</div>
+            <div class="ci-cont">
+              <p class="ci-body">Le créateur a un intérêt financier (promotion payante) à te convaincre. Aucune preuve vérifiable n'est apportée&nbsp;: seulement un récit de réussite personnel.</p>
+            </div>
+            <div class="ci-bias-track"><div class="ci-bias-fill" style="width:64%"></div></div>
+            <div class="ci-bias-pct">64%</div>
           </div>
+          <!-- 3 · Approfondir -->
+          <div class="ci-slide">
+            <div class="ci-fox"><img src="assets/comp-foxy.png" class="dyn-comp" alt="Vision"></div>
+            <div class="ci-label">Approfondir</div>
+            <div class="ci-cont">
+              <div class="ci-title">France Info</div>
+              <p class="ci-body">Décrypte les mécanismes des arnaques «&nbsp;argent facile&nbsp;» et les signaux qui doivent t'alerter avant d'y croire.</p>
+            </div>
+            <div class="ci-link" onclick="ciOpenSource('France Info')">↗ France Info</div>
+          </div>
+          <!-- 4 · opinion inverse -->
+          <div class="ci-slide">
+            <div class="ci-fox"><img src="assets/comp-foxy.png" class="dyn-comp" alt="Vision"></div>
+            <div class="ci-label">opinion inverse</div>
+            <div class="ci-cont">
+              <div class="ci-title">AMF</div>
+              <p class="ci-body">L'Autorité des marchés financiers rappelle que toute promesse de gains rapides et garantis est un signal d'arnaque.</p>
+            </div>
+            <div class="ci-link" onclick="ciOpenSource('AMF')">↗ amf-france.org</div>
+          </div>
+          <!-- 5 · sujet connexe -->
+          <div class="ci-slide">
+            <div class="ci-fox"><img src="assets/comp-foxy.png" class="dyn-comp" alt="Vision"></div>
+            <div class="ci-label">sujet connexe</div>
+            <div class="ci-cont">
+              <div class="ci-title">Heu?reka</div>
+              <p class="ci-body">Une chaîne de vulgarisation économique explique comment se construit réellement un patrimoine, sur le long terme.</p>
+            </div>
+            <div class="ci-link" onclick="ciOpenSource('Heu?reka')">↗ YouTube · Heu?reka</div>
+          </div>
+        </div>
+        <div class="ci-dots">
+          <span class="ci-dot on" onclick="ciGo('ci-youtube',0)"></span>
+          <span class="ci-dot" onclick="ciGo('ci-youtube',1)"></span>
+          <span class="ci-dot" onclick="ciGo('ci-youtube',2)"></span>
+          <span class="ci-dot" onclick="ciGo('ci-youtube',3)"></span>
+          <span class="ci-dot" onclick="ciGo('ci-youtube',4)"></span>
         </div>
       </div>
     </div>
@@ -4953,15 +4973,12 @@
       if (typeof renderExclList === 'function') renderExclList();
       if (typeof applyObjectiveSites === 'function') applyObjectiveSites();
     }
-    // Démos Esprit critique : reset + île critique repliée + compteur de temps
+    // Démos Esprit critique : reset + île critique repliée
     if (id === 's-youtube' || id === 's-article') {
       if (id === 's-youtube' && typeof resetYouTube === 'function') resetYouTube();
       if (id === 's-article' && typeof resetArticle === 'function') resetArticle();
       const islId = (id === 's-youtube') ? 'ci-youtube' : 'ci-article';
       if (typeof ciToggle === 'function') ciToggle(islId, false);
-      if (typeof ciStartTimer === 'function') ciStartTimer();
-    } else if (typeof ciStopTimer === 'function') {
-      ciStopTimer();
     }
     // Simule l'arrivée d'une notification sur le bureau Android
     if (id === 's-widget' && typeof showAndroidNotif === 'function') {
@@ -4971,8 +4988,9 @@
 
   /* ════════════════════════════════════════════════════════════
      DÉMO ESPRIT CRITIQUE — article de presse + vidéo YouTube
-     · Dynamic Island critique : bouton "Analyser" → 5 slides
-     · Slides : temps de scroll · état des lieux + détection IA · 3 autres angles
+     · Dynamic Island critique (Figma 784:1210 / 784:1219)
+     · Compact 214×87 "Esprit critique / Appuyer pour analyser"
+     · Étendu 213×253 → 5 slides : Sujet · Biais+IA · Approfondir · opinion inverse · sujet connexe
   ════════════════════════════════════════════════════════════ */
   // Vidéo YouTube : play/pause du lecteur
   function toggleYouTube(){
@@ -4997,6 +5015,8 @@
     if(!el) return;
     const willExp = (force !== undefined) ? force : !el.classList.contains('exp');
     el.classList.toggle('exp', willExp);
+    const bk = document.getElementById(id + '-bk');
+    if(bk) bk.classList.toggle('on', willExp);
     if(willExp) ciGo(id, 0);
   }
   function ciGo(id, i){
@@ -5026,22 +5046,6 @@
       }, {passive:true});
     });
   });
-
-  /* ── Compteur de temps passé (slides "temps de scroll") ── */
-  let _ciTimerStart = 0, _ciTimerInt = null;
-  function ciStartTimer(){
-    _ciTimerStart = Date.now();
-    if(_ciTimerInt) clearInterval(_ciTimerInt);
-    _ciTimerInt = setInterval(ciTickTimer, 1000);
-    ciTickTimer();
-  }
-  function ciStopTimer(){ if(_ciTimerInt){ clearInterval(_ciTimerInt); _ciTimerInt = null; } }
-  function ciTickTimer(){
-    const s = Math.floor((Date.now() - _ciTimerStart) / 1000);
-    const mm = String(Math.floor(s / 60)).padStart(2, '0');
-    const ss = String(s % 60).padStart(2, '0');
-    document.querySelectorAll('.ci-time').forEach(e => e.textContent = mm + ':' + ss);
-  }
 
   /* Notification Android simulée : texte (comparaison sociale) + arrivée + auto-disparition + swipe */
   let andNotifTimer = null, andNotifBound = false;
