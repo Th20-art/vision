@@ -4080,6 +4080,15 @@
           <span class="ec-toggle on" onclick="toggleEC(this)"><span class="ec-knob"></span></span>
         </div>
 
+        <!-- Consigne personnelle (règle libre prise en compte par l'IA) -->
+        <div style="background:#fff;border-radius:14px;padding:14px 16px;">
+          <div style="font-family:'Work Sans',sans-serif;font-weight:700;font-size:14px;color:var(--dark);">Ma consigne perso</div>
+          <div style="font-size:11px;color:var(--muted);margin:2px 0 10px;">Une règle perso que Vision applique à chaque analyse (ex : « ne pas acheter d'objet connecté »).</div>
+          <textarea id="user-rule-input" rows="2" placeholder="Ex : ne pas acheter d'objet connecté…"
+            oninput="setUserRule(this.value)"
+            style="width:100%;resize:none;background:#f5f5f5;border:1.5px solid #e8e8e8;border-radius:12px;padding:11px 13px;font-size:13px;font-family:'Inter',sans-serif;color:#1a1a1a;outline:none;line-height:1.4;"></textarea>
+        </div>
+
         <div style="margin-top:6px;font-size:13px;color:var(--dark);font-weight:600;padding:0 2px;">Types de contenu analysés</div>
 
         <!-- Information ON -->
@@ -4459,12 +4468,12 @@
         <!-- Expanded — État 0 : Score + insights -->
         <div class="dyn-extra">
           <div style="position:absolute;top:92px;left:13px;right:21px">
-            <p style="font-family:'Inter',sans-serif;font-weight:700;font-size:12px;color:#fff;line-height:1.1;margin:0 0 5px">💰 41€ pour un gadget</p>
-            <p style="font-family:'Inter',sans-serif;font-size:10px;color:#585858;line-height:1.4;margin:0">Ce bracelet connecté rejoint souvent le tiroir après quelques mois d'utilisation. L'argent pourrait servir à des expériences plus durables.</p>
+            <p id="dx0-i1-t" style="font-family:'Inter',sans-serif;font-weight:700;font-size:12px;color:#fff;line-height:1.1;margin:0 0 5px">💰 41€ pour un gadget</p>
+            <p id="dx0-i1-b" style="font-family:'Inter',sans-serif;font-size:10px;color:#585858;line-height:1.4;margin:0">Ce bracelet connecté rejoint souvent le tiroir après quelques mois d'utilisation. L'argent pourrait servir à des expériences plus durables.</p>
           </div>
           <div style="position:absolute;top:162px;left:13px;right:21px">
-            <p style="font-family:'Inter',sans-serif;font-weight:700;font-size:12px;color:#fff;line-height:1.1;margin:0 0 5px">🤔 Vraiment nécessaire&nbsp;?</p>
-            <p style="font-family:'Inter',sans-serif;font-size:10px;color:#585858;line-height:1.4;margin:0">Smartphone déjà capable de suivre activité et santé. Cette technologie répond-elle à un besoin réel ou à une envie créée&nbsp;?</p>
+            <p id="dx0-i2-t" style="font-family:'Inter',sans-serif;font-weight:700;font-size:12px;color:#fff;line-height:1.1;margin:0 0 5px">🤔 Vraiment nécessaire&nbsp;?</p>
+            <p id="dx0-i2-b" style="font-family:'Inter',sans-serif;font-size:10px;color:#585858;line-height:1.4;margin:0">Smartphone déjà capable de suivre activité et santé. Cette technologie répond-elle à un besoin réel ou à une envie créée&nbsp;?</p>
           </div>
         </div>
       </div>
@@ -4935,7 +4944,9 @@
       renderMyAmbitions();
     }
     // DynIsland réactif à chaque arrivée home
-    if (id === 's-home') updateDynIsland();
+    if (id === 's-home') { updateDynIsland(); if (typeof renderHomeJournal === 'function') renderHomeJournal(); }
+    // Restaure la consigne perso dans le champ (écran Esprit critique)
+    if (id === 's-param-ec') { const r = document.getElementById('user-rule-input'); if (r) r.value = getUserRule(); }
     // Chat : reset historique + message initial à chaque entrée
     if (id === 's-chat') {
       chatHistory = [];
@@ -5021,6 +5032,16 @@
     if(willExp){
       ciGo(id, 0, true);
       ciStartRotation(id);   // auto-pivot APRÈS appui sur "Analyser"
+      // Journalise l'analyse (une fois par page chargée)
+      if(!el._journaled){
+        el._journaled = true;
+        const isYt = (id === 'ci-youtube');
+        const sc = document.getElementById(isYt ? 's-youtube' : 's-article');
+        const t = isYt ? (sc.querySelector('.yt-title')||{}).textContent
+                       : (sc.querySelector('.art-h1')||{}).textContent;
+        if(t && typeof addJournalLine === 'function')
+          addJournalLine('analyse', 'Analyse critique : ' + t.trim().slice(0, 42));
+      }
       if(typeof ciAnalyze === 'function') ciAnalyze(id);   // analyse IA réelle (si clé)
     } else {
       ciStopRotation(id);
@@ -5196,20 +5217,32 @@
       if (nameEl && info.name) nameEl.textContent = info.name + (info.brand ? ' · ' + info.brand : '');
       if (priceEl && info.price) priceEl.textContent = info.price;
       window._scanInfo = info;
+      if (info.name && typeof addJournalLine === 'function')
+        addJournalLine('analyse', 'Produit analysé : ' + info.name);
     }
     if (!info || !getClaudeKey()) return;
 
     const mainAmb = userAmbitions[0]?.label || 'épargne';
     const reply = await _claudeOneShot(
       `Tu es l'assistant d'achat conscient de l'app Vision. Prends en compte TOUT le contexte utilisateur (objectifs ET règles). JSON uniquement, sans texte autour :
-{"align":<entier 0-10 : à quel point CET achat sert les objectifs de l'utilisateur, 10=indispensable à l'objectif, 0=contraire>,"alt_smart":{"name":"nom court","saving":"économie ex: -15 €","price":"prix","detail":"1 phrase","url":"domaine marchand ex: backmarket.fr","brand_domain":"domaine officiel de la marque ex: samsung.com"},"apps":[{"name":"nom app","detail":"1 phrase gratuite","domain":"domaine officiel ex: strava.com"},{"name":"nom app 2","detail":"1 phrase gratuite","domain":"domaine officiel ex: google.com"}]}`,
-      `${_userContext()}\nProduit analysé : ${info.name}${info.brand?' de '+info.brand:''}, prix : ${info.price}, catégorie : ${info.category}.\nalt_smart = même produit moins cher (reconditionné/comparateur). apps = 2 applis/services GRATUITS pertinents pour ce produit OU pour les objectifs ci-dessus. brand_domain et domain = vrais domaines officiels (pour les logos). N'ignore aucune règle de l'utilisateur.`
+{"align":<entier 0-10 : à quel point CET achat sert les objectifs de l'utilisateur, 10=indispensable à l'objectif, 0=contraire à un objectif ou à une règle perso>,"insights":[{"emoji":"emoji pertinent","title":"titre 2-4 mots","body":"1 phrase qui relie le produit aux objectifs/règles de l'utilisateur"},{"emoji":"emoji","title":"titre court","body":"1 phrase"}],"alt_smart":{"name":"nom court","saving":"économie ex: -15 €","price":"prix","detail":"1 phrase","url":"domaine marchand ex: backmarket.fr","brand_domain":"domaine officiel de la marque ex: samsung.com"},"apps":[{"name":"nom app","detail":"1 phrase gratuite","domain":"domaine officiel ex: strava.com"},{"name":"nom app 2","detail":"1 phrase gratuite","domain":"domaine officiel ex: google.com"}]}`,
+      `${_userContext()}\nProduit analysé : ${info.name}${info.brand?' de '+info.brand:''}, prix : ${info.price}, catégorie : ${info.category}.\ninsights = 2 remarques PERSONNALISÉES qui confrontent ce produit aux objectifs ET à la règle perso (si une règle perso interdit ce type de produit, dis-le clairement). alt_smart = même produit moins cher (reconditionné/comparateur). apps = 2 applis/services GRATUITS pertinents pour ce produit OU pour les objectifs. brand_domain et domain = vrais domaines officiels (pour les logos). N'ignore aucune règle de l'utilisateur.`
     );
     if (!reply) return;
     let alts;
     try { alts = JSON.parse(reply.match(/\{[\s\S]*\}/)?.[0]); } catch(e) { return; }
     if (!alts) return;
 
+    // Insights personnalisés (état 0) : reflètent objectifs + règle perso
+    if (Array.isArray(alts.insights)) {
+      const ids = [['dx0-i1-t','dx0-i1-b'], ['dx0-i2-t','dx0-i2-b']];
+      alts.insights.slice(0,2).forEach((ins, k) => {
+        const t = document.getElementById(ids[k][0]);
+        if (t) t.textContent = (ins.emoji ? ins.emoji + ' ' : '') + (ins.title || '');
+        const b = document.getElementById(ids[k][1]);
+        if (b) b.textContent = ins.body || '';
+      });
+    }
     // Score d'alignement réel (calculé par l'IA selon les objectifs)
     if (alts.align !== undefined && !isNaN(parseFloat(alts.align))) {
       _alignScore = Math.max(0, Math.min(10, parseFloat(alts.align)));
@@ -5534,23 +5567,26 @@
 
   /* Hook: log resistance — ajoute le prix évité à l'épargne de l'objectif principal */
   function logAmznResist(){
-    // Capture le prix depuis l'overlay d'impact
+    // Capture le prix depuis l'overlay d'impact (fallback 39 €)
     const priceEl = document.querySelector('.imp-pd-p');
     const raw = priceEl ? priceEl.textContent.replace(/[^\d,]/g,'').replace(',','.') : '';
-    const priceNum = parseFloat(raw) || 0;
+    const priceNum = parseFloat(raw) || 39;
+    // Nom du produit (depuis le scan IA si dispo, sinon l'overlay)
+    const prodName = (window._scanInfo && window._scanInfo.name)
+      || (document.querySelector('.imp-pd-n') ? document.querySelector('.imp-pd-n').textContent.split('·')[0].trim() : '')
+      || 'cet achat';
 
-    if (typeof userAmbitions !== 'undefined' && userAmbitions.length > 0 && priceNum > 0) {
+    if (typeof userAmbitions !== 'undefined' && userAmbitions.length > 0) {
       const label = userAmbitions[0].label;
       const key = 'vision_saved_' + label;
       const current = parseFloat(localStorage.getItem(key) || '0');
       localStorage.setItem(key, String(+(current + priceNum).toFixed(2)));
-      updateDynIsland();
     }
-    try {
-      const lbl = (userAmbitions && userAmbitions[0]) ? userAmbitions[0].label : 'objectif';
-      if(typeof addJournalLine === 'function')
-        addJournalLine('resist', 'Résisté → +' + (priceNum || 39).toFixed(0) + ' € vers ' + lbl);
-    } catch(e){}
+    // Journalise + actualise la home (objectifs, impact CO₂, journal)
+    addJournalLine('resist', 'Résisté à ' + prodName + ' — +' + Math.round(priceNum) + ' €');
+    updateDynIsland();
+    if (typeof renderHomeMetrics === 'function') renderHomeMetrics();
+    if (typeof renderHomeAmbitions === 'function') renderHomeAmbitions();
   }
 
   /* ── Toggle catégorie (s-param-sites) ── */
@@ -6262,6 +6298,9 @@
       return s;
     });
     let ctx = 'Objectifs de l\'utilisateur : ' + (objs.join(' ; ') || 'non définis') + '.';
+    const rule = (typeof getUserRule === 'function') ? getUserRule() : '';
+    if (rule)
+      ctx += ' RÈGLE PERSONNELLE PRIORITAIRE de l\'utilisateur (à respecter absolument dans l\'analyse) : « ' + rule + ' ».';
     if (typeof excludedSites !== 'undefined' && excludedSites.length)
       ctx += ' Sites/app que l\'utilisateur a explicitement exclus de l\'analyse (à ne PAS analyser ni recommander) : ' + excludedSites.join(', ') + '.';
     if (typeof espritCritiqueOn !== 'undefined')
@@ -6276,6 +6315,63 @@
       totalAvoided += parseFloat(localStorage.getItem('vision_saved_' + a.label) || '0');
     });
     return Math.round(totalAvoided * 0.5);
+  }
+
+  /* ── Consigne personnelle (règle libre de l'utilisateur) ── */
+  function getUserRule(){ return (localStorage.getItem('vision_rule') || '').trim(); }
+  function setUserRule(v){
+    try { localStorage.setItem('vision_rule', (v || '').trim()); } catch(e){}
+    _alignScore = 4;                       // invalide le score : sera recalculé au prochain scan
+    const el = document.getElementById('ci-article'); if (el) el._analyzed = false;
+    const yt = document.getElementById('ci-youtube'); if (yt) yt._analyzed = false;
+  }
+
+  /* ── Journal persistant (résistances, analyses, craquages) ── */
+  function loadJournal(){
+    try { const s = JSON.parse(localStorage.getItem('vision_journal') || 'null'); if (Array.isArray(s)) return s; } catch(e){}
+    const now = Date.now();
+    return [   // graine par défaut (persistée au 1er rendu)
+      { type:'resist', text:'Résisté à Shein — +34 €',        ts: now - 3600e3 },
+      { type:'craq',   text:'Commandé Uber Eats. Fatigue.',   ts: now - 20*3600e3 },
+      { type:'resist', text:'Résisté à Amazon — +22 €',       ts: now - 3*24*3600e3 }
+    ];
+  }
+  let journalLog = loadJournal();
+  function saveJournal(){ try { localStorage.setItem('vision_journal', JSON.stringify(journalLog.slice(0,40))); } catch(e){} }
+  function addJournalLine(type, text){
+    if(!text) return;
+    journalLog.unshift({ type: type || 'note', text: text, ts: Date.now() });
+    saveJournal();
+    renderHomeJournal();
+  }
+  function _journalTime(ts){
+    const d = new Date(ts);
+    const hm = d.getHours() + ':' + String(d.getMinutes()).padStart(2,'0');
+    const day0 = new Date(); day0.setHours(0,0,0,0);
+    const days = Math.floor((day0.getTime() - new Date(ts).setHours(0,0,0,0)) / (24*3600e3));
+    if (days <= 0) return "Aujourd'hui · " + hm;
+    if (days === 1) return "Hier · " + hm;
+    return ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'][new Date(ts).getDay()] + ' · ' + hm;
+  }
+  function renderHomeJournal(){
+    const list = document.getElementById('home-journal-list');
+    if (!list) return;
+    list.innerHTML = '';
+    journalLog.slice(0, 4).forEach(e => {
+      const barColor = e.type === 'resist' ? '#7bb45e' : (e.type === 'analyse' ? '#3705ff' : '#888');
+      const txtStyle = e.type === 'resist' ? 'color:#4f9a3a;font-weight:600;'
+                     : e.type === 'analyse' ? 'color:#3705ff;font-weight:600;'
+                     : 'color:#888;';
+      const item = document.createElement('div');
+      item.className = 'jfi';
+      item.innerHTML =
+        '<div class="jfi-bar" style="background:' + barColor + ';"></div>' +
+        '<div class="jfi-content">' +
+          '<div class="jfi-time">' + _journalTime(e.ts) + '</div>' +
+          '<div class="jfi-text" style="' + txtStyle + '">' + e.text + '</div>' +
+        '</div>';
+      list.appendChild(item);
+    });
   }
 
   /* Parse "✈️ Voyager" → match AMBITION_TYPES */
@@ -6819,23 +6915,9 @@
     const unit = document.getElementById('journal-unit').value.trim();
     if (!desc) { document.getElementById('journal-desc').focus(); return; }
     const isResist = selectedJournalType === 'resistance';
-    // Ajouter dans le journal home (style Figma)
-    const list = document.getElementById('home-journal-list');
-    const now = new Date();
-    const h = now.getHours(), m = String(now.getMinutes()).padStart(2,'0');
-    const timeStr = `Aujourd'hui · ${h}:${m}`;
     const amountStr = unit ? ` — ${isResist ? '+' : '-'}${unit}` : '';
-    const item = document.createElement('div');
-    item.className = 'jfi';
-    item.innerHTML = `
-      <div class="jfi-bar ${isResist ? 'green' : 'red'}"></div>
-      <div class="jfi-content">
-        <div class="jfi-time">${timeStr}</div>
-        <div class="jfi-text ${isResist ? 'green' : 'dark'}">${desc}${amountStr}</div>
-      </div>`;
-    list.prepend(item);
-    // Limite le journal du home à 3 entrées
-    while (list.children.length > 3) { list.removeChild(list.lastElementChild); }
+    // Journal persistant (résistance = vert, craquage = gris)
+    addJournalLine(isResist ? 'resist' : 'craq', desc + amountStr);
     closeJournal();
     go('s-home');
   }
@@ -7714,6 +7796,7 @@ Règles ABSOLUES : max 3 phrases courtes · toujours en français · 1 seule que
     if (typeof loadAmbitions === 'function') loadAmbitions();
     if (typeof renderHomeAmbitions === 'function') renderHomeAmbitions();
     if (typeof renderHomeMetrics === 'function') renderHomeMetrics();
+    if (typeof renderHomeJournal === 'function') renderHomeJournal();
     if (typeof updateDynIsland === 'function') updateDynIsland();
     if (typeof applyObjectiveSites === 'function') applyObjectiveSites();
   })();
