@@ -5218,8 +5218,8 @@
       if (nameEl && info.name) nameEl.textContent = info.name + (info.brand ? ' · ' + info.brand : '');
       if (priceEl && info.price) priceEl.textContent = info.price;
       window._scanInfo = info;
-      if (info.name && typeof addJournalLine === 'function')
-        addJournalLine('analyse', 'Produit analysé : ' + info.name);
+      // NB : le scan produit est automatique (arrière-plan) → on NE journalise PAS ici.
+      // Seules les ACTIONS de l'utilisateur sont journalisées (résistance, analyse critique déclenchée).
     }
     if (!info || !getClaudeKey()) return;
 
@@ -6536,12 +6536,16 @@
             const saved  = parseFloat(localStorage.getItem('vision_saved_' + amb.label) || '0');
             const target = parseFloat(amb.amount || 0);
             const pct    = target > 0 ? Math.min(100, Math.round(saved / target * 100)) : 0;
+            const savedStr = Math.round(saved).toLocaleString('fr-FR');
             const sub    = amb.smartLabel || 'Résiste à un achat pour avancer vers cet objectif.';
+            const subTxt = target > 0
+              ? savedStr + ' € économisés · ' + pct + ' % de ' + target.toLocaleString('fr-FR') + ' €'
+              : (saved > 0 ? savedStr + ' € économisés' : sub);
             block.innerHTML = `
               <div class="ho-label">${(amb.label || '').toUpperCase()}</div>
-              <div class="ho-value">${pct}%</div>
+              <div class="ho-value">${savedStr} €</div>
               <div class="ho-bar"><div class="ho-fill" style="width:${pct}%"></div></div>
-              <div class="ho-sub2">${sub}</div>`;
+              <div class="ho-sub2">${subTxt}</div>`;
           }
           list.appendChild(block);
         });
