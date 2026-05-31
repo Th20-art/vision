@@ -1518,9 +1518,11 @@
   /* ── Étendu : 5 slides ── */
   .ci-exp{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .25s ease .12s;}
   .ci-isl.exp .ci-exp{opacity:1;pointer-events:auto;}
-  .ci-slides{position:absolute;inset:0;touch-action:pan-y;}
+  .ci-slides{position:absolute;inset:0;touch-action:pan-y;pointer-events:none;}
+  .ci-isl.exp .ci-slides{pointer-events:auto;}
   .ci-slide{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .22s;}
-  .ci-slide.on{opacity:1;pointer-events:auto;}
+  .ci-slide.on{opacity:1;}
+  .ci-isl.exp .ci-slide.on{pointer-events:auto;}
   .ci-slide .ci-fox{position:absolute;left:11px;top:13px;width:50px;height:44px;z-index:2;}
   .ci-ia{
     position:absolute;left:15px;top:16px;z-index:2;
