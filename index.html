@@ -4982,10 +4982,13 @@
     if (id === 's-param-video' && typeof loadCapsuleVideo === 'function') {
       loadCapsuleVideo();
     }
-    // Analyse IA de l'îlot dès l'ouverture de la page produit (selon les règles)
-    if (id === 's-amazon' && !window._amazonAnalyzed && typeof _updateDIFromScan === 'function') {
-      window._amazonAnalyzed = true;
-      _updateDIFromScan();
+    // Îlot produit : contrôle LOCAL instantané (règles perso) + analyse IA si clé
+    if (id === 's-amazon') {
+      if (typeof _localProductRuleCheck === 'function') _localProductRuleCheck();
+      if (!window._amazonAnalyzed && typeof _updateDIFromScan === 'function') {
+        window._amazonAnalyzed = true;
+        _updateDIFromScan();
+      }
     }
     // Rend la liste des sites exclus + applique les objectifs à l'entrée de "Sites analysés"
     if (id === 's-param-sites') {
@@ -5209,6 +5212,50 @@
     }
   }
 
+  /* ── Insights par défaut de l'îlot (état 0) ── */
+  const DX0_DEFAULT = {
+    i1t: '💰 41€ pour un gadget',
+    i1b: "Ce bracelet connecté rejoint souvent le tiroir après quelques mois d'utilisation. L'argent pourrait servir à des expériences plus durables.",
+    i2t: '🤔 Vraiment nécessaire ?',
+    i2b: "Smartphone déjà capable de suivre activité et santé. Cette technologie répond-elle à un besoin réel ou à une envie créée ?"
+  };
+  function _norm(s){ return String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,''); }
+
+  /* Contrôle LOCAL (sans IA) : confronte les règles perso au produit de la démo.
+     Donne un retour instantané même sans clé API ; l'IA affine ensuite si dispo. */
+  function _localProductRuleCheck(){
+    // Descripteurs du produit de la page Amazon (Samsung Galaxy Fit 3 — montre connectée)
+    const product = 'montre connectee bracelet connecte samsung galaxy fit 3 gadget objet connecte technologie tech sante sport fitness electronique';
+    const stop = new Set(['je','ne','veux','pas','plus','de','des','du','la','le','les','un','une','aucun','aucune','sans','que','qui','quel','mon','ma','mes','ce','cette','ces','sur','pour','avec','dans','avoir','vouloir','et','ou','au','aux']);
+    const rules = [];
+    if (typeof personalRules !== 'undefined') personalRules.forEach(r => rules.push(r));
+    const consigne = (typeof getUserRule === 'function') ? getUserRule() : '';
+    if (consigne) rules.push(consigne);
+
+    let matchedRule = null;
+    for (const r of rules){
+      const words = _norm(r).replace(/[^a-z0-9\s]/g,' ').split(/\s+/).filter(w => w.length > 2 && !stop.has(w));
+      if (words.some(w => product.includes(w))) { matchedRule = r; break; }
+    }
+
+    const i1t=document.getElementById('dx0-i1-t'), i1b=document.getElementById('dx0-i1-b'),
+          i2t=document.getElementById('dx0-i2-t'), i2b=document.getElementById('dx0-i2-b');
+    if (matchedRule){
+      _alignScore = 1;
+      if(i1t) i1t.textContent = '🚫 Va contre ta règle';
+      if(i1b) i1b.textContent = '« ' + matchedRule + ' » — ce produit (Samsung Galaxy Fit, montre connectée) entre en conflit direct avec une de tes règles personnelles.';
+      if(i2t) i2t.textContent = '🤔 Vraiment nécessaire ?';
+      if(i2b) i2b.textContent = DX0_DEFAULT.i2b;
+    } else {
+      if(_alignScore < 2) _alignScore = 4;   // ne réinitialise pas un score IA déjà calculé
+      if(i1t) i1t.textContent = DX0_DEFAULT.i1t;
+      if(i1b) i1b.textContent = DX0_DEFAULT.i1b;
+      if(i2t) i2t.textContent = DX0_DEFAULT.i2t;
+      if(i2b) i2b.textContent = DX0_DEFAULT.i2b;
+    }
+    updateDynIsland();
+  }
+
   /* ════════════════════════════════════════════════════════════
      AMAZON FLOW — capsule → impact → emo → slip
   ════════════════════════════════════════════════════════════ */
@@ -5358,7 +5405,7 @@
                    'content-type': 'application/json',
                    'anthropic-dangerous-direct-browser-access': 'true' },
         body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
+          model: CLAUDE_MODEL,
           max_tokens: 150,
           messages: [{ role: 'user', content: [
             { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: base64 } },
@@ -5366,12 +5413,17 @@
           ]}]
         })
       });
-      if (!res.ok) return null;
+      if (!res.ok) {
+        try { const e = await res.json(); window._lastClaudeError = (e&&e.error&&e.error.message) || ('HTTP ' + res.status); }
+        catch(_) { window._lastClaudeError = 'HTTP ' + res.status; }
+        console.warn('[Vision] Scan produit — échec API :', window._lastClaudeError);
+        return null;
+      }
       const d = await res.json();
       const txt = d.content?.[0]?.text?.trim() || '';
       const m = txt.match(/\{[\s\S]*\}/);
       return m ? JSON.parse(m[0]) : null;
-    } catch(e) { return null; }
+    } catch(e) { window._lastClaudeError = 'Réseau/CORS : ' + e; console.warn('[Vision] Scan produit — exception :', e); return null; }
   }
 
   /* Validation de la clé API */
@@ -5391,7 +5443,7 @@
         headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01',
                    'content-type': 'application/json',
                    'anthropic-dangerous-direct-browser-access': 'true' },
-        body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 5,
+        body: JSON.stringify({ model: CLAUDE_MODEL, max_tokens: 5,
           messages: [{ role: 'user', content: 'Hi' }] })
       });
       if (res.ok) {
@@ -6990,6 +7042,10 @@
 
   /* ── Claude API + Chat IA ── */
   const CLAUDE_KEY_LS = 'vision_claude_key';
+  /* Modèle Claude utilisé PARTOUT (validation, scan produit, analyses, chat).
+     Un seul endroit à changer si le nom de modèle évolue. */
+  const CLAUDE_MODEL = 'claude-haiku-4-5-20251001';
+  window._lastClaudeError = null;   // dernière erreur API (diagnostic)
   function getClaudeKey(){ return (localStorage.getItem(CLAUDE_KEY_LS)||'').trim(); }
   let chatHistory = [];
 
@@ -7028,7 +7084,7 @@ Règles ABSOLUES : max 3 phrases courtes · toujours en français · 1 seule que
           'anthropic-dangerous-direct-browser-access': 'true'
         },
         body: JSON.stringify({
-          model: 'claude-haiku-4-5-20251001',
+          model: CLAUDE_MODEL,
           max_tokens: 300,
           system: _chatSystemPrompt(),
           messages: chatHistory
@@ -7372,13 +7428,18 @@ Règles ABSOLUES : max 3 phrases courtes · toujours en français · 1 seule que
         headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01',
                    'content-type': 'application/json',
                    'anthropic-dangerous-direct-browser-access': 'true' },
-        body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: maxTokens || 150,
+        body: JSON.stringify({ model: CLAUDE_MODEL, max_tokens: maxTokens || 150,
           system: systemPrompt, messages: [{ role: 'user', content: userText }] })
       });
-      if (!res.ok) return null;
+      if (!res.ok) {
+        try { const e = await res.json(); window._lastClaudeError = (e&&e.error&&e.error.message) || ('HTTP ' + res.status); }
+        catch(_) { window._lastClaudeError = 'HTTP ' + res.status; }
+        console.warn('[Vision] Analyse IA — échec API :', window._lastClaudeError);
+        return null;
+      }
       const d = await res.json();
       return d.content?.[0]?.text?.trim() || null;
-    } catch(e) { return null; }
+    } catch(e) { window._lastClaudeError = 'Réseau/CORS : ' + e; console.warn('[Vision] Analyse IA — exception :', e); return null; }
   }
 
   function _startCapsuleTranscription() {
