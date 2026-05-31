@@ -5009,7 +5009,8 @@
     document.querySelectorAll('#s-article .art-claim.flagged').forEach(c=>c.classList.remove('flagged'));
   }
 
-  /* ── Dynamic Island critique : expand/collapse + navigation slides ── */
+  /* ── Dynamic Island critique : expand/collapse + navigation + auto-pivot ── */
+  const _ciRot = {};   // id -> setInterval (rotation auto, active une fois étendu)
   function ciToggle(id, force){
     const el = document.getElementById(id);
     if(!el) return;
@@ -5017,9 +5018,14 @@
     el.classList.toggle('exp', willExp);
     const bk = document.getElementById(id + '-bk');
     if(bk) bk.classList.toggle('on', willExp);
-    if(willExp) ciGo(id, 0);
+    if(willExp){
+      ciGo(id, 0, true);
+      ciStartRotation(id);   // auto-pivot APRÈS appui sur "Analyser"
+    } else {
+      ciStopRotation(id);
+    }
   }
-  function ciGo(id, i){
+  function ciGo(id, i, auto){
     const el = document.getElementById(id);
     if(!el) return;
     const slides = [...el.querySelectorAll('.ci-slide')];
@@ -5029,7 +5035,19 @@
     slides.forEach((s, k) => s.classList.toggle('on', k === i));
     dots.forEach((d, k)   => d.classList.toggle('on', k === i));
     el._ci = i;
+    // Navigation manuelle (dot/swipe) → relance le minuteur pour laisser lire
+    if(!auto && el.classList.contains('exp')) ciStartRotation(id);
   }
+  function ciStartRotation(id){
+    ciStopRotation(id);
+    _ciRot[id] = setInterval(() => {
+      const el = document.getElementById(id);
+      if(!el || !el.classList.contains('exp')){ ciStopRotation(id); return; }
+      const n = el.querySelectorAll('.ci-slide').length;
+      ciGo(id, ((el._ci || 0) + 1) % n, true);   // boucle 0→1→…→4→0
+    }, 3500);
+  }
+  function ciStopRotation(id){ if(_ciRot[id]){ clearInterval(_ciRot[id]); _ciRot[id] = null; } }
   function ciOpenSource(name){
     alert('Vision t\'ouvrirait : ' + name + '\n\nConfronter plusieurs sources fiables = sortir de sa bulle et se forger un avis éclairé.');
   }
