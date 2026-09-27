@@ -204,7 +204,20 @@ async function validateClaudeKey() {
 }
 
 /* "Passer la commande" yellow button → open capsule overlay (vidéo / audio / placeholder) */
+/* Le calque capsule et le panneau d'impact sont déclarés dans l'écran Panier :
+   on les rattache à l'écran Amazon affiché (fiche produit OU panier),
+   sinon la vidéo se lance dans un écran caché et reste invisible. */
+function _mountAmznOverlays(){
+  const host = document.querySelector('.screen.active .amzn');
+  if (!host) return;
+  ['cap-overlay', 'imp-overlay'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.parentElement !== host) host.appendChild(el);
+  });
+}
+
 function openCapsule(){
+  _mountAmznOverlays();
   const ov = document.getElementById('cap-overlay');
   if(!ov) return;
   ov.classList.add('on');
@@ -310,28 +323,31 @@ function impactReflect(){
 
 /* Start the 30s countdown ring + label */
 function startEmoCountdown(){
-  AMZN.cdLeft = 30;
+  const total = (typeof getPauseSecs === 'function') ? getPauseSecs() : 30;
+  AMZN.cdLeft = total;
   AMZN.emotion = null; AMZN.emotions = []; AMZN.mood = null;
   document.querySelectorAll('.dk-em-c, .dk-md-c').forEach(c => c.classList.remove('on'));
   const arc = document.getElementById('emo-arc');
   const num = document.getElementById('emo-num');
   const skip = document.getElementById('emo-skip');
   if(arc) arc.style.strokeDashoffset = '0';
-  if(num) num.textContent = '0:30';
+  if(num) num.textContent = '0:' + String(total).padStart(2, '0');
+  if (typeof startBreathing === 'function') startBreathing();
   // "J'y vais tout de même" : caché et non-cliquable au départ
   if(skip){ skip.style.opacity = '0'; skip.style.pointerEvents = 'none'; }
   if(AMZN.cdT) clearInterval(AMZN.cdT);
   AMZN.cdT = setInterval(() => {
     AMZN.cdLeft = Math.max(0, AMZN.cdLeft - 1);
-    const elapsed = 30 - AMZN.cdLeft;
-    const off = Math.round((elapsed / 30) * EMO_CIRC);
+    const elapsed = total - AMZN.cdLeft;
+    const off = Math.round((elapsed / total) * EMO_CIRC);
     if(arc) arc.style.strokeDashoffset = String(off);
     if(num) num.textContent = '0:' + String(AMZN.cdLeft).padStart(2, '0');
     // Apparition progressive du bouton skip pendant le chrono
-    if(skip) skip.style.opacity = String(Math.min(1, elapsed / 30));
+    if(skip) skip.style.opacity = String(Math.min(1, elapsed / total));
     if(AMZN.cdLeft <= 0){
       clearInterval(AMZN.cdT); AMZN.cdT = null;
-      // Cliquable uniquement après les 30 secondes
+      // Cliquable uniquement à la fin de la pause
+      if (typeof stopBreathing === 'function') stopBreathing();
       if(skip){ skip.style.opacity = '1'; skip.style.pointerEvents = 'auto'; }
     }
   }, 1000);
@@ -349,6 +365,7 @@ function pickMood(el, level){
   document.querySelectorAll('.dk-md-c').forEach(c => c.classList.remove('on'));
   el.classList.add('on');
   AMZN.mood = level;
+  if (typeof questEvent === 'function') questEvent('checkin');
 }
 
 /* Émotions (niveau 2) : sélection multiple */

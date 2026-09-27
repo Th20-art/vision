@@ -105,7 +105,7 @@
 .and-notif-hd { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
 .and-notif-ic { width: 18px; height: 18px; border-radius: 5px; }
 .and-notif-app { font-size: 11px; font-weight: 700; color: #444; font-family: 'Inter', sans-serif; }
-.and-notif-tm { font-size: 10px; color: #999; margin-left: auto; font-family: 'Inter', sans-serif; }
+.and-notif-tm { font-size: 10px; color: #6b6b6b; margin-left: auto; font-family: 'Inter', sans-serif; }
 .and-notif-ti { font-size: 13px; font-weight: 700; color: #111; font-family: 'Work Sans', sans-serif; margin-bottom: 2px; }
 .and-notif-tx { font-size: 12px; color: #444; line-height: 1.35; font-family: 'Inter', sans-serif; }
 
@@ -367,7 +367,7 @@
 .nav-lbl {
   font-size: 10px;
   font-weight: 500;
-  color: #bbb;
+  color: #767676;
   font-family: 'Inter', sans-serif;
   transition: color .25s ease, font-weight .15s ease;
   /* Reset texte explicite — pas de gradient clip qui casse en bleu */
@@ -573,7 +573,7 @@
 .xp-h { flex:1; display:flex; flex-direction:column; align-items:center; position:relative; }
 .xp-sq { position:absolute; top:-2px; right:24%; width:7px; height:7px; background:#d6d6d6; border-radius:1px; }
 .xp-h .sh { width:30px; height:27px; }
-.xp-lb { margin-top:7px; font-size:12px; color:#bbb; white-space:nowrap; }
+.xp-lb { margin-top:7px; font-size:12px; color:#767676; white-space:nowrap; }
 .xp-lb.active { color:var(--og); font-weight:600; }
 
 /* Esprit critique : TOUJOURS violet, peu importe le compagnon */
@@ -615,5 +615,5 @@
 }
 .param-chevron {
   font-size: 16px;
-  color: #bbb;
+  color: #767676;
 }

@@ -14,7 +14,8 @@ function _chatSystemPrompt(){
   const objs = userAmbitions.length ? userAmbitions.map(a=>a.label).join(', ') : 'non encore définis';
   return `Tu es ${name}, compagnon IA de l'app Vision. Personnalité : ${perso}. Objectifs de l'utilisateur : ${objs}.
 Mission : aider l'utilisateur à visualiser son futur dans 90 jours, affiner ses objectifs et résister aux dépenses impulsives.
-Règles ABSOLUES : max 3 phrases courtes · toujours en français · 1 seule question à la fin · emojis rares · pas de listes.`;
+Règles ABSOLUES : max 3 phrases courtes · toujours en français · 1 seule question à la fin · emojis rares · pas de listes.`
+    + (typeof CHAT_SUGGEST_RULE !== 'undefined' ? CHAT_SUGGEST_RULE : '');
 }
 
 function _chatMockReply(text){
@@ -89,7 +90,10 @@ async function _sendText(text){
   const dots = _appendTypingDots();
   const reply = await callClaude(text);
   dots.remove();
-  _appendCompMsg(reply || _chatMockReply(text));
+  // Réponse IA : on retire sa ligne « SUGGESTIONS: … » et on l'affiche en pastilles
+  const parts = (typeof splitSuggestions === 'function') ? splitSuggestions(reply) : { text: reply, chips: null };
+  _appendCompMsg(parts.text || _chatMockReply(text));
+  if (typeof appendChatChips === 'function') appendChatChips(parts.chips || defaultChatChips());
 }
 
 function addChatMessage(el){

@@ -461,6 +461,7 @@ function togglePlayback() {
   }
   playState.playing = !playState.playing;
   document.getElementById('play-btn').textContent = playState.playing ? '⏸' : '▶';
+  if (playState.playing && typeof questEvent === 'function') questEvent('capsule');
   if (playState.playing) {
     // Init transcript words si vide
     const box = document.getElementById('play-transcript-text');
