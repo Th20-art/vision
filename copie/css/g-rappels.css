@@ -41,11 +41,12 @@
   flex: 0 0 auto;
   display: flex;
   align-items: center;
+  min-height: 58px;         /* la même hauteur qu'avant, même sans le X */
   padding: 14px 12px 0;
 }
 .rp-top-lbl {
   position: absolute;
-  left: 64px; right: 64px; top: 14px;
+  left: 20px; right: 20px; top: 14px;   /* centré : plus de X à contourner */
   height: 44px;
   display: flex;
   align-items: center;
@@ -58,15 +59,10 @@
   color: var(--rp-mute);
   pointer-events: none;
 }
-.rp-x {
-  width: 44px; height: 44px;
-  display: grid; place-items: center;
-  border: 0; border-radius: 12px;
-  background: none;
-  color: #7a7a7a;
-  cursor: pointer;
-}
-.rp-x:hover { background: #f4f4f4; }
+/* Un seul choix de sortie (le lien discret « Plus tard ») : le X est retiré
+   du DOM par js/g-rappels.js ; cette règle est une ceinture de sécurité si
+   jamais il restait présent. */
+.rp-x { display: none !important; }
 
 .rp-body {
   flex: 1 1 auto;
