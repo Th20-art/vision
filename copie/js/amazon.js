@@ -204,7 +204,20 @@ async function validateClaudeKey() {
 }
 
 /* "Passer la commande" yellow button → open capsule overlay (vidéo / audio / placeholder) */
+/* Le calque capsule et le panneau d'impact sont déclarés dans l'écran Panier :
+   on les rattache à l'écran Amazon affiché (fiche produit OU panier),
+   sinon la vidéo se lance dans un écran caché et reste invisible. */
+function _mountAmznOverlays(){
+  const host = document.querySelector('.screen.active .amzn');
+  if (!host) return;
+  ['cap-overlay', 'imp-overlay'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.parentElement !== host) host.appendChild(el);
+  });
+}
+
 function openCapsule(){
+  _mountAmznOverlays();
   const ov = document.getElementById('cap-overlay');
   if(!ov) return;
   ov.classList.add('on');
