@@ -862,6 +862,13 @@
             </div>
             <span class="param-chevron">›</span>
           </div>
+          <div class="param-item" id="rp-param" onclick="showReminderPrimer()" style="cursor:pointer;" role="button" tabindex="0">
+            <div>
+              <span class="param-lbl">RAPPEL QUOTIDIEN</span>
+              <div id="rp-param-sum" style="font-size:10px;color:var(--muted);margin-top:3px;">Un petit signe par jour pour ton objectif</div>
+            </div>
+            <span class="param-chevron">›</span>
+          </div>
           <div class="param-item" onclick="go('s-param-passions')" style="cursor:pointer;" role="button" tabindex="0">
             <div>
               <span class="param-lbl">MES PASSIONS</span>
@@ -2246,6 +2253,77 @@
 
 
   <!-- GANTELET:rappels — écrans/calques du morceau « rappels » (insérer juste sous cette ligne) -->
+  <!-- Rappel quotidien : amorce (compagnon + bulle, choix du moment). Rempli par js/g-rappels.js -->
+  <div id="rp-primer" class="rp-layer" role="dialog" aria-modal="true" aria-labelledby="rp-title" aria-describedby="rp-bubble-tx" tabindex="-1" hidden>
+    <div class="rp-top">
+      <button type="button" class="rp-x" id="rp-x" aria-label="Fermer">
+        <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg>
+      </button>
+      <div class="rp-top-lbl" aria-hidden="true">Rappel quotidien</div>
+    </div>
+    <div class="rp-body">
+      <div class="rp-hero">
+        <div class="rp-comp" aria-hidden="true">
+          <img id="rp-comp-img" src="assets/comp-foxy.png" alt="">
+          <span class="rp-bell" id="rp-bell"></span>
+        </div>
+        <div class="rp-bubble"><p id="rp-bubble-tx">Je te ferai un petit signe chaque jour pour penser à ton objectif. C'est comme ça qu'on en fait une habitude&nbsp;!</p></div>
+      </div>
+
+      <div class="rp-ask" id="rp-ask">
+        <h2 class="rp-h" id="rp-title">Quel moment te va&nbsp;?</h2>
+        <p class="rp-sub">Un seul rappel par jour, jamais plus.</p>
+        <div class="rp-moments" role="radiogroup" aria-labelledby="rp-title">
+          <button type="button" role="radio" class="rp-mo" data-m="matin" aria-checked="false"><span class="rp-mo-ck" aria-hidden="true"></span><span class="rp-mo-ic" data-ic="matin" aria-hidden="true"></span><span class="rp-mo-lb">Matin</span><span class="rp-mo-tm">8 h 30</span></button>
+          <button type="button" role="radio" class="rp-mo" data-m="midi" aria-checked="false"><span class="rp-mo-ck" aria-hidden="true"></span><span class="rp-mo-ic" data-ic="midi" aria-hidden="true"></span><span class="rp-mo-lb">Midi</span><span class="rp-mo-tm">12 h 30</span></button>
+          <button type="button" role="radio" class="rp-mo" data-m="soir" aria-checked="true"><span class="rp-mo-ck" aria-hidden="true"></span><span class="rp-mo-ic" data-ic="soir" aria-hidden="true"></span><span class="rp-mo-lb">Soir</span><span class="rp-mo-tm">20 h</span></button>
+        </div>
+        <div class="rp-prev">
+          <div class="rp-prev-hd"><span>Aperçu</span><span class="rp-prev-cd" id="rp-cd">Premier rappel ce soir</span></div>
+          <div class="rp-notif">
+            <img src="assets/icon-192.png" alt="" class="rp-notif-ic">
+            <div class="rp-notif-bd">
+              <div class="rp-notif-meta"><span>Vision</span><span id="rp-notif-tm">20:00</span></div>
+              <div class="rp-notif-ti" id="rp-notif-ti">Foxy passe te voir</div>
+              <div class="rp-notif-tx" id="rp-notif-tx">On regarde ton objectif ensemble&nbsp;?</div>
+            </div>
+          </div>
+          <p class="rp-promise"><img src="assets/heart.png" alt="" class="rp-promise-ic"><span>Déjà fait un pas dans la journée&nbsp;? Alors je ne te dérange pas. Et tu changes d'avis quand tu veux.</span></p>
+        </div>
+      </div>
+
+      <div class="rp-done" id="rp-done" hidden>
+        <div class="rp-done-card">
+          <span class="rp-done-ic" aria-hidden="true"></span>
+          <div>
+            <div class="rp-done-ti" id="rp-done-ti">Rappel activé</div>
+            <div class="rp-done-tx" id="rp-done-tx">Chaque soir vers 20 h</div>
+          </div>
+        </div>
+        <p class="rp-done-note" id="rp-done-note"></p>
+      </div>
+    </div>
+    <div class="rp-foot">
+      <button type="button" class="rp-cta" id="rp-cta">Rappelle-moi mon objectif</button>
+      <button type="button" class="rp-later" id="rp-later">Plus tard</button>
+    </div>
+  </div>
+
+  <!-- Petit coup de pouce sur l'accueil (non bloquant, une fois par jour) -->
+  <div id="rp-nudge" class="rp-nudge" role="status" aria-live="polite" hidden>
+    <div class="rp-nudge-comp" aria-hidden="true"><img id="rp-nudge-img" src="assets/comp-foxy.png" alt=""></div>
+    <div class="rp-nudge-bd">
+      <div class="rp-nudge-hi" id="rp-nudge-hi">Coucou, c'est Foxy&nbsp;!</div>
+      <div class="rp-nudge-ti" id="rp-nudge-ti">Résiste à 1 tentation</div>
+      <div class="rp-nudge-tx" id="rp-nudge-tx">Une envie repoussée&nbsp;? Note-la · +40 XP</div>
+    </div>
+    <button type="button" class="rp-nudge-go" id="rp-nudge-go" aria-label="Voir la quête du jour">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button type="button" class="rp-nudge-x" id="rp-nudge-x" aria-label="Masquer ce rappel">
+      <svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/></svg>
+    </button>
+  </div>
 
 
   <!-- ════════════════════════════════════════════════════ -->
