@@ -581,11 +581,10 @@
         <!-- Fox centré + 2 cœurs + streak -->
         <div style="display:flex;flex-direction:column;align-items:center;margin-top:14px;">
           <div class="fox-mini" style="width:91px;height:81px;"><img src="assets/comp-foxy.png" class="dyn-comp" alt="fox"></div>
-          <div style="display:flex;gap:6px;justify-content:center;margin-top:8px;">
-            <img src="assets/heart.png" class="home-heart" alt="" style="width:16px;height:14px;">
+          <div id="home-hearts" style="display:flex;gap:6px;justify-content:center;margin-top:8px;">
             <img src="assets/heart.png" class="home-heart" alt="" style="width:16px;height:14px;">
           </div>
-          <div style="font-size:12px;color:#6b6475;margin-top:8px;">🔥 8 jours sans craquage</div>
+          <div id="home-streak" style="font-size:12px;color:#6b6475;margin-top:8px;">🔥 0 jour sans craquage</div>
         </div>
 
         <!-- Chips dynamiques (varient selon objectifs) -->
@@ -759,15 +758,15 @@
             <img src="assets/comp-foxy.png" class="dyn-comp" alt="Renardo">
           </div>
           <div class="comp-name-big">Renardo</div>
-          <div class="comp-xp">XP 5 800 / 10 000</div>
+          <div class="comp-xp" id="comp-xp">XP 0 / 1 000</div>
           <div class="xp-bar-wrap">
-            <div class="xp-bar-lbl"><span>Renard - Stade 2</span></div>
+            <div class="xp-bar-lbl"><span id="comp-stage-lbl">Stade 1 · Sauvage</span></div>
             <!-- Progression : ? + ligne + cœurs (Figma 61:427) -->
             <div class="xp-stage">
               <button class="xp-help" onclick="openXpHelp()" aria-label="Comment monter de niveau">?</button>
               <div class="xp-track">
                 <div class="xp-track-bg"></div>
-                <div class="xp-track-fill" style="width:55%"></div>
+                <div class="xp-track-fill" id="comp-xp-fill" style="width:12.5%"></div>
                 <div class="xp-hearts">
                   <div class="xp-h"><span class="xp-sq"></span><img class="sh on" src="assets/heart.png" alt=""><span class="xp-lb">Sauvage</span></div>
                   <div class="xp-h"><span class="xp-sq"></span><img class="sh on" src="assets/heart.png" alt=""><span class="xp-lb active">Dompter</span></div>
@@ -1988,10 +1987,19 @@
         <div class="fox-mini"><img src="assets/comp-foxy.png" class="dyn-comp" alt=""></div>
       </div>
       <div class="dk-tt">Comment tu te sens là ?</div>
-      <div class="dk-st">Appuie sur ce qui te correspond</div>
+      <div class="dk-st">Ton humeur, puis ce que tu ressens (plusieurs choix possibles)</div>
     </div>
 
     <div class="dk-em-wr">
+      <div class="dk-md-lbl">TON HUMEUR</div>
+      <div class="dk-md">
+        <button type="button" class="dk-md-c" onclick="pickMood(this,1)" aria-label="Très mal">😣</button>
+        <button type="button" class="dk-md-c" onclick="pickMood(this,2)" aria-label="Mal">🙁</button>
+        <button type="button" class="dk-md-c" onclick="pickMood(this,3)" aria-label="Bof">😐</button>
+        <button type="button" class="dk-md-c" onclick="pickMood(this,4)" aria-label="Bien">🙂</button>
+        <button type="button" class="dk-md-c" onclick="pickMood(this,5)" aria-label="Très bien">😄</button>
+      </div>
+      <div class="dk-md-lbl">CE QUE TU RESSENS</div>
       <div class="dk-em">
         <div class="dk-em-c" onclick="pickEmo(this,'Stressée')"><div class="dk-em-i">🤯</div><div class="dk-em-l">Stressée</div></div>
         <div class="dk-em-c" onclick="pickEmo(this,'Fatiguée')"><div class="dk-em-i">😴</div><div class="dk-em-l">Fatiguée</div></div>
@@ -2180,8 +2188,8 @@
       </div>
       <div style="background:#f5f5f3;border-radius:14px;padding:14px 16px;margin-bottom:20px;">
         <div style="font-size:11px;color:var(--muted);margin-bottom:8px;font-family:'Inter',sans-serif;letter-spacing:.08em;">LES 4 STADES</div>
-        <div style="font-size:13px;color:var(--dark);line-height:1.6;">Sauvage&nbsp;→ <strong style="color:var(--og);">Dompter</strong>&nbsp;→ Maître&nbsp;→ Légendaire</div>
-        <div style="font-size:12px;color:var(--muted);margin-top:6px;">Tu es au stade 2 — il te manque <strong>4&nbsp;200&nbsp;XP</strong> pour atteindre Maître.</div>
+        <div id="xp-help-stages" style="font-size:13px;color:var(--dark);line-height:1.6;"><strong style="color:var(--og);">Sauvage</strong>&nbsp;→ Dompter&nbsp;→ Maître&nbsp;→ Légendaire</div>
+        <div id="xp-help-status" style="font-size:12px;color:var(--muted);margin-top:6px;">Tu es au stade 1 (Sauvage) — il te manque 1&nbsp;000 XP pour atteindre Dompter.</div>
       </div>
       <button onclick="closeXpHelp()" style="width:100%;padding:16px;background:linear-gradient(90deg,var(--og),var(--og2));color:white;font-family:'Work Sans',sans-serif;font-weight:700;font-size:16px;border:none;border-radius:16px;cursor:pointer;">J'ai compris</button>
     </div>
@@ -2228,6 +2236,7 @@
 <script src="js/dynamic-island.js"></script>
 <script src="js/onboarding.js"></script>
 <script src="js/ambitions.js"></script>
+<script src="js/progression.js"></script>
 <script src="js/ia-chat.js"></script>
 <script src="js/capsule.js"></script>
 <script src="js/boot.js"></script>

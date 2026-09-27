@@ -45,6 +45,7 @@ function go(id) {
     renderHomeAmbitions();
   }
   // Re-render home metrics (banner + cards) à l'entrée de la home
+  if ((id === 's-home' || id === 's-comp') && typeof renderProgress === 'function') renderProgress();
   if (id === 's-home' && typeof renderHomeMetrics === 'function') {
     renderHomeMetrics();
   }
