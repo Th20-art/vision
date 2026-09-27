@@ -27,6 +27,10 @@ function go(id) {
     chatHistory.push({ role:'assistant', content: initMsg });
   }
   // Profil : restaure la clé API dans le champ
+  // Respiration guidée : seulement pendant l'écran émotion
+  if (id !== 's-emo' && typeof stopBreathing === 'function') stopBreathing();
+  if (id === 's-hist' && typeof renderTriggers === 'function') renderTriggers();
+  if (id === 's-profil' && typeof renderPauseSetting === 'function') renderPauseSetting();
   if (id === 's-profil') {
     const kInput = document.getElementById('claude-key-input');
     if (kInput) kInput.value = getClaudeKey();

@@ -221,7 +221,7 @@
 }
 .ci-cont{position:absolute;top:54px;left:15px;right:15px;}
 .ci-title{text-align:center;font-family:'Inter',sans-serif;font-weight:700;font-size:12px;color:#fff;line-height:1.2;margin:0 0 8px;}
-.ci-body{text-align:left;font-family:'Inter',sans-serif;font-size:10px;color:#585858;line-height:1.45;margin:0;}
+.ci-body{text-align:left;font-family:'Inter',sans-serif;font-size:10px;color:#9a9a9a;line-height:1.45;margin:0;}
 .ci-link{
   position:absolute;left:50%;transform:translateX(-50%);bottom:31px;
   background:#323232;border-radius:7px;padding:6px 15px;
@@ -539,7 +539,7 @@
   padding: 3px 10px;
   font-size: 9px;
   font-family: 'Inter', sans-serif;
-  color: #999;
+  color: #767676;
   letter-spacing: 0.06em;
   display: flex;
   align-items: center;
@@ -600,7 +600,7 @@
 .jfi-content { flex: 1; display: flex; flex-direction: column; justify-content: center; }
 .jfi-time { font-size: 9px; color: var(--muted); margin-bottom: 3px; font-family: 'Inter', sans-serif; }
 .jfi-text { font-size: 11px; font-weight: 600; line-height: 1.35; }
-.jfi-text.green { color: #42c47e; }
+.jfi-text.green { color: #23864f; }
 .jfi-text.dark  { color: var(--dark); }
 
 /* ─── METRIC SECTIONS (Figma style) ─────────────────── */
@@ -785,7 +785,7 @@
   font-family: 'Work Sans', sans-serif;
   font-weight: 500;
   font-size: 11px;
-  color: #aaa;
+  color: #767676;
   cursor: pointer;
   padding: 0;
   letter-spacing: 0.02em;
@@ -1040,7 +1040,7 @@
 }
 .dx-b{
   font-family:'Inter',sans-serif;font-weight:400;font-size:10px;
-  color:#585858;line-height:1.4;margin-bottom:12px
+  color:#9a9a9a;line-height:1.4;margin-bottom:12px
 }
 .dx-b:last-child{margin-bottom:0}
 
@@ -1247,14 +1247,14 @@
 .imp-cd-ic{font-size:22px;flex-shrink:0;width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.06);border-radius:8px}
 .imp-cd-bd{flex:1;min-width:0;padding-right:8px}
 .imp-cd-t{font-size:13px;color:#fff;font-weight:600;margin-bottom:2px}
-.imp-cd-s{font-size:11px;color:#8c8c8c;line-height:1.45}
+.imp-cd-s{font-size:11px;color:#a8a8a8;line-height:1.45}
 .imp-cd-br{position:absolute;right:0;top:0;bottom:0;width:4px;border-radius:0 13px 13px 0}
 .imp-br-o{background:var(--og)}
 .imp-br-g{background:var(--green)}
 .imp-ft{display:flex;flex-direction:column;gap:9px;margin-top:16px}
 .imp-bp{display:block;width:100%;height:50px;border-radius:13px;border:none;background:linear-gradient(to right,var(--og),var(--og2));color:#fff;font-size:15px;font-weight:700;font-family:'Work Sans','Inter',sans-serif;cursor:pointer;line-height:1;transition:transform .12s,opacity .12s}
 .imp-bp:active{transform:scale(.97);opacity:.88}
-.imp-bg{display:block;width:100%;height:50px;border-radius:13px;background:rgba(255,255,255,.06);border:1px solid rgba(140,140,140,.3);color:#8c8c8c;font-size:15px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;line-height:1;transition:transform .12s,opacity .12s}
+.imp-bg{display:block;width:100%;height:50px;border-radius:13px;background:rgba(255,255,255,.06);border:1px solid rgba(140,140,140,.3);color:#a8a8a8;font-size:15px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;line-height:1;transition:transform .12s,opacity .12s}
 .imp-bg:active{transform:scale(.97)}
 
 /* ───── EMO SCREEN (445:1202) — DARK ───── */
@@ -1265,9 +1265,9 @@
 .dk-ring-t{position:absolute;right:0;width:88px;height:88px;top:8px;display:flex;align-items:center;justify-content:center;font-size:21px;font-weight:700;color:#fff;font-family:'Inter',sans-serif}
 .dk-ring .fox-mini{position:absolute;left:0;top:0;width:62px;height:55px;z-index:2}
 .dk-tt{font-size:21px;font-weight:700;color:#fff;text-align:center;margin-top:14px;line-height:1.35;font-family:'Work Sans','Inter',sans-serif;padding:0 30px}
-.dk-st{font-size:13px;color:#8c8c8c;text-align:center;margin-top:5px;font-family:'Work Sans','Inter',sans-serif}
+.dk-st{font-size:13px;color:#a8a8a8;text-align:center;margin-top:5px;font-family:'Work Sans','Inter',sans-serif}
 .dk-em-wr{flex:1;padding:18px 18px 12px;min-height:0;overflow-y:auto}
-.dk-md-lbl{font-size:10px;font-weight:600;letter-spacing:.08em;color:#8c8c8c;margin:0 2px 8px;font-family:'Inter',sans-serif}
+.dk-md-lbl{font-size:10px;font-weight:600;letter-spacing:.08em;color:#a8a8a8;margin:0 2px 8px;font-family:'Inter',sans-serif}
 .dk-md{display:flex;justify-content:space-between;gap:8px;margin-bottom:16px}
 .dk-md-c{flex:1;height:48px;border:none;border-radius:13px;background:#30302e;font-size:24px;line-height:1;cursor:pointer;transition:background .15s,outline .15s,transform .15s}
 .dk-md-c.on{background:color-mix(in srgb, var(--og) 22%, transparent);outline:1.5px solid var(--og);transform:scale(1.06)}
@@ -1275,7 +1275,7 @@
 .dk-em-c{background:#30302e;border-radius:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;height:78px;transition:background .15s,outline .15s;-webkit-user-select:none;user-select:none}
 .dk-em-c.on{background:color-mix(in srgb, var(--og) 22%, transparent);outline:1.5px solid var(--og)}
 .dk-em-i{font-size:26px;line-height:1}
-.dk-em-l{font-size:9.5px;font-weight:600;color:#8c8c8c;text-align:center}
+.dk-em-l{font-size:9.5px;font-weight:600;color:#a8a8a8;text-align:center}
 .dk-em-c.on .dk-em-l{color:var(--og)}
 .dk-bt-wr{padding:10px 18px 22px;display:flex;flex-direction:column;gap:9px;flex-shrink:0}
 
@@ -1283,7 +1283,7 @@
 .dk-sl-hd{display:flex;flex-direction:column;align-items:center;padding-top:84px;flex-shrink:0}
 .dk-sl-hd .fox-mini{width:62px;height:55px;margin-bottom:14px}
 .dk-sl-tt{font-size:21px;font-weight:700;color:#fff;text-align:center;font-family:'Work Sans','Inter',sans-serif;line-height:1.2}
-.dk-sl-st{font-size:15px;font-weight:600;color:#8c8c8c;text-align:center;margin-top:7px;font-family:'Inter',sans-serif}
+.dk-sl-st{font-size:15px;font-weight:600;color:#a8a8a8;text-align:center;margin-top:7px;font-family:'Inter',sans-serif}
 .dk-sl-wr{flex:1;padding:24px 18px 0;display:flex;flex-direction:column;gap:9px;min-height:0;overflow-y:auto}
 .dk-ch{display:block;width:100%;height:46px;border-radius:11px;background:#30302e;border:none;color:#fff;font-size:13px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;text-align:center;transition:background .15s,outline .15s;-webkit-user-select:none;user-select:none;flex-shrink:0}
 .dk-ch.on{background:color-mix(in srgb, var(--og) 25%, transparent);outline:1.5px solid var(--og);color:var(--og)}
@@ -1417,3 +1417,22 @@
 .play-word { transition: color .18s ease, font-weight .18s ease; }
 .play-word.spoken { color: var(--dark); font-weight: 500; }
 .play-word.current { color: var(--og); font-weight: 700; background: rgba(245,96,28,0.10); border-radius: 3px; padding: 1px 2px; }
+
+/* ─── Étape 4 : respiration guidée, bilan des déclencheurs, pastilles de chat, focus ─── */
+.dk-br{font-size:14px;font-weight:600;color:var(--og);text-align:center;margin-top:8px;min-height:18px;font-family:'Inter',sans-serif}
+#s-emo .dk-ring{transition:transform 4s ease-in-out}
+#s-emo .dk-ring.breathe-in{transform:scale(1.08)}
+.trg-card{margin:14px 20px 0;background:#fff;border-radius:16px;padding:14px 16px}
+.trg-title{font-size:13px;font-weight:600;color:var(--muted);margin-bottom:10px}
+.trg-empty{font-size:12px;color:#595959;line-height:1.5}
+.trg-sum{font-size:13px;color:var(--dark);margin-bottom:4px}
+.trg-h{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#595959;margin:14px 0 6px}
+.trg-row{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--dark);margin-top:6px}
+.trg-n{color:#595959;white-space:nowrap}
+.trg-bar{height:6px;background:#f0f0f0;border-radius:100px;margin-top:4px;overflow:hidden}
+.trg-fill{height:100%;background:#c9c9c9;border-radius:100px}
+.trg-fill.hot{background:linear-gradient(90deg,var(--og),var(--og2))}
+.trg-tip{margin-top:14px;font-size:12px;color:var(--dark);background:#f7f5f2;border-radius:10px;padding:10px 12px;line-height:1.45}
+.chat-chips{display:flex;flex-wrap:wrap;gap:6px;padding-left:36px}
+.chat-chip{border:1.5px solid var(--og);background:#fff;color:var(--dark);padding:7px 12px;border-radius:20px;font-size:12px;font-family:'Inter',sans-serif;cursor:pointer}
+:focus-visible{outline:2px solid var(--og);outline-offset:2px}
