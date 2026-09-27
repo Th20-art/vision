@@ -18,6 +18,14 @@
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/app.css">
 <link rel="stylesheet" href="css/demos.css">
+<link rel="stylesheet" href="css/g-accueil.css">
+<link rel="stylesheet" href="css/g-celebration.css">
+<link rel="stylesheet" href="css/g-serie.css">
+<link rel="stylesheet" href="css/g-quetes.css">
+<link rel="stylesheet" href="css/g-ligue.css">
+<link rel="stylesheet" href="css/g-boutique.css">
+<link rel="stylesheet" href="css/g-mascotte.css">
+<link rel="stylesheet" href="css/g-rappels.css">
 <style>
 /* Reste dans la page : les url() passées via --m (style en ligne) doivent se résoudre par rapport au document */
 .nav-mask { -webkit-mask: var(--m) center / contain no-repeat; mask: var(--m) center / contain no-repeat; }
@@ -150,22 +158,22 @@
       <div class="form-title">Choisis ton partenaire</div>
       <div class="form-sub">Plus facile ensemble.</div>
       <div class="comp-grid" id="compGrid">
-        <div class="comp-card active" data-comp="foxy" onclick="selectComp(this)">
+        <div class="comp-card active" data-comp="foxy" onclick="selectComp(this)" role="button" tabindex="0">
           <div class="fox-mini"><img src="assets/comp-foxy.png" alt="Foxy" style="position:relative;width:100%;height:100%;object-fit:contain;image-rendering:pixelated;"></div>
           <div class="comp-name">Foxy</div>
           <div class="comp-trait">Curieux • Motivant</div>
         </div>
-        <div class="comp-card" data-comp="malo" onclick="selectComp(this)">
+        <div class="comp-card" data-comp="malo" onclick="selectComp(this)" role="button" tabindex="0">
           <img src="assets/comp-malo.png" alt="Malo" style="width:72px;height:64px;object-fit:contain;image-rendering:pixelated;">
           <div class="comp-name">Malo</div>
           <div class="comp-trait">Calme • Stratège</div>
         </div>
-        <div class="comp-card" data-comp="elio" onclick="selectComp(this)">
+        <div class="comp-card" data-comp="elio" onclick="selectComp(this)" role="button" tabindex="0">
           <img src="assets/comp-elio.png" alt="Élio" style="width:72px;height:64px;object-fit:contain;image-rendering:pixelated;">
           <div class="comp-name">Élio</div>
           <div class="comp-trait">Fun • Décalé</div>
         </div>
-        <div class="comp-card" data-comp="ryo" onclick="selectComp(this)">
+        <div class="comp-card" data-comp="ryo" onclick="selectComp(this)" role="button" tabindex="0">
           <img src="assets/comp-ryo.png" alt="Ryo" style="width:72px;height:64px;object-fit:contain;image-rendering:pixelated;">
           <div class="comp-name">Ryo</div>
           <div class="comp-trait">Sérieux • Discipliné</div>
@@ -240,22 +248,22 @@
       <div class="form-sub">Personnalises tes alternatives.</div>
       <div class="passion-count" id="passionCount">3 passions sélectionnées</div>
       <div class="chip-area" id="chipArea">
-        <div class="chip" onclick="toggleChip(this)">Fitness</div>
-        <div class="chip" onclick="toggleChip(this)">Gaming</div>
-        <div class="chip" onclick="toggleChip(this)">Manga / Anime</div>
-        <div class="chip" onclick="toggleChip(this)">Finance</div>
-        <div class="chip" onclick="toggleChip(this)">Design</div>
-        <div class="chip on" onclick="toggleChip(this)">Lecture</div>
-        <div class="chip" onclick="toggleChip(this)">Musique</div>
-        <div class="chip on" onclick="toggleChip(this)">Voyage</div>
-        <div class="chip" onclick="toggleChip(this)">Développement personnel</div>
-        <div class="chip" onclick="toggleChip(this)">Art</div>
-        <div class="chip" onclick="toggleChip(this)">Nature</div>
-        <div class="chip" onclick="toggleChip(this)">Entrepreneuriat</div>
-        <div class="chip" onclick="toggleChip(this)">Roadtrip</div>
-        <div class="chip" onclick="toggleChip(this)">Mode</div>
-        <div class="chip on" onclick="toggleChip(this)">Nourriture</div>
-        <div class="chip-add" onclick="addChip()">+</div>
+        <div class="chip" onclick="toggleChip(this)" role="button" tabindex="0">Fitness</div>
+        <div class="chip" onclick="toggleChip(this)" role="button" tabindex="0">Gaming</div>
+        <div class="chip" onclick="toggleChip(this)" role="button" tabindex="0">Manga / Anime</div>
+        <div class="chip" onclick="toggleChip(this)" role="button" tabindex="0">Finance</div>
+        <div class="chip" onclick="toggleChip(this)" role="button" tabindex="0">Design</div>
+        <div class="chip on" onclick="toggleChip(this)" role="button" tabindex="0">Lecture</div>
+        <div class="chip" onclick="toggleChip(this)" role="button" tabindex="0">Musique</div>
+        <div class="chip on" onclick="toggleChip(this)" role="button" tabindex="0">Voyage</div>
+        <div class="chip" onclick="toggleChip(this)" role="button" tabindex="0">Développement personnel</div>
+        <div class="chip" onclick="toggleChip(this)" role="button" tabindex="0">Art</div>
+        <div class="chip" onclick="toggleChip(this)" role="button" tabindex="0">Nature</div>
+        <div class="chip" onclick="toggleChip(this)" role="button" tabindex="0">Entrepreneuriat</div>
+        <div class="chip" onclick="toggleChip(this)" role="button" tabindex="0">Roadtrip</div>
+        <div class="chip" onclick="toggleChip(this)" role="button" tabindex="0">Mode</div>
+        <div class="chip on" onclick="toggleChip(this)" role="button" tabindex="0">Nourriture</div>
+        <div class="chip-add" onclick="addChip()" role="button" tabindex="0">+</div>
       </div>
       <button class="cont-btn" onclick="go('s-intro-3')">Suivant →</button>
     </div>
@@ -393,15 +401,15 @@
       <div style="margin-top:24px;display:flex;flex-direction:column;gap:10px;">
         <div style="background:#fff;border-radius:14px;padding:13px 16px;display:flex;align-items:center;gap:12px;">
           <div style="flex:1;"><div style="font-weight:700;font-size:14px;color:var(--dark);">Achat</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">(Amazon, Zara, Sephora…)</div></div>
-          <span class="cat-tog on locked" onclick="toggleCat(this)"><span class="cat-tog-knob"><img src="assets/lock.svg" class="lock-ic" alt="verrouillé"></span></span>
+          <span class="cat-tog on locked" onclick="toggleCat(this)" role="button" tabindex="0"><span class="cat-tog-knob"><img src="assets/lock.svg" class="lock-ic" alt="verrouillé"></span></span>
         </div>
         <div style="background:#fff;border-radius:14px;padding:13px 16px;display:flex;align-items:center;gap:12px;">
           <div style="flex:1;"><div style="font-weight:700;font-size:14px;color:var(--dark);">Food & Livraison</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">(UberEats, Deliveroo, McDo…)</div></div>
-          <span class="cat-tog on locked" onclick="toggleCat(this)"><span class="cat-tog-knob"><img src="assets/lock.svg" class="lock-ic" alt="verrouillé"></span></span>
+          <span class="cat-tog on locked" onclick="toggleCat(this)" role="button" tabindex="0"><span class="cat-tog-knob"><img src="assets/lock.svg" class="lock-ic" alt="verrouillé"></span></span>
         </div>
         <div style="background:#fff;border-radius:14px;padding:13px 16px;display:flex;align-items:center;gap:12px;">
           <div style="flex:1;"><div style="font-weight:700;font-size:14px;color:var(--dark);">Réseaux & Streaming</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">(TikTok, Instagram, Youtube…)</div></div>
-          <span class="cat-tog on locked" onclick="toggleCat(this)"><span class="cat-tog-knob"><img src="assets/lock.svg" class="lock-ic" alt="verrouillé"></span></span>
+          <span class="cat-tog on locked" onclick="toggleCat(this)" role="button" tabindex="0"><span class="cat-tog-knob"><img src="assets/lock.svg" class="lock-ic" alt="verrouillé"></span></span>
         </div>
       </div>
       <button class="cont-btn" style="position:absolute;bottom:24px;right:22px;" onclick="go('s-intro-ec')">Compris →</button>
@@ -422,7 +430,7 @@
             <div style="font-family:'Work Sans',sans-serif;font-weight:700;font-size:14px;color:var(--dark);">Esprit critique</div>
             <div style="font-size:11px;color:var(--muted);margin-top:2px;">(Information, Vidéo, Article…)</div>
           </div>
-          <span class="ec-toggle on" onclick="toggleEC(this)"><span class="ec-knob"></span></span>
+          <span class="ec-toggle on" onclick="toggleEC(this)" role="button" tabindex="0"><span class="ec-knob"></span></span>
         </div>
       </div>
       <button class="ec-btn" onclick="go('s-intro-5')">Continuer →</button>
@@ -515,10 +523,10 @@
         </div>
       </div>
       <div class="record-btn-wrap">
-        <button type="button" class="record-btn" id="record-btn-main" onclick="handleRecordClick()">
+        <button type="button" class="record-btn" id="record-btn-main" onclick="handleRecordClick()" aria-label="Enregistrer ou arrêter la capsule">
           <div class="record-dot" id="record-btn-icon" style="pointer-events:none"></div>
         </button>
-        <div class="record-alt" id="record-alt-text" style="cursor:pointer" onclick="startRecordingInline('audio')">Sinon enregistrer un vocal</div>
+        <div class="record-alt" id="record-alt-text" style="cursor:pointer" onclick="startRecordingInline('audio')" role="button" tabindex="0">Sinon enregistrer un vocal</div>
       </div>
       <button class="cont-btn" onclick="go('s-home'); startTour();">Terminer →</button>
     </div>
@@ -556,7 +564,7 @@
       </div>
 
       <!-- Stop button -->
-      <button class="rec-stop-btn" onclick="stopRecording()">
+      <button class="rec-stop-btn" onclick="stopRecording()" aria-label="Arrêter l'enregistrement">
         <div class="rec-stop-square"></div>
       </button>
       <div class="rec-stop-lbl">Appuie pour arrêter</div>
@@ -568,23 +576,57 @@
   <!-- ════════════════════════════════════════════════════ -->
   <div class="screen" id="s-home">
     <div class="app-screen">
-      <div class="android-back" onclick="go('s-widget')" title="Retour Android">
+      <div class="android-back" onclick="go('s-widget')" title="Retour Android" role="button" tabindex="0">
         <div class="android-back-pill">⌂ Android</div>
       </div>
       <div class="app-scroll" style="height:100%;">
-        <!-- Header centré + bell (Figma 510:1136) -->
-        <div style="position:relative;padding:36px 20px 0;text-align:center;">
-          <div style="font-family:'Work Sans',sans-serif;font-weight:700;font-size:22px;color:#000;">Bonsoir, <span class="user-name">Léa</span> 👋</div>
-          <button class="bell-btn has-notif" onclick="openNotifs()" style="position:absolute;right:20px;top:34px;"><img src="assets/bell.svg" alt="notifications"></button>
-        </div>
-
-        <!-- Fox centré + 2 cœurs + streak -->
-        <div style="display:flex;flex-direction:column;align-items:center;margin-top:14px;">
-          <div class="fox-mini" style="width:91px;height:81px;"><img src="assets/comp-foxy.png" class="dyn-comp" alt="fox"></div>
-          <div id="home-hearts" style="display:flex;gap:6px;justify-content:center;margin-top:8px;">
-            <img src="assets/heart.png" class="home-heart" alt="" style="width:16px;height:14px;">
+        <!-- Accueil : barre de statut + compagnon + carte du jour (js/g-accueil.js, css/g-accueil.css) -->
+        <div class="acc-top" id="acc-top">
+          <div class="acc-bar">
+            <button type="button" class="acc-stat acc-league" id="acc-league" onclick="accGo('s-ligue')" aria-label="Ligue">
+              <span class="acc-ico acc-ico-medal" data-px="medal"></span><span class="acc-num" id="acc-league-name">Graine</span>
+            </button>
+            <button type="button" class="acc-stat acc-flame is-off" id="acc-flame" onclick="accGo('s-serie')" aria-label="Série">
+              <span class="acc-ico acc-ico-flame" data-px="flame"></span><span class="acc-num" id="home-streak">0</span>
+            </button>
+            <button type="button" class="acc-stat acc-gems" id="acc-gems-btn" onclick="accGo('s-boutique')" aria-label="Graines">
+              <span class="acc-ico" data-px="seed"></span><span class="acc-num" id="acc-gems">0</span>
+            </button>
+            <button type="button" class="acc-stat acc-freeze" id="acc-freezes-btn" onclick="accGo('s-boutique')" aria-label="Boucliers de série">
+              <span class="acc-ico" data-px="shield"></span><span class="acc-num" id="acc-freezes">0</span>
+            </button>
+            <button type="button" class="bell-btn has-notif acc-bell" onclick="openNotifs()" aria-label="Notifications"><img src="assets/bell.svg" alt="notifications"></button>
           </div>
-          <div id="home-streak" style="font-size:12px;color:#6b6475;margin-top:8px;">🔥 0 jour sans craquage</div>
+
+          <div class="acc-stage">
+            <div class="acc-comp">
+              <div class="acc-sparks" aria-hidden="true"><i></i><i></i><i></i></div>
+              <div class="acc-comp-sprite"><img src="assets/comp-foxy.png" class="dyn-comp" alt="Ton compagnon"></div>
+              <div class="acc-floor" aria-hidden="true"></div>
+              <div class="acc-level" id="acc-level" role="img" aria-label="Stade du compagnon"><div id="home-hearts" class="acc-hearts"></div><span id="acc-stage-name">Sauvage</span></div>
+            </div>
+            <div class="acc-bubble">
+              <div class="acc-hello"><span id="acc-hello-word">Bonsoir</span>, <span class="user-name">Léa</span>&#8239;!</div>
+              <div class="acc-say" id="acc-say">Une petite action et ta flamme s’allume.</div>
+            </div>
+          </div>
+
+          <div class="acc-today" id="acc-today">
+            <div class="acc-today-top">
+              <span class="acc-tag" id="acc-tag">À suivre</span>
+              <span class="acc-count" id="acc-count-wrap" role="img" aria-label="Quêtes du jour"><span class="acc-dots" id="acc-dots"></span><span id="acc-count">0 / 3</span></span>
+            </div>
+            <div class="acc-title" id="acc-title">Résiste à 1 tentation</div>
+            <div class="acc-rewards">
+              <span class="acc-chip acc-chip-xp" id="acc-xp-chip"><span class="acc-ico" data-px="bolt"></span><span class="acc-chip-txt"><span id="acc-xp">+40</span> XP</span></span>
+              <span class="acc-chip acc-chip-gems"><span class="acc-ico" data-px="seed"></span><span class="acc-chip-txt"><span id="acc-gain">+15</span> graines</span></span>
+            </div>
+            <div class="acc-progress">
+              <div class="acc-pbar" id="acc-pbar" role="img" aria-label="Progression"><div class="acc-pfill" id="acc-pfill"></div><span class="acc-ptxt" id="acc-ptxt">0 / 1</span></div>
+              <span class="acc-ico acc-chest" data-px="chest"></span>
+            </div>
+            <button type="button" class="acc-cta" id="acc-cta" onclick="accTodayTap()">Allumer ma flamme</button>
+          </div>
         </div>
 
         <!-- Chips dynamiques (varient selon objectifs) -->
@@ -632,22 +674,22 @@
         <div style="height:96px;"></div>
       </div>
       <div class="b-nav">
-        <button class="nav-btn on" onclick="tab('home')">
+        <button class="nav-btn on" onclick="tab('home')" aria-label="Accueil">
           <span class="nav-mask nav-mask-line" style="aspect-ratio:35/47;--m:url(assets/nav-home-line.svg)"></span>
           <span class="nav-mask nav-mask-fill" style="aspect-ratio:35/47;--m:url(assets/nav-home-fill.svg)"></span>
         </button>
-        <button class="nav-btn" onclick="tab('hist')">
+        <button class="nav-btn" onclick="tab('hist')" aria-label="Historique">
           <span class="nav-mask nav-mask-line" style="aspect-ratio:60/44;--m:url(assets/nav-hist-line.svg)"></span>
           <span class="nav-mask nav-mask-fill" style="aspect-ratio:62/44;--m:url(assets/nav-hist-fill.svg)"></span>
         </button>
-        <button class="nav-fab" onclick="openJournal()">
+        <button class="nav-fab" onclick="openJournal()" aria-label="Ajouter une entrée au journal">
           <img src="assets/nav-fab2.svg" alt="add">
         </button>
-        <button class="nav-btn" onclick="tab('comp')">
+        <button class="nav-btn" onclick="tab('comp')" aria-label="Compagnon">
           <span class="nav-mask nav-mask-line" style="aspect-ratio:70/46;--m:url(assets/nav-comp-line.svg)"></span>
           <span class="nav-mask nav-mask-fill" style="aspect-ratio:72/46;--m:url(assets/nav-comp-fill.svg)"></span>
         </button>
-        <button class="nav-btn" onclick="tab('profil')">
+        <button class="nav-btn" onclick="tab('profil')" aria-label="Profil">
           <span class="nav-mask nav-mask-line" style="aspect-ratio:30/44;--m:url(assets/nav-prof-line.svg)"></span>
           <span class="nav-mask nav-mask-fill" style="aspect-ratio:31/43;--m:url(assets/nav-prof-fill.svg)"></span>
         </button>
@@ -660,7 +702,7 @@
   <!-- ════════════════════════════════════════════════════ -->
   <div class="screen" id="s-hist">
     <div class="app-screen">
-      <div class="android-back" onclick="go('s-widget')" title="Retour Android">
+      <div class="android-back" onclick="go('s-widget')" title="Retour Android" role="button" tabindex="0">
         <div class="android-back-pill">⌂ Android</div>
       </div>
       <div class="app-scroll" style="height:100%;">
@@ -700,6 +742,11 @@
             </div>
           </div>
         </div>
+        <!-- Bilan des déclencheurs (calculé depuis l'historique des tentations) -->
+        <div class="trg-card">
+          <div class="trg-title">Tes déclencheurs</div>
+          <div id="triggers-body"></div>
+        </div>
         <!-- Objectifs atteints (Figma 61:330) -->
         <div style="font-family:'Work Sans',sans-serif;font-weight:700;font-size:15px;color:var(--dark);padding:18px 20px 8px;">Objectifs atteints</div>
         <div style="padding:0 20px;">
@@ -710,22 +757,22 @@
       </div>
       <div class="fox-corner"><img src="assets/comp-foxy.png" class="dyn-comp" alt="fox"></div>
       <div class="b-nav">
-        <button class="nav-btn" onclick="tab('home')">
+        <button class="nav-btn" onclick="tab('home')" aria-label="Accueil">
           <span class="nav-mask nav-mask-line" style="aspect-ratio:35/47;--m:url(assets/nav-home-line.svg)"></span>
           <span class="nav-mask nav-mask-fill" style="aspect-ratio:35/47;--m:url(assets/nav-home-fill.svg)"></span>
         </button>
-        <button class="nav-btn on" onclick="tab('hist')">
+        <button class="nav-btn on" onclick="tab('hist')" aria-label="Historique">
           <span class="nav-mask nav-mask-line" style="aspect-ratio:60/44;--m:url(assets/nav-hist-line.svg)"></span>
           <span class="nav-mask nav-mask-fill" style="aspect-ratio:62/44;--m:url(assets/nav-hist-fill.svg)"></span>
         </button>
-        <button class="nav-fab" onclick="openJournal()">
+        <button class="nav-fab" onclick="openJournal()" aria-label="Ajouter une entrée au journal">
           <img src="assets/nav-fab2.svg" alt="add">
         </button>
-        <button class="nav-btn" onclick="tab('comp')">
+        <button class="nav-btn" onclick="tab('comp')" aria-label="Compagnon">
           <span class="nav-mask nav-mask-line" style="aspect-ratio:70/46;--m:url(assets/nav-comp-line.svg)"></span>
           <span class="nav-mask nav-mask-fill" style="aspect-ratio:72/46;--m:url(assets/nav-comp-fill.svg)"></span>
         </button>
-        <button class="nav-btn" onclick="tab('profil')">
+        <button class="nav-btn" onclick="tab('profil')" aria-label="Profil">
           <span class="nav-mask nav-mask-line" style="aspect-ratio:30/44;--m:url(assets/nav-prof-line.svg)"></span>
           <span class="nav-mask nav-mask-fill" style="aspect-ratio:31/43;--m:url(assets/nav-prof-fill.svg)"></span>
         </button>
@@ -738,7 +785,7 @@
   <!-- ════════════════════════════════════════════════════ -->
   <div class="screen" id="s-comp">
     <div class="app-screen">
-      <div class="android-back" onclick="go('s-widget')" title="Retour Android">
+      <div class="android-back" onclick="go('s-widget')" title="Retour Android" role="button" tabindex="0">
         <div class="android-back-pill">⌂ Android</div>
       </div>
       <div class="app-scroll" style="height:100%;">
@@ -791,22 +838,22 @@
         <div style="height:20px;"></div>
       </div>
       <div class="b-nav">
-        <button class="nav-btn" onclick="tab('home')">
+        <button class="nav-btn" onclick="tab('home')" aria-label="Accueil">
           <span class="nav-mask nav-mask-line" style="aspect-ratio:35/47;--m:url(assets/nav-home-line.svg)"></span>
           <span class="nav-mask nav-mask-fill" style="aspect-ratio:35/47;--m:url(assets/nav-home-fill.svg)"></span>
         </button>
-        <button class="nav-btn" onclick="tab('hist')">
+        <button class="nav-btn" onclick="tab('hist')" aria-label="Historique">
           <span class="nav-mask nav-mask-line" style="aspect-ratio:60/44;--m:url(assets/nav-hist-line.svg)"></span>
           <span class="nav-mask nav-mask-fill" style="aspect-ratio:62/44;--m:url(assets/nav-hist-fill.svg)"></span>
         </button>
-        <button class="nav-fab" onclick="openJournal()">
+        <button class="nav-fab" onclick="openJournal()" aria-label="Ajouter une entrée au journal">
           <img src="assets/nav-fab2.svg" alt="add">
         </button>
-        <button class="nav-btn on" onclick="tab('comp')">
+        <button class="nav-btn on" onclick="tab('comp')" aria-label="Compagnon">
           <span class="nav-mask nav-mask-line" style="aspect-ratio:70/46;--m:url(assets/nav-comp-line.svg)"></span>
           <span class="nav-mask nav-mask-fill" style="aspect-ratio:72/46;--m:url(assets/nav-comp-fill.svg)"></span>
         </button>
-        <button class="nav-btn" onclick="tab('profil')">
+        <button class="nav-btn" onclick="tab('profil')" aria-label="Profil">
           <span class="nav-mask nav-mask-line" style="aspect-ratio:30/44;--m:url(assets/nav-prof-line.svg)"></span>
           <span class="nav-mask nav-mask-fill" style="aspect-ratio:31/43;--m:url(assets/nav-prof-fill.svg)"></span>
         </button>
@@ -819,7 +866,7 @@
   <!-- ════════════════════════════════════════════════════ -->
   <div class="screen" id="s-profil">
     <div class="app-screen">
-      <div class="android-back" onclick="go('s-widget')" title="Retour Android">
+      <div class="android-back" onclick="go('s-widget')" title="Retour Android" role="button" tabindex="0">
         <div class="android-back-pill">⌂ Android</div>
       </div>
       <div class="app-scroll" style="height:100%;">
@@ -835,47 +882,62 @@
           <div class="obj-text">Je veux pouvoir voyager le mois prochain.</div>
         </div>
         <div class="param-list">
-          <div class="param-item" onclick="go('s-param-video')" style="cursor:pointer;">
+          <div class="param-item" onclick="go('s-param-video')" style="cursor:pointer;" role="button" tabindex="0">
             <div>
               <span class="param-lbl">TA CAPSULE</span>
               <div style="font-size:10px;color:var(--muted);margin-top:3px;">Capsule enregistrée le 6 mai 2026</div>
             </div>
             <span class="param-chevron">›</span>
           </div>
-          <div class="param-item" onclick="go('s-param-ambitions')" style="cursor:pointer;">
+          <div class="param-item" onclick="go('s-param-ambitions')" style="cursor:pointer;" role="button" tabindex="0">
             <div>
               <span class="param-lbl">MES AMBITIONS</span>
               <div style="font-size:10px;color:var(--muted);margin-top:3px;">3 objectifs actifs</div>
             </div>
             <span class="param-chevron">›</span>
           </div>
-          <div class="param-item" onclick="go('s-param-passions')" style="cursor:pointer;">
+          <div class="param-item" id="rp-param" onclick="showReminderPrimer()" style="cursor:pointer;" role="button" tabindex="0">
+            <div>
+              <span class="param-lbl">RAPPEL QUOTIDIEN</span>
+              <div id="rp-param-sum" style="font-size:10px;color:var(--muted);margin-top:3px;">Un petit signe par jour pour ton objectif</div>
+            </div>
+            <span class="param-chevron">›</span>
+          </div>
+          <div class="param-item" onclick="go('s-param-passions')" style="cursor:pointer;" role="button" tabindex="0">
             <div>
               <span class="param-lbl">MES PASSIONS</span>
               <div style="font-size:10px;color:var(--muted);margin-top:3px;" id="passions-summary">3 passions</div>
             </div>
             <span class="param-chevron">›</span>
           </div>
-          <div class="param-item" onclick="go('s-param-lieu')" style="cursor:pointer;">
+          <div class="param-item" onclick="go('s-param-lieu')" style="cursor:pointer;" role="button" tabindex="0">
             <div>
               <span class="param-lbl">LIEU DE VIE ET DE TRAVAIL</span>
               <div style="font-size:10px;color:var(--muted);margin-top:3px;">Paris · Télétravail</div>
             </div>
             <span class="param-chevron">›</span>
           </div>
-          <div class="param-item" onclick="go('s-param-transport')" style="cursor:pointer;">
+          <div class="param-item" onclick="go('s-param-transport')" style="cursor:pointer;" role="button" tabindex="0">
             <div>
               <span class="param-lbl">TRANSPORT HABITUEL</span>
               <div style="font-size:10px;color:var(--muted);margin-top:3px;">Transports en commun</div>
             </div>
             <span class="param-chevron">›</span>
           </div>
-          <div class="param-item" onclick="go('s-param-sites')" style="cursor:pointer;">
+          <div class="param-item" onclick="go('s-param-sites')" style="cursor:pointer;" role="button" tabindex="0">
             <div>
               <span class="param-lbl">SITES ANALYSÉS PAR L'APPLICATION</span>
               <div id="sites-count-sum" style="font-size:10px;color:var(--muted);margin-top:3px;">Catégories selon tes objectifs</div>
             </div>
             <span class="param-chevron">›</span>
+          </div>
+          <div class="param-item" style="flex-direction:column;align-items:flex-start;gap:8px;">
+            <label class="param-lbl" for="pause-range">PAUSE AVANT D'ACHETER</label>
+            <div style="display:flex;gap:12px;align-items:center;width:100%;">
+              <input id="pause-range" type="range" min="3" max="30" step="1" value="30" oninput="setPauseSecs(this.value)" style="flex:1;accent-color:var(--og);">
+              <span id="pause-val" style="font-size:13px;font-weight:600;color:var(--dark);min-width:36px;text-align:right;">30 s</span>
+            </div>
+            <div style="font-size:10px;color:var(--muted);">Temps de respiration avant de pouvoir cliquer sur « J'y vais tout de même ».</div>
           </div>
           <div class="param-item" style="flex-direction:column;align-items:flex-start;gap:8px;">
             <span class="param-lbl">CLÉ API CLAUDE</span>
@@ -896,14 +958,14 @@
               <div style="font-family:'Work Sans',sans-serif;font-weight:700;font-size:14px;color:var(--dark);">Esprit critique</div>
               <div style="font-size:11px;color:var(--muted);margin-top:2px;">(Information, Vidéo, Article…)</div>
             </div>
-            <span class="ec-toggle on" onclick="toggleEC(this)"><span class="ec-knob"></span></span>
+            <span class="ec-toggle on" onclick="toggleEC(this)" role="button" tabindex="0"><span class="ec-knob"></span></span>
           </div>
-          <div onclick="go('s-param-ec')" style="margin-top:10px;font-size:12px;font-weight:600;color:#7c5cdb;cursor:pointer;">Modifier ›</div>
+          <div onclick="go('s-param-ec')" style="margin-top:10px;font-size:12px;font-weight:600;color:#7c5cdb;cursor:pointer;" role="button" tabindex="0">Modifier ›</div>
         </div>
         <!-- Effacer toutes les données locales (objectifs, journal, règles, capsule…) -->
         <div style="margin:14px 20px 0;">
           <button type="button" onclick="resetAllData()"
-            style="width:100%;background:#fff;border:1.5px solid #e5484d;color:#e5484d;border-radius:14px;padding:12px 16px;font-size:13px;font-family:'Inter',sans-serif;font-weight:600;cursor:pointer;">
+            style="width:100%;background:#fff;border:1.5px solid #c9353a;color:#c9353a;border-radius:14px;padding:12px 16px;font-size:13px;font-family:'Inter',sans-serif;font-weight:600;cursor:pointer;">
             Effacer mes données
           </button>
           <div style="font-size:10px;color:var(--muted);margin-top:6px;text-align:center;">Objectifs, journal, règles, compagnon et capsule. La clé API est conservée.</div>
@@ -911,22 +973,22 @@
         <div style="height:20px;"></div>
       </div>
       <div class="b-nav">
-        <button class="nav-btn" onclick="tab('home')">
+        <button class="nav-btn" onclick="tab('home')" aria-label="Accueil">
           <span class="nav-mask nav-mask-line" style="aspect-ratio:35/47;--m:url(assets/nav-home-line.svg)"></span>
           <span class="nav-mask nav-mask-fill" style="aspect-ratio:35/47;--m:url(assets/nav-home-fill.svg)"></span>
         </button>
-        <button class="nav-btn" onclick="tab('hist')">
+        <button class="nav-btn" onclick="tab('hist')" aria-label="Historique">
           <span class="nav-mask nav-mask-line" style="aspect-ratio:60/44;--m:url(assets/nav-hist-line.svg)"></span>
           <span class="nav-mask nav-mask-fill" style="aspect-ratio:62/44;--m:url(assets/nav-hist-fill.svg)"></span>
         </button>
-        <button class="nav-fab" onclick="openJournal()">
+        <button class="nav-fab" onclick="openJournal()" aria-label="Ajouter une entrée au journal">
           <img src="assets/nav-fab2.svg" alt="add">
         </button>
-        <button class="nav-btn" onclick="tab('comp')">
+        <button class="nav-btn" onclick="tab('comp')" aria-label="Compagnon">
           <span class="nav-mask nav-mask-line" style="aspect-ratio:70/46;--m:url(assets/nav-comp-line.svg)"></span>
           <span class="nav-mask nav-mask-fill" style="aspect-ratio:72/46;--m:url(assets/nav-comp-fill.svg)"></span>
         </button>
-        <button class="nav-btn on" onclick="tab('profil')">
+        <button class="nav-btn on" onclick="tab('profil')" aria-label="Profil">
           <span class="nav-mask nav-mask-line" style="aspect-ratio:30/44;--m:url(assets/nav-prof-line.svg)"></span>
           <span class="nav-mask nav-mask-fill" style="aspect-ratio:31/43;--m:url(assets/nav-prof-fill.svg)"></span>
         </button>
@@ -986,7 +1048,7 @@
         <div class="play-controls">
           <button class="play-btn" id="play-btn" onclick="togglePlayback()">▶</button>
           <div class="play-time" id="play-time">0:00 / 0:24</div>
-          <div class="play-progress" onclick="seekPlayback(event)">
+          <div class="play-progress" onclick="seekPlayback(event)" role="button" tabindex="0">
             <div class="play-progress-fill" id="play-progress-fill"></div>
           </div>
         </div>
@@ -999,7 +1061,7 @@
       </div>
 
       <!-- Re-record card -->
-      <div style="margin:12px 20px 0;background:white;border-radius:14px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;" onclick="go('s-step4')">
+      <div style="margin:12px 20px 0;background:white;border-radius:14px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;" onclick="go('s-step4')" role="button" tabindex="0">
         <div>
           <div style="font-family:'Work Sans',sans-serif;font-weight:700;font-size:13px;color:var(--dark);letter-spacing:0.04em;">RÉENREGISTRER</div>
           <div style="font-size:12px;color:var(--muted);margin-top:3px;">Remplacer par une nouvelle vidéo</div>
@@ -1109,10 +1171,10 @@
           <div style="font-family:'Work Sans',sans-serif;font-weight:700;font-size:17px;color:#1a1a1a;line-height:1.3;margin-bottom:6px;">Pour quand ?</div>
           <div style="font-size:12px;color:var(--muted);margin-bottom:14px;">Une date te donne un cap, pas une pression.</div>
           <div style="display:flex;flex-wrap:wrap;gap:8px;" id="smart-time-chips">
-            <div class="smart-time-chip" onclick="selectTime(this,'1 mois')">1 mois</div>
-            <div class="smart-time-chip" onclick="selectTime(this,'3 mois')">3 mois</div>
-            <div class="smart-time-chip" onclick="selectTime(this,'6 mois')">6 mois</div>
-            <div class="smart-time-chip" onclick="selectTime(this,'1 an')">1 an</div>
+            <div class="smart-time-chip" onclick="selectTime(this,'1 mois')" role="button" tabindex="0">1 mois</div>
+            <div class="smart-time-chip" onclick="selectTime(this,'3 mois')" role="button" tabindex="0">3 mois</div>
+            <div class="smart-time-chip" onclick="selectTime(this,'6 mois')" role="button" tabindex="0">6 mois</div>
+            <div class="smart-time-chip" onclick="selectTime(this,'1 an')" role="button" tabindex="0">1 an</div>
           </div>
         </div>
 
@@ -1296,7 +1358,7 @@
             <div style="font-weight:700;font-size:14px;color:var(--dark);">Achat</div>
             <div style="font-size:11px;color:var(--muted);margin-top:2px;">(Amazon, Zara, Sephora…)</div>
           </div>
-          <span class="cat-tog on locked" data-cat="achat" onclick="toggleCat(this)">
+          <span class="cat-tog on locked" data-cat="achat" onclick="toggleCat(this)" role="button" tabindex="0">
             <span class="cat-tog-knob"><img src="assets/lock.svg" class="lock-ic" alt="verrouillé"></span>
           </span>
         </div>
@@ -1307,7 +1369,7 @@
             <div style="font-weight:700;font-size:14px;color:var(--dark);">Food & Livraison</div>
             <div style="font-size:11px;color:var(--muted);margin-top:2px;">(UberEats, Deliveroo, McDo…)</div>
           </div>
-          <span class="cat-tog" data-cat="food" onclick="toggleCat(this)">
+          <span class="cat-tog" data-cat="food" onclick="toggleCat(this)" role="button" tabindex="0">
             <span class="cat-tog-knob"></span>
           </span>
         </div>
@@ -1318,7 +1380,7 @@
             <div style="font-weight:700;font-size:14px;color:var(--dark);">Réseaux & Streaming</div>
             <div style="font-size:11px;color:var(--muted);margin-top:2px;">(TikTok, Instagram, Youtube…)</div>
           </div>
-          <span class="cat-tog" data-cat="reseaux" onclick="toggleCat(this)">
+          <span class="cat-tog" data-cat="reseaux" onclick="toggleCat(this)" role="button" tabindex="0">
             <span class="cat-tog-knob"></span>
           </span>
         </div>
@@ -1329,7 +1391,7 @@
             <div style="font-weight:700;font-size:14px;color:var(--dark);">Voyage & Divertissement</div>
             <div style="font-size:11px;color:var(--muted);margin-top:2px;">(Airbnb, Booking, SNCF Connect…)</div>
           </div>
-          <span class="cat-tog" data-cat="voyage" onclick="toggleCat(this)">
+          <span class="cat-tog" data-cat="voyage" onclick="toggleCat(this)" role="button" tabindex="0">
             <span class="cat-tog-knob"></span>
           </span>
         </div>
@@ -1340,7 +1402,7 @@
             <div style="font-weight:700;font-size:14px;color:var(--dark);">Abonnements & Services</div>
             <div style="font-size:11px;color:var(--muted);margin-top:2px;">(Spotify, Netflix, Amazon Prime…)</div>
           </div>
-          <span class="cat-tog" data-cat="abo" onclick="toggleCat(this)">
+          <span class="cat-tog" data-cat="abo" onclick="toggleCat(this)" role="button" tabindex="0">
             <span class="cat-tog-knob"></span>
           </span>
         </div>
@@ -1380,7 +1442,7 @@
             <div style="font-family:'Work Sans',sans-serif;font-weight:700;font-size:14px;color:var(--dark);">Esprit critique activé</div>
             <div style="font-size:11px;color:var(--muted);margin-top:2px;">Analyse active sur ton navigateur</div>
           </div>
-          <span class="ec-toggle on" onclick="toggleEC(this)"><span class="ec-knob"></span></span>
+          <span class="ec-toggle on" onclick="toggleEC(this)" role="button" tabindex="0"><span class="ec-knob"></span></span>
         </div>
 
         <!-- Consigne personnelle (règle libre prise en compte par l'IA) -->
@@ -1400,7 +1462,7 @@
             <div style="font-weight:700;font-size:14px;color:var(--dark);">Information & Actualité</div>
             <div style="font-size:11px;color:var(--muted);margin-top:2px;">(Articles de presse, blogs…)</div>
           </div>
-          <span class="ec-toggle on" onclick="this.classList.toggle('on')"><span class="ec-knob"></span></span>
+          <span class="ec-toggle on" onclick="this.classList.toggle('on')" role="button" tabindex="0"><span class="ec-knob"></span></span>
         </div>
 
         <!-- Vidéo ON -->
@@ -1409,7 +1471,7 @@
             <div style="font-weight:700;font-size:14px;color:var(--dark);">Vidéo</div>
             <div style="font-size:11px;color:var(--muted);margin-top:2px;">(YouTube, TikTok, Reels…)</div>
           </div>
-          <span class="ec-toggle on" onclick="this.classList.toggle('on')"><span class="ec-knob"></span></span>
+          <span class="ec-toggle on" onclick="this.classList.toggle('on')" role="button" tabindex="0"><span class="ec-knob"></span></span>
         </div>
 
         <!-- Article scientifique OFF -->
@@ -1418,7 +1480,7 @@
             <div style="font-weight:700;font-size:14px;color:var(--dark);">Article & Étude</div>
             <div style="font-size:11px;color:var(--muted);margin-top:2px;">(Publications, rapports…)</div>
           </div>
-          <span class="ec-toggle" onclick="this.classList.toggle('on')"><span class="ec-knob"></span></span>
+          <span class="ec-toggle" onclick="this.classList.toggle('on')" role="button" tabindex="0"><span class="ec-knob"></span></span>
         </div>
 
         <div style="margin-top:10px;font-size:13px;color:var(--dark);font-weight:600;padding:0 2px;">Fonctionnalités</div>
@@ -1429,7 +1491,7 @@
             <div style="font-weight:700;font-size:14px;color:var(--dark);">Détection de contenu IA</div>
             <div style="font-size:11px;color:var(--muted);margin-top:2px;">Repère le contenu généré par IA</div>
           </div>
-          <span class="ec-toggle on" onclick="this.classList.toggle('on')"><span class="ec-knob"></span></span>
+          <span class="ec-toggle on" onclick="this.classList.toggle('on')" role="button" tabindex="0"><span class="ec-knob"></span></span>
         </div>
 
         <!-- Ressources complémentaires ON -->
@@ -1438,7 +1500,7 @@
             <div style="font-weight:700;font-size:14px;color:var(--dark);">Ressources complémentaires</div>
             <div style="font-size:11px;color:var(--muted);margin-top:2px;">Propose des sources pour croiser l'info</div>
           </div>
-          <span class="ec-toggle on" onclick="this.classList.toggle('on')"><span class="ec-knob"></span></span>
+          <span class="ec-toggle on" onclick="this.classList.toggle('on')" role="button" tabindex="0"><span class="ec-knob"></span></span>
         </div>
 
         <div style="height:8px;"></div>
@@ -1461,22 +1523,22 @@
       <div style="padding:14px 20px 0;font-size:13px;color:var(--muted);line-height:1.45;">Active ce qui te passionne — Vision personnalise ses alternatives en fonction.</div>
       <div style="overflow-y:auto;max-height:calc(100% - 150px);padding:14px 20px 96px;">
         <div class="chip-area" id="passionsChips" style="max-height:none;padding:0;">
-          <div class="chip" onclick="this.classList.toggle('on')">Fitness</div>
-          <div class="chip" onclick="this.classList.toggle('on')">Gaming</div>
-          <div class="chip" onclick="this.classList.toggle('on')">Manga / Anime</div>
-          <div class="chip" onclick="this.classList.toggle('on')">Finance</div>
-          <div class="chip" onclick="this.classList.toggle('on')">Design</div>
-          <div class="chip on" onclick="this.classList.toggle('on')">Lecture</div>
-          <div class="chip" onclick="this.classList.toggle('on')">Musique</div>
-          <div class="chip on" onclick="this.classList.toggle('on')">Voyage</div>
-          <div class="chip" onclick="this.classList.toggle('on')">Développement personnel</div>
-          <div class="chip" onclick="this.classList.toggle('on')">Art</div>
-          <div class="chip" onclick="this.classList.toggle('on')">Nature</div>
-          <div class="chip" onclick="this.classList.toggle('on')">Entrepreneuriat</div>
-          <div class="chip" onclick="this.classList.toggle('on')">Roadtrip</div>
-          <div class="chip" onclick="this.classList.toggle('on')">Mode</div>
-          <div class="chip on" onclick="this.classList.toggle('on')">Nourriture</div>
-          <div class="chip-add" onclick="addPassionChip()">+</div>
+          <div class="chip" onclick="this.classList.toggle('on')" role="button" tabindex="0">Fitness</div>
+          <div class="chip" onclick="this.classList.toggle('on')" role="button" tabindex="0">Gaming</div>
+          <div class="chip" onclick="this.classList.toggle('on')" role="button" tabindex="0">Manga / Anime</div>
+          <div class="chip" onclick="this.classList.toggle('on')" role="button" tabindex="0">Finance</div>
+          <div class="chip" onclick="this.classList.toggle('on')" role="button" tabindex="0">Design</div>
+          <div class="chip on" onclick="this.classList.toggle('on')" role="button" tabindex="0">Lecture</div>
+          <div class="chip" onclick="this.classList.toggle('on')" role="button" tabindex="0">Musique</div>
+          <div class="chip on" onclick="this.classList.toggle('on')" role="button" tabindex="0">Voyage</div>
+          <div class="chip" onclick="this.classList.toggle('on')" role="button" tabindex="0">Développement personnel</div>
+          <div class="chip" onclick="this.classList.toggle('on')" role="button" tabindex="0">Art</div>
+          <div class="chip" onclick="this.classList.toggle('on')" role="button" tabindex="0">Nature</div>
+          <div class="chip" onclick="this.classList.toggle('on')" role="button" tabindex="0">Entrepreneuriat</div>
+          <div class="chip" onclick="this.classList.toggle('on')" role="button" tabindex="0">Roadtrip</div>
+          <div class="chip" onclick="this.classList.toggle('on')" role="button" tabindex="0">Mode</div>
+          <div class="chip on" onclick="this.classList.toggle('on')" role="button" tabindex="0">Nourriture</div>
+          <div class="chip-add" onclick="addPassionChip()" role="button" tabindex="0">+</div>
         </div>
       </div>
       <button class="cont-btn" style="position:absolute;bottom:20px;right:20px;" onclick="savePassions()">Sauvegarder ✓</button>
@@ -1489,15 +1551,15 @@
   <div class="screen active" id="s-widget" style="background:#2d2060;">
     <img src="assets/demo-android.png" style="width:100%;height:100%;object-fit:cover;display:block;" alt="Android screen">
     <!-- Widget Vision cliquable (y≈205-310) → Welcome -->
-    <div onclick="go('s-splash')" style="position:absolute;top:205px;left:14px;width:332px;height:105px;cursor:pointer;border-radius:18px;" title="Ouvrir Vision"></div>
+    <div onclick="go('s-splash')" style="position:absolute;top:205px;left:14px;width:332px;height:105px;cursor:pointer;border-radius:18px;" title="Ouvrir Vision" role="button" tabindex="0"></div>
     <!-- Icône Vision (1ère icône, gauche, y≈368-435) → Welcome -->
-    <div onclick="go('s-splash')" style="position:absolute;top:368px;left:93px;width:66px;height:68px;cursor:pointer;border-radius:16px;" title="Ouvrir Vision"></div>
+    <div onclick="go('s-splash')" style="position:absolute;top:368px;left:93px;width:66px;height:68px;cursor:pointer;border-radius:16px;" title="Ouvrir Vision" role="button" tabindex="0"></div>
     <!-- Icône Chrome (2ème icône, droite → démo Amazon, y≈368-435) -->
-    <div onclick="go('s-amazon')" style="position:absolute;top:368px;left:197px;width:66px;height:68px;cursor:pointer;border-radius:16px;" title="Amazon démo"></div>
+    <div onclick="go('s-amazon')" style="position:absolute;top:368px;left:197px;width:66px;height:68px;cursor:pointer;border-radius:16px;" title="Amazon démo" role="button" tabindex="0"></div>
     <!-- Zone barre d'état : cliquer en haut réaffiche les notifications -->
-    <div onclick="showAndroidNotif()" style="position:absolute;top:0;left:0;right:0;height:44px;cursor:pointer;z-index:25;" title="Afficher les notifications"></div>
+    <div onclick="showAndroidNotif()" style="position:absolute;top:0;left:0;right:0;height:44px;cursor:pointer;z-index:25;" title="Afficher les notifications" role="button" tabindex="0"></div>
     <!-- Notification Android simulée (Vision) -->
-    <div class="and-notif" id="and-notif" onclick="go('s-home'); openNotifs();">
+    <div class="and-notif" id="and-notif" onclick="go('s-home'); openNotifs();" role="button" tabindex="0">
       <div class="and-notif-hd">
         <img src="assets/icon-192.png" class="and-notif-ic" alt="">
         <span class="and-notif-app">Vision</span>
@@ -1523,17 +1585,17 @@
         <h1 class="art-h1">Le télétravail améliore la qualité de vie des salariés</h1>
         <div class="art-meta">Par la rédaction · il y a 1 h · 2 min de lecture</div>
         <div class="art-hero" style="display:flex;align-items:center;justify-content:center;font-size:52px;background:linear-gradient(135deg,#1e293b,#334155);">🏠💻</div>
-        <p class="art-p">De plus en plus d'entreprises adoptent le télétravail. Selon cet article, <span class="art-claim" onclick="flagClaim(this)">il améliorerait nettement la qualité de vie des salariés</span>&nbsp;: moins de transport, plus de flexibilité.</p>
-        <p class="art-p"><span class="art-claim" onclick="flagClaim(this)">9 salariés sur 10 se diraient plus heureux</span> en travaillant de chez eux, d'après les témoignages recueillis.</p>
+        <p class="art-p">De plus en plus d'entreprises adoptent le télétravail. Selon cet article, <span class="art-claim" onclick="flagClaim(this)" role="button" tabindex="0">il améliorerait nettement la qualité de vie des salariés</span>&nbsp;: moins de transport, plus de flexibilité.</p>
+        <p class="art-p"><span class="art-claim" onclick="flagClaim(this)" role="button" tabindex="0">9 salariés sur 10 se diraient plus heureux</span> en travaillant de chez eux, d'après les témoignages recueillis.</p>
         <p class="art-p">Les bénéfices avancés&nbsp;: meilleur équilibre entre vie professionnelle et personnelle, gain de temps et autonomie accrue.</p>
       </div>
     </div>
 
     <!-- ░░ Dynamic Island critique (fixe au-dessus du contenu) ░░ -->
-    <div class="ci-bk" id="ci-article-bk" onclick="ciToggle('ci-article',false)"></div>
+    <div class="ci-bk" id="ci-article-bk" onclick="ciToggle('ci-article',false)" role="button" tabindex="0"></div>
     <div class="ci-isl" id="ci-article">
       <!-- Compact idle : Esprit critique + Appuyer pour analyser -->
-      <div class="ci-compact" onclick="ciToggle('ci-article',true)">
+      <div class="ci-compact" onclick="ciToggle('ci-article',true)" role="button" tabindex="0">
         <div class="ci-fox"><img src="assets/comp-foxy.png" class="dyn-comp" alt="Vision"></div>
         <button class="ci-an-btn" onclick="event.stopPropagation();ciToggle('ci-article',true)">Esprit critique</button>
         <div class="ci-compact-sub">Appuyer pour analyser</div>
@@ -1568,7 +1630,7 @@
               <div class="ci-title">Les Echos</div>
               <p class="ci-body">Cet article examine les conséquences du télétravail à long terme sur les entreprises&nbsp;: évolution du management, transformation des espaces de travail et coordination des équipes distribuées.</p>
             </div>
-            <div class="ci-link" onclick="ciOpenSource('Les Echos')">↗ Les Echos</div>
+            <div class="ci-link" onclick="ciOpenSource('Les Echos')" role="button" tabindex="0">↗ Les Echos</div>
           </div>
           <!-- 4 · opinion inverse -->
           <div class="ci-slide">
@@ -1578,7 +1640,7 @@
               <div class="ci-title">Figaro</div>
               <p class="ci-body">Cette analyse met en lumière les critiques adressées au télétravail&nbsp;: effets sur la cohésion des équipes, la créativité collective et le sentiment d'appartenance à l'entreprise.</p>
             </div>
-            <div class="ci-link" onclick="ciOpenSource('Le Figaro')">↗ Figaro</div>
+            <div class="ci-link" onclick="ciOpenSource('Le Figaro')" role="button" tabindex="0">↗ Figaro</div>
           </div>
           <!-- 5 · sujet connexe -->
           <div class="ci-slide">
@@ -1588,15 +1650,15 @@
               <div class="ci-title">Usbek &amp; Rica</div>
               <p class="ci-body">Plutôt que d'opposer bureau et domicile, cet article explore les modèles hybrides et les espaces de coworking, qui concilient flexibilité, interactions sociales et efficacité.</p>
             </div>
-            <div class="ci-link" onclick="ciOpenSource('Usbek & Rica')">↗ Usbek &amp; Rica</div>
+            <div class="ci-link" onclick="ciOpenSource('Usbek & Rica')" role="button" tabindex="0">↗ Usbek &amp; Rica</div>
           </div>
         </div>
         <div class="ci-dots">
-          <span class="ci-dot on" onclick="ciGo('ci-article',0)"></span>
-          <span class="ci-dot" onclick="ciGo('ci-article',1)"></span>
-          <span class="ci-dot" onclick="ciGo('ci-article',2)"></span>
-          <span class="ci-dot" onclick="ciGo('ci-article',3)"></span>
-          <span class="ci-dot" onclick="ciGo('ci-article',4)"></span>
+          <span class="ci-dot on" onclick="ciGo('ci-article',0)" role="button" tabindex="0"></span>
+          <span class="ci-dot" onclick="ciGo('ci-article',1)" role="button" tabindex="0"></span>
+          <span class="ci-dot" onclick="ciGo('ci-article',2)" role="button" tabindex="0"></span>
+          <span class="ci-dot" onclick="ciGo('ci-article',3)" role="button" tabindex="0"></span>
+          <span class="ci-dot" onclick="ciGo('ci-article',4)" role="button" tabindex="0"></span>
         </div>
       </div>
     </div>
@@ -1614,7 +1676,7 @@
         <span style="color:#fff;font-family:'Inter',sans-serif;font-weight:700;font-size:14px;">YouTube</span>
       </div>
       <!-- Lecteur interactif -->
-      <div class="yt-player" id="yt-player" onclick="toggleYouTube()">
+      <div class="yt-player" id="yt-player" onclick="toggleYouTube()" role="button" tabindex="0">
         <img src="assets/dyn-beach.jpg" alt="miniature vidéo">
         <div class="yt-play"><svg viewBox="0 0 68 48" aria-hidden="true"><path d="M66.5 7.7a8 8 0 0 0-5.6-5.7C56 .5 34 .5 34 .5S12 .5 7.1 2A8 8 0 0 0 1.5 7.7 83 83 0 0 0 0 24a83 83 0 0 0 1.5 16.3 8 8 0 0 0 5.6 5.7C12 47.5 34 47.5 34 47.5s22 0 26.9-1.5a8 8 0 0 0 5.6-5.7A83 83 0 0 0 68 24a83 83 0 0 0-1.5-16.3z" fill="#f00"/><path d="M27 34 44 24 27 14z" fill="#fff"/></svg></div>
         <div class="yt-prog"><div class="yt-prog-fill" id="yt-prog-fill"></div></div>
@@ -1633,10 +1695,10 @@
     </div>
 
     <!-- ░░ Dynamic Island critique (fixe au-dessus du contenu) ░░ -->
-    <div class="ci-bk" id="ci-youtube-bk" onclick="ciToggle('ci-youtube',false)"></div>
+    <div class="ci-bk" id="ci-youtube-bk" onclick="ciToggle('ci-youtube',false)" role="button" tabindex="0"></div>
     <div class="ci-isl" id="ci-youtube">
       <!-- Compact idle : Esprit critique + Appuyer pour analyser -->
-      <div class="ci-compact" onclick="ciToggle('ci-youtube',true)">
+      <div class="ci-compact" onclick="ciToggle('ci-youtube',true)" role="button" tabindex="0">
         <div class="ci-fox"><img src="assets/comp-foxy.png" class="dyn-comp" alt="Vision"></div>
         <button class="ci-an-btn" onclick="event.stopPropagation();ciToggle('ci-youtube',true)">Esprit critique</button>
         <div class="ci-compact-sub">Appuyer pour analyser</div>
@@ -1671,7 +1733,7 @@
               <div class="ci-title">France Info</div>
               <p class="ci-body">Décrypte les mécanismes des arnaques «&nbsp;argent facile&nbsp;» et les signaux qui doivent t'alerter avant d'y croire.</p>
             </div>
-            <div class="ci-link" onclick="ciOpenSource('France Info')">↗ France Info</div>
+            <div class="ci-link" onclick="ciOpenSource('France Info')" role="button" tabindex="0">↗ France Info</div>
           </div>
           <!-- 4 · opinion inverse -->
           <div class="ci-slide">
@@ -1681,7 +1743,7 @@
               <div class="ci-title">AMF</div>
               <p class="ci-body">L'Autorité des marchés financiers rappelle que toute promesse de gains rapides et garantis est un signal d'arnaque.</p>
             </div>
-            <div class="ci-link" onclick="ciOpenSource('AMF')">↗ amf-france.org</div>
+            <div class="ci-link" onclick="ciOpenSource('AMF')" role="button" tabindex="0">↗ amf-france.org</div>
           </div>
           <!-- 5 · sujet connexe -->
           <div class="ci-slide">
@@ -1691,15 +1753,15 @@
               <div class="ci-title">Heu?reka</div>
               <p class="ci-body">Une chaîne de vulgarisation économique explique comment se construit réellement un patrimoine, sur le long terme.</p>
             </div>
-            <div class="ci-link" onclick="ciOpenSource('Heu?reka')">↗ YouTube · Heu?reka</div>
+            <div class="ci-link" onclick="ciOpenSource('Heu?reka')" role="button" tabindex="0">↗ YouTube · Heu?reka</div>
           </div>
         </div>
         <div class="ci-dots">
-          <span class="ci-dot on" onclick="ciGo('ci-youtube',0)"></span>
-          <span class="ci-dot" onclick="ciGo('ci-youtube',1)"></span>
-          <span class="ci-dot" onclick="ciGo('ci-youtube',2)"></span>
-          <span class="ci-dot" onclick="ciGo('ci-youtube',3)"></span>
-          <span class="ci-dot" onclick="ciGo('ci-youtube',4)"></span>
+          <span class="ci-dot on" onclick="ciGo('ci-youtube',0)" role="button" tabindex="0"></span>
+          <span class="ci-dot" onclick="ciGo('ci-youtube',1)" role="button" tabindex="0"></span>
+          <span class="ci-dot" onclick="ciGo('ci-youtube',2)" role="button" tabindex="0"></span>
+          <span class="ci-dot" onclick="ciGo('ci-youtube',3)" role="button" tabindex="0"></span>
+          <span class="ci-dot" onclick="ciGo('ci-youtube',4)" role="button" tabindex="0"></span>
         </div>
       </div>
     </div>
@@ -1735,7 +1797,7 @@
     </div>
 
     <!-- Backdrop dim (visible quand expanded) -->
-    <div class="dyn-bk" id="dyn-bk" onclick="toggleDynIsl(false)"></div>
+    <div class="dyn-bk" id="dyn-bk" onclick="toggleDynIsl(false)" role="button" tabindex="0"></div>
 
     <!-- ════ DYNAMIC ISLAND — 5 états self-contained
          Compact 214×87 (Figma 395:923) · Expanded 213×253 (Figma 425:1427)
@@ -1760,11 +1822,11 @@
         <div class="dyn-extra">
           <div style="position:absolute;top:92px;left:13px;right:21px">
             <p id="dx0-i1-t" style="font-family:'Inter',sans-serif;font-weight:700;font-size:12px;color:#fff;line-height:1.1;margin:0 0 5px">💰 41€ pour un gadget</p>
-            <p id="dx0-i1-b" style="font-family:'Inter',sans-serif;font-size:10px;color:#585858;line-height:1.4;margin:0">Ce bracelet connecté rejoint souvent le tiroir après quelques mois d'utilisation. L'argent pourrait servir à des expériences plus durables.</p>
+            <p id="dx0-i1-b" style="font-family:'Inter',sans-serif;font-size:10px;color:#9a9a9a;line-height:1.4;margin:0">Ce bracelet connecté rejoint souvent le tiroir après quelques mois d'utilisation. L'argent pourrait servir à des expériences plus durables.</p>
           </div>
           <div style="position:absolute;top:162px;left:13px;right:21px">
             <p id="dx0-i2-t" style="font-family:'Inter',sans-serif;font-weight:700;font-size:12px;color:#fff;line-height:1.1;margin:0 0 5px">🤔 Vraiment nécessaire&nbsp;?</p>
-            <p id="dx0-i2-b" style="font-family:'Inter',sans-serif;font-size:10px;color:#585858;line-height:1.4;margin:0">Smartphone déjà capable de suivre activité et santé. Cette technologie répond-elle à un besoin réel ou à une envie créée&nbsp;?</p>
+            <p id="dx0-i2-b" style="font-family:'Inter',sans-serif;font-size:10px;color:#9a9a9a;line-height:1.4;margin:0">Smartphone déjà capable de suivre activité et santé. Cette technologie répond-elle à un besoin réel ou à une envie créée&nbsp;?</p>
           </div>
         </div>
       </div>
@@ -1778,7 +1840,7 @@
         <div class="dyn-extra">
           <div style="position:absolute;top:88px;left:13px;right:21px">
             <p style="font-family:'Inter',sans-serif;font-weight:700;font-size:12px;color:#fff;line-height:1.1;margin:0 0 8px">Prends le temps de réfléchir</p>
-            <p style="font-family:'Inter',sans-serif;font-size:10px;color:#585858;line-height:1.4;margin:0">Ce bracelet connecté rejoint souvent le tiroir après quelques mois d'utilisation. L'argent pourrait servir à des expériences plus durables.</p>
+            <p style="font-family:'Inter',sans-serif;font-size:10px;color:#9a9a9a;line-height:1.4;margin:0">Ce bracelet connecté rejoint souvent le tiroir après quelques mois d'utilisation. L'argent pourrait servir à des expériences plus durables.</p>
           </div>
         </div>
       </div>
@@ -1856,11 +1918,11 @@
 
       <!-- 5 dots (visibles uniquement quand expanded) -->
       <div class="dyn-dots">
-        <span class="dyn-dot on" data-st="0" onclick="setDynState(0);pauseDynRotation(5000);event.stopPropagation();"></span>
-        <span class="dyn-dot"    data-st="1" onclick="setDynState(1);pauseDynRotation(5000);event.stopPropagation();"></span>
-        <span class="dyn-dot"    data-st="2" onclick="setDynState(2);pauseDynRotation(5000);event.stopPropagation();"></span>
-        <span class="dyn-dot"    data-st="3" onclick="setDynState(3);pauseDynRotation(5000);event.stopPropagation();"></span>
-        <span class="dyn-dot"    data-st="4" onclick="setDynState(4);pauseDynRotation(5000);event.stopPropagation();"></span>
+        <span class="dyn-dot on" data-st="0" onclick="setDynState(0);pauseDynRotation(5000);event.stopPropagation();" role="button" tabindex="0"></span>
+        <span class="dyn-dot"    data-st="1" onclick="setDynState(1);pauseDynRotation(5000);event.stopPropagation();" role="button" tabindex="0"></span>
+        <span class="dyn-dot"    data-st="2" onclick="setDynState(2);pauseDynRotation(5000);event.stopPropagation();" role="button" tabindex="0"></span>
+        <span class="dyn-dot"    data-st="3" onclick="setDynState(3);pauseDynRotation(5000);event.stopPropagation();" role="button" tabindex="0"></span>
+        <span class="dyn-dot"    data-st="4" onclick="setDynState(4);pauseDynRotation(5000);event.stopPropagation();" role="button" tabindex="0"></span>
       </div>
     </div>
 
@@ -1988,6 +2050,7 @@
       </div>
       <div class="dk-tt">Comment tu te sens là ?</div>
       <div class="dk-st">Ton humeur, puis ce que tu ressens (plusieurs choix possibles)</div>
+      <div class="dk-br" id="emo-breath" aria-live="polite">Inspire…</div>
     </div>
 
     <div class="dk-em-wr">
@@ -2001,14 +2064,14 @@
       </div>
       <div class="dk-md-lbl">CE QUE TU RESSENS</div>
       <div class="dk-em">
-        <div class="dk-em-c" onclick="pickEmo(this,'Stressée')"><div class="dk-em-i">🤯</div><div class="dk-em-l">Stressée</div></div>
-        <div class="dk-em-c" onclick="pickEmo(this,'Fatiguée')"><div class="dk-em-i">😴</div><div class="dk-em-l">Fatiguée</div></div>
-        <div class="dk-em-c" onclick="pickEmo(this,'Ennuyée')"><div class="dk-em-i">😑</div><div class="dk-em-l">Ennuyée</div></div>
-        <div class="dk-em-c" onclick="pickEmo(this,'Seule')"><div class="dk-em-i">😔</div><div class="dk-em-l">Seule</div></div>
-        <div class="dk-em-c" onclick="pickEmo(this,'Faim')"><div class="dk-em-i">😋</div><div class="dk-em-l">Faim</div></div>
-        <div class="dk-em-c" onclick="pickEmo(this,'Anxieuse')"><div class="dk-em-i">😰</div><div class="dk-em-l">Anxieuse</div></div>
-        <div class="dk-em-c" onclick="pickEmo(this,'Épuisée')"><div class="dk-em-i">😩</div><div class="dk-em-l">Épuisée</div></div>
-        <div class="dk-em-c" onclick="pickEmo(this,'Bien')"><div class="dk-em-i">😊</div><div class="dk-em-l">Bien</div></div>
+        <div class="dk-em-c" onclick="pickEmo(this,'Stressée')" role="button" tabindex="0"><div class="dk-em-i">🤯</div><div class="dk-em-l">Stressée</div></div>
+        <div class="dk-em-c" onclick="pickEmo(this,'Fatiguée')" role="button" tabindex="0"><div class="dk-em-i">😴</div><div class="dk-em-l">Fatiguée</div></div>
+        <div class="dk-em-c" onclick="pickEmo(this,'Ennuyée')" role="button" tabindex="0"><div class="dk-em-i">😑</div><div class="dk-em-l">Ennuyée</div></div>
+        <div class="dk-em-c" onclick="pickEmo(this,'Seule')" role="button" tabindex="0"><div class="dk-em-i">😔</div><div class="dk-em-l">Seule</div></div>
+        <div class="dk-em-c" onclick="pickEmo(this,'Faim')" role="button" tabindex="0"><div class="dk-em-i">😋</div><div class="dk-em-l">Faim</div></div>
+        <div class="dk-em-c" onclick="pickEmo(this,'Anxieuse')" role="button" tabindex="0"><div class="dk-em-i">😰</div><div class="dk-em-l">Anxieuse</div></div>
+        <div class="dk-em-c" onclick="pickEmo(this,'Épuisée')" role="button" tabindex="0"><div class="dk-em-i">😩</div><div class="dk-em-l">Épuisée</div></div>
+        <div class="dk-em-c" onclick="pickEmo(this,'Bien')" role="button" tabindex="0"><div class="dk-em-i">😊</div><div class="dk-em-l">Bien</div></div>
       </div>
     </div>
 
@@ -2063,7 +2126,7 @@
         </div>
         <div>
           <div id="chatCompName" style="font-family:'Work Sans',sans-serif;font-weight:700;font-size:15px;color:#1a1a1a;">Foxy</div>
-          <div style="font-size:10px;color:#42c47e;font-family:'Inter',sans-serif;">● En ligne</div>
+          <div style="font-size:10px;color:#23864f;font-family:'Inter',sans-serif;">● En ligne</div>
         </div>
       </div>
       <!-- Messages -->
@@ -2087,10 +2150,10 @@
         </div>
         <!-- Suggestions rapides -->
         <div style="display:flex;flex-wrap:wrap;gap:6px;padding-left:36px;">
-          <div onclick="addChatMessage(this)" style="background:linear-gradient(90deg,var(--og),var(--og2));color:white;padding:7px 12px;border-radius:20px;font-size:12px;cursor:pointer;">✈️ Voyager librement</div>
-          <div onclick="addChatMessage(this)" style="background:linear-gradient(90deg,var(--og),var(--og2));color:white;padding:7px 12px;border-radius:20px;font-size:12px;cursor:pointer;">🏦 Liberté financière</div>
-          <div onclick="addChatMessage(this)" style="background:linear-gradient(90deg,var(--og),var(--og2));color:white;padding:7px 12px;border-radius:20px;font-size:12px;cursor:pointer;">🚀 Lancer mon projet</div>
-          <div onclick="addChatMessage(this)" style="background:linear-gradient(90deg,var(--og),var(--og2));color:white;padding:7px 12px;border-radius:20px;font-size:12px;cursor:pointer;">🌱 Réduire mon impact</div>
+          <div onclick="addChatMessage(this)" style="background:linear-gradient(90deg,var(--og),var(--og2));color:white;padding:7px 12px;border-radius:20px;font-size:12px;cursor:pointer;" role="button" tabindex="0">✈️ Voyager librement</div>
+          <div onclick="addChatMessage(this)" style="background:linear-gradient(90deg,var(--og),var(--og2));color:white;padding:7px 12px;border-radius:20px;font-size:12px;cursor:pointer;" role="button" tabindex="0">🏦 Liberté financière</div>
+          <div onclick="addChatMessage(this)" style="background:linear-gradient(90deg,var(--og),var(--og2));color:white;padding:7px 12px;border-radius:20px;font-size:12px;cursor:pointer;" role="button" tabindex="0">🚀 Lancer mon projet</div>
+          <div onclick="addChatMessage(this)" style="background:linear-gradient(90deg,var(--og),var(--og2));color:white;padding:7px 12px;border-radius:20px;font-size:12px;cursor:pointer;" role="button" tabindex="0">🌱 Réduire mon impact</div>
         </div>
         <div style="display:flex;gap:8px;align-items:flex-end;">
           <div style="width:28px;height:28px;border-radius:50%;overflow:hidden;position:relative;flex-shrink:0;background:#ffe5cc;">
@@ -2195,6 +2258,215 @@
     </div>
   </div>
 
+  <!-- GANTELET:accueil — écrans/calques du morceau « accueil » (insérer juste sous cette ligne) -->
+
+
+
+  <!-- GANTELET:celebration — écrans/calques du morceau « celebration » (insérer juste sous cette ligne) -->
+
+
+
+  <!-- GANTELET:serie — écrans/calques du morceau « serie » (insérer juste sous cette ligne) -->
+  <div class="screen" id="s-serie">
+    <div class="sr" data-state="fire">
+      <div class="sr-scroll" id="sr-scroll">
+        <header class="sr-top">
+          <button class="sr-back" type="button" onclick="go('s-home')" aria-label="Retour à l'accueil">
+            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <h1 class="sr-title">Ma série</h1>
+          <div class="sr-gems" id="sr-gems" title="Tes graines"><span aria-hidden="true">🌱</span><b id="sr-gems-n">0</b><span class="sr-vh"> graines</span></div>
+        </header>
+
+        <section class="sr-hero" aria-label="Ta série">
+          <div class="sr-hero-row">
+            <div class="sr-count">
+              <div class="sr-num" id="sr-num" aria-hidden="true">0</div>
+              <div class="sr-unit" id="sr-unit" aria-hidden="true">jour sans achat impulsif</div>
+              <p class="sr-vh" id="sr-say">0 jour sans achat impulsif</p>
+              <div class="sr-record" id="sr-record"></div>
+            </div>
+            <div class="sr-art" aria-hidden="true">
+              <div class="sr-glow"></div>
+              <div class="sr-ground"></div>
+              <div class="sr-flame" id="sr-flame"></div>
+              <div class="sr-sparks"><i></i><i></i><i></i></div>
+              <img class="sr-comp" id="sr-comp" src="assets/comp-foxy.png" alt="">
+              <div class="sr-art-shield" id="sr-art-shield"></div>
+            </div>
+          </div>
+          <div class="sr-week" id="sr-week" role="list" aria-label="Cette semaine"></div>
+        </section>
+
+        <section class="sr-card sr-shield" id="sr-shield" aria-labelledby="sr-shield-title"></section>
+
+        <section class="sr-month" aria-labelledby="sr-month-title">
+          <div class="sr-month-head">
+            <h2 class="sr-h2" id="sr-month-title">Ce mois-ci</h2>
+            <div class="sr-month-nav">
+              <button class="sr-chev" type="button" id="sr-prev" onclick="serieMonth(-1)" aria-label="Mois précédent">
+                <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <button class="sr-chev" type="button" id="sr-next" onclick="serieMonth(1)" aria-label="Mois suivant">
+                <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="sr-card sr-cal" id="sr-cal" role="group"></div>
+          <div class="sr-legend" aria-hidden="true">
+            <span><i class="sr-lg-band"></i>Sans achat impulsif</span>
+            <span><i class="sr-lg-dot"></i>Jour actif</span>
+            <span><i class="sr-lg-ice"></i>Bouclier utilisé</span>
+          </div>
+          <div class="sr-tiles" id="sr-tiles"></div>
+        </section>
+      </div>
+      <div class="sr-toast" id="sr-toast" role="status" aria-live="polite"></div>
+    </div>
+  </div>
+
+
+
+  <!-- GANTELET:quetes — écrans/calques du morceau « quetes » (insérer juste sous cette ligne) -->
+  <div class="screen" id="s-quetes" aria-label="Quêtes du jour">
+    <div class="vq-scroll" id="vq-root"></div>
+  </div>
+
+
+
+  <!-- GANTELET:ligue — écrans/calques du morceau « ligue » (insérer juste sous cette ligne) -->
+  <div class="screen" id="s-ligue">
+    <div class="lg">
+      <div class="lg-head">
+        <button class="lg-back" type="button" onclick="go('s-home')" aria-label="Retour à l'accueil">
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="lg-titles">
+          <h1 class="lg-title" id="lg-title">Ligue Graine</h1>
+          <div class="lg-time">
+            <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 4.6V8l2.4 1.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span id="lg-time">7 jours restants</span>
+          </div>
+        </div>
+      </div>
+      <div class="lg-tiers" id="lg-tiers" role="list" aria-label="Les 7 ligues, de Graine à Forêt"></div>
+      <p class="lg-rule" id="lg-rule">Les 3 premiers montent, les 3 derniers descendent. L'XP se gagne en résistant.</p>
+      <div class="lg-list" id="lg-list"></div>
+      <div class="lg-coach" id="lg-coach" aria-live="polite"></div>
+    </div>
+  </div>
+
+
+
+  <!-- GANTELET:boutique — écrans/calques du morceau « boutique » (insérer juste sous cette ligne) -->
+  <div class="screen" id="s-boutique">
+    <div class="bq">
+      <div class="bq-nav">
+        <button class="bq-back" type="button" onclick="go('s-home')" aria-label="Retour à l'accueil">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 L8 12 L15 19"/></svg>
+        </button>
+        <h1 class="bq-title">Boutique</h1>
+        <div class="bq-wallet" id="bq-wallet" role="status" aria-live="polite">
+          <span class="bq-ic bq-ic-seed" data-pix="seed" aria-hidden="true"></span>
+          <span class="bq-wallet-n" id="bq-balance">0</span>
+          <span class="bq-sr" id="bq-balance-sr">graines</span>
+        </div>
+      </div>
+      <div class="bq-scroll" id="bq-scroll"></div>
+
+      <!-- Feuille de confirmation d'échange (graines → bouclier) -->
+      <div class="bq-sheet-wrap" id="bq-sheet" hidden>
+        <div class="bq-dim" id="bq-dim"></div>
+        <div class="bq-sheet" role="dialog" aria-modal="true" aria-labelledby="bq-sheet-title">
+          <div class="bq-grab" aria-hidden="true"></div>
+          <div id="bq-sheet-body"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- GANTELET:mascotte — écrans/calques du morceau « mascotte » (insérer juste sous cette ligne) -->
+  <!-- Calque plein écran du compagnon (rempli par js/g-mascotte.js : showMascot(kind, detail)) -->
+  <div id="g-mascotte" class="gm" hidden></div>
+
+
+
+  <!-- GANTELET:rappels — écrans/calques du morceau « rappels » (insérer juste sous cette ligne) -->
+  <!-- Rappel quotidien : amorce (compagnon + bulle, choix du moment). Rempli par js/g-rappels.js -->
+  <div id="rp-primer" class="rp-layer" role="dialog" aria-modal="true" aria-labelledby="rp-title" aria-describedby="rp-bubble-tx" tabindex="-1" hidden>
+    <div class="rp-top">
+      <button type="button" class="rp-x" id="rp-x" aria-label="Fermer">
+        <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg>
+      </button>
+      <div class="rp-top-lbl" aria-hidden="true">Rappel quotidien</div>
+    </div>
+    <div class="rp-body">
+      <div class="rp-hero">
+        <div class="rp-comp" aria-hidden="true">
+          <img id="rp-comp-img" src="assets/comp-foxy.png" alt="">
+          <span class="rp-bell" id="rp-bell"></span>
+        </div>
+        <div class="rp-bubble"><p id="rp-bubble-tx">Je te ferai un petit signe chaque jour pour penser à ton objectif. C'est comme ça qu'on en fait une habitude&nbsp;!</p></div>
+      </div>
+
+      <div class="rp-ask" id="rp-ask">
+        <h2 class="rp-h" id="rp-title">Quel moment te va&nbsp;?</h2>
+        <p class="rp-sub">Un seul rappel par jour, jamais plus.</p>
+        <div class="rp-moments" role="radiogroup" aria-labelledby="rp-title">
+          <button type="button" role="radio" class="rp-mo" data-m="matin" aria-checked="false"><span class="rp-mo-ck" aria-hidden="true"></span><span class="rp-mo-ic" data-ic="matin" aria-hidden="true"></span><span class="rp-mo-lb">Matin</span><span class="rp-mo-tm">8 h 30</span></button>
+          <button type="button" role="radio" class="rp-mo" data-m="midi" aria-checked="false"><span class="rp-mo-ck" aria-hidden="true"></span><span class="rp-mo-ic" data-ic="midi" aria-hidden="true"></span><span class="rp-mo-lb">Midi</span><span class="rp-mo-tm">12 h 30</span></button>
+          <button type="button" role="radio" class="rp-mo" data-m="soir" aria-checked="true"><span class="rp-mo-ck" aria-hidden="true"></span><span class="rp-mo-ic" data-ic="soir" aria-hidden="true"></span><span class="rp-mo-lb">Soir</span><span class="rp-mo-tm">20 h</span></button>
+        </div>
+        <div class="rp-prev">
+          <div class="rp-prev-hd"><span>Aperçu</span><span class="rp-prev-cd" id="rp-cd">Premier rappel ce soir</span></div>
+          <div class="rp-notif">
+            <img src="assets/icon-192.png" alt="" class="rp-notif-ic">
+            <div class="rp-notif-bd">
+              <div class="rp-notif-meta"><span>Vision</span><span id="rp-notif-tm">20:00</span></div>
+              <div class="rp-notif-ti" id="rp-notif-ti">Foxy passe te voir</div>
+              <div class="rp-notif-tx" id="rp-notif-tx">On regarde ton objectif ensemble&nbsp;?</div>
+            </div>
+          </div>
+          <p class="rp-promise"><img src="assets/heart.png" alt="" class="rp-promise-ic"><span>Déjà fait un pas dans la journée&nbsp;? Alors je ne te dérange pas. Et tu changes d'avis quand tu veux.</span></p>
+        </div>
+      </div>
+
+      <div class="rp-done" id="rp-done" hidden>
+        <div class="rp-done-card">
+          <span class="rp-done-ic" aria-hidden="true"></span>
+          <div>
+            <div class="rp-done-ti" id="rp-done-ti">Rappel activé</div>
+            <div class="rp-done-tx" id="rp-done-tx">Chaque soir vers 20 h</div>
+          </div>
+        </div>
+        <p class="rp-done-note" id="rp-done-note"></p>
+      </div>
+    </div>
+    <div class="rp-foot">
+      <button type="button" class="rp-cta" id="rp-cta">Rappelle-moi mon objectif</button>
+      <button type="button" class="rp-later" id="rp-later">Plus tard</button>
+    </div>
+  </div>
+
+  <!-- Petit coup de pouce sur l'accueil (non bloquant, une fois par jour) -->
+  <div id="rp-nudge" class="rp-nudge" role="status" aria-live="polite" hidden>
+    <div class="rp-nudge-comp" aria-hidden="true"><img id="rp-nudge-img" src="assets/comp-foxy.png" alt=""></div>
+    <div class="rp-nudge-bd">
+      <div class="rp-nudge-hi" id="rp-nudge-hi">Coucou, c'est Foxy&nbsp;!</div>
+      <div class="rp-nudge-ti" id="rp-nudge-ti">Résiste à 1 tentation</div>
+      <div class="rp-nudge-tx" id="rp-nudge-tx">Une envie repoussée&nbsp;? Note-la · +40 XP</div>
+    </div>
+    <button type="button" class="rp-nudge-go" id="rp-nudge-go" aria-label="Voir la quête du jour">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button type="button" class="rp-nudge-x" id="rp-nudge-x" aria-label="Masquer ce rappel">
+      <svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+
+
   <!-- ════════════════════════════════════════════════════ -->
   <!-- FEATURE TOUR OVERLAY                                  -->
   <!-- ════════════════════════════════════════════════════ -->
@@ -2237,6 +2509,16 @@
 <script src="js/onboarding.js"></script>
 <script src="js/ambitions.js"></script>
 <script src="js/progression.js"></script>
+<script src="js/game.js"></script>
+<script src="js/g-accueil.js"></script>
+<script src="js/g-celebration.js"></script>
+<script src="js/g-serie.js"></script>
+<script src="js/g-quetes.js"></script>
+<script src="js/g-ligue.js"></script>
+<script src="js/g-boutique.js"></script>
+<script src="js/g-mascotte.js"></script>
+<script src="js/g-rappels.js"></script>
+<script src="js/affiner.js"></script>
 <script src="js/ia-chat.js"></script>
 <script src="js/capsule.js"></script>
 <script src="js/boot.js"></script>
