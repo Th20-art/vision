@@ -686,6 +686,7 @@ async function saveJournalEntry() {
   const amountStr = unit ? ` — ${isResist ? '+' : '-'}${unit}` : '';
   // Journal persistant (résistance = vert, craquage = gris)
   addJournalLine(isResist ? 'resist' : 'craq', desc + amountStr);
+  if (typeof questEvent === 'function') questEvent('journal');
   closeJournal();
   go('s-home');
   // L'IA rattache l'entrée à un objectif et ajuste l'épargne (+ ou −)
