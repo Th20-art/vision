@@ -145,13 +145,13 @@
       const k = dayKey(dt.getTime());
       const isToday = i === mondayIdx, future = i > mondayIdx;
       let cls = 'sr-wd', label = WEEK_FULL[i] + ' ' + dt.getDate() + ' : ';
-      let inner = '';
-      if (d.shields.has(k)) { cls += ' is-ice'; inner = shieldSvg('sr-px-mini'); label += 'bouclier utilisé'; }
-      else if (d.span.has(k)) { cls += ' is-on'; inner = CHECK; label += 'sans achat impulsif'; }
+      if (d.shields.has(k)) { cls += ' is-ice'; label += 'bouclier utilisé'; }
+      else if (d.span.has(k)) { cls += ' is-on'; label += 'sans achat impulsif'; }
       else if (future) { cls += ' is-future'; label += 'à venir'; }
       else { cls += ' is-off'; label += isToday ? 'aujourd’hui' : 'hors série'; }
       if (isToday) cls += ' is-today';
-      html += '<div class="' + cls + '" role="listitem" aria-label="' + label + '"><span class="sr-wd-l">' + WEEK_LBL[i] + '</span><span class="sr-wd-c">' + inner + '</span></div>';
+      // Un seul glyphe par jour : la pastille-lettre, sa couleur seule porte l'état
+      html += '<div class="' + cls + '" role="listitem" aria-label="' + label + '">' + WEEK_LBL[i] + '</div>';
     }
     $('sr-week').innerHTML = html;
   }
@@ -228,7 +228,9 @@
       else cls += ' is-past';
       if (k === d.today) { cls += ' is-today'; said.unshift('aujourd’hui'); }
       if (d.shields.has(k)) { cls += ' is-ice'; said.push('bouclier utilisé'); }
-      if (d.active.has(k)) { cls += ' is-active'; said.push('jour actif'); }
+      // « jour actif » reste annoncé aux lecteurs d'écran mais n'ajoute plus de pastille visuelle
+      // (un seul glyphe par jour : la couleur/le remplissage du cercle porte l'état)
+      if (d.active.has(k)) said.push('jour actif');
       return '<span class="' + cls + '"><b>' + n + '</b>' + (said.length ? '<span class="sr-vh">, ' + said.join(', ') + '</span>' : '') + '</span>';
     };
     for (let r = 0; r < cells.length / 7; r++) {

@@ -162,27 +162,26 @@
 }
 #s-serie .sr-pill-fire { background: var(--sr-reward); color: #fff; }
 
-/* Semaine */
-#s-serie .sr-week { display: grid; grid-template-columns: repeat(7, 1fr); margin-top: 16px; }
-#s-serie .sr-wd { display: flex; flex-direction: column; align-items: center; gap: 6px; }
-#s-serie .sr-wd-l { font: 700 13px/1 'Work Sans', sans-serif; color: #7a5c3e; }
-#s-serie .sr[data-state="ice"] .sr-wd-l { color: #3d6680; }
-#s-serie .sr-wd.is-today .sr-wd-l { color: var(--sr-fire-ink); font-weight: 800; }
-#s-serie .sr[data-state="ice"] .sr-wd.is-today .sr-wd-l { color: var(--sr-ice-ink); }
-#s-serie .sr-wd-c {
-  width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; color: #fff;
-  background: #efe2d2;
+/* Semaine — un seul glyphe par jour : la pastille-lettre, la couleur seule porte l'état */
+#s-serie .sr-week { display: grid; grid-template-columns: repeat(7, 1fr); justify-items: center; margin-top: 16px; }
+#s-serie .sr-wd {
+  width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center;
+  font: 800 15px/1 'Work Sans', sans-serif; letter-spacing: -.01em; color: var(--sr-ink);
 }
-#s-serie .sr-wd-c svg { width: 22px; height: 22px; }
-/* jours passés de la série : pastille pêche + coche orange ; aujourd'hui : pastille pleine qui brille */
-#s-serie .sr-wd.is-on .sr-wd-c { background: #ffdcae; color: #d9480f; box-shadow: inset 0 -3px 0 rgba(217, 72, 15, .16); }
-#s-serie .sr-wd.is-on.is-today .sr-wd-c {
+#s-serie .sr-wd.is-future { color: #9a9a9a; }
+/* jour de série (passé ou aujourd'hui) : pastille chaude pleine */
+#s-serie .sr-wd.is-on {
   background: linear-gradient(180deg, var(--sr-fire-a), var(--sr-fire-b)); color: #fff;
+  box-shadow: inset 0 -3px 0 rgba(120, 30, 0, .22);
+}
+/* aujourd'hui : la même pastille, mise en avant par un halo */
+#s-serie .sr-wd.is-on.is-today {
   box-shadow: inset 0 -3px 0 rgba(120, 30, 0, .22), 0 0 0 3px var(--sr-hero-bg), 0 0 0 6px var(--sr-fire-glow);
 }
-#s-serie .sr-wd.is-future .sr-wd-c { background: transparent; border: 2px dashed #e8d5bd; }
-#s-serie .sr-wd.is-off.is-today .sr-wd-c { background: #fff; border: 3px solid #ffb35c; }
-#s-serie .sr-wd.is-ice .sr-wd-c { background: var(--sr-ice-soft); border: 2px solid var(--sr-ice-mid); }
+#s-serie .sr-wd.is-off.is-today { background: #fff1dc; box-shadow: inset 0 0 0 2px #ffb35c; color: var(--sr-fire-ink); }
+#s-serie .sr[data-state="ice"] .sr-wd.is-off.is-today { background: var(--sr-ice-bg); box-shadow: inset 0 0 0 2px var(--sr-ice-mid); color: var(--sr-ice-ink); }
+/* bouclier utilisé : pastille glace */
+#s-serie .sr-wd.is-ice { background: var(--sr-ice-soft); color: var(--sr-ice-ink); box-shadow: inset 0 0 0 2px var(--sr-ice-mid); }
 #s-serie .sr-px-mini { width: 18px; height: 18px; display: block; }
 
 /* ── Cartes ── */
@@ -278,19 +277,14 @@
 #s-serie .sr-day.is-on.is-today { background: #fff; color: var(--sr-num-b); width: 32px; height: 32px; }
 #s-serie .sr-day.is-today:not(.is-on) { background: #fff1dc; box-shadow: inset 0 0 0 2px #ffb35c; color: var(--sr-fire-ink); }
 #s-serie .sr-day.is-ice { background: var(--sr-ice-soft); color: var(--sr-ice-ink); box-shadow: inset 0 0 0 2px var(--sr-ice-mid); width: 32px; height: 32px; }
-#s-serie .sr-day.is-active::after {
-  content: ''; position: absolute; left: 50%; bottom: 1px; width: 4px; height: 4px; margin-left: -2px;
-  border-radius: 50%; background: var(--sr-fire-b);
-}
-#s-serie .sr-day.is-on.is-active::after { background: rgba(255,255,255,.9); bottom: 2px; }
-#s-serie .sr-day.is-on.is-today.is-active::after, #s-serie .sr-day.is-ice.is-active::after { display: none; }
 
 #s-serie .sr-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 12px 4px 0; font-size: 12px; color: var(--sr-muted); }
 #s-serie .sr-legend span { display: inline-flex; align-items: center; gap: 6px; }
 #s-serie .sr-legend i { display: inline-block; }
 #s-serie .sr-lg-band { width: 20px; height: 10px; border-radius: 5px; background: linear-gradient(90deg, var(--sr-fire-a), var(--sr-fire-b)); }
-#s-serie .sr-lg-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--sr-fire-b); }
 #s-serie .sr-lg-ice { width: 12px; height: 12px; border-radius: 50%; background: var(--sr-ice-soft); box-shadow: inset 0 0 0 2px var(--sr-ice-mid); }
+/* Chaque jour n'est plus qu'un seul glyphe (le cercle numéroté) : plus de pastille « jour actif » à légender */
+#s-serie .sr-legend span:has(.sr-lg-dot) { display: none; }
 
 /* Toast */
 #s-serie .sr-toast {
