@@ -78,3 +78,14 @@ Vision transforme les achats impulsifs en choix conscients, en confrontant
 l'utilisateur à ses engagements concrets au moment de la tentation.
 
 « Concrete beats abstract. »
+
+---
+
+## 🧪 Copie de travail (`copie/`)
+
+Le dossier **`copie/`** est un duplicata complet de l'app, pour expérimenter sans toucher à l'original.
+
+- En ligne : **https://Th20-art.github.io/vision/copie/**
+- En local : `python -m http.server 8080` puis `http://localhost:8080/copie/`
+- Elle a ses **propres données** (clés `visioncopie_*` dans le localStorage) et son propre cache hors-ligne, donc elle ne mélange rien avec l'app principale. Seule la clé API Claude est partagée.
+- Installable séparément sous le nom « Vision copie ».

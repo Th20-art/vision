@@ -1,7 +1,7 @@
 /* Service worker — Vision (PWA)
    - manifest.json + navigations HTML : network-first (toujours à jour)
    - autres ressources (images, svg…) : cache-first avec mise à jour en arrière-plan */
-const CACHE = 'vision-v50';
+const CACHE = 'vision-copie-v1';
 const CORE = [
   './',
   'index.html'
@@ -17,7 +17,7 @@ self.addEventListener('install', event => {
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k.startsWith('vision-v') && k !== CACHE).map(k => caches.delete(k)))
+      Promise.all(keys.filter(k => k.startsWith('vision-copie-') && k !== CACHE).map(k => caches.delete(k)))
     ).then(() => self.clients.claim())
   );
 });
