@@ -2260,6 +2260,63 @@
 
 
   <!-- GANTELET:serie — écrans/calques du morceau « serie » (insérer juste sous cette ligne) -->
+  <div class="screen" id="s-serie">
+    <div class="sr" data-state="fire">
+      <div class="sr-scroll" id="sr-scroll">
+        <header class="sr-top">
+          <button class="sr-back" type="button" onclick="go('s-home')" aria-label="Retour à l'accueil">
+            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <h1 class="sr-title">Ma série</h1>
+          <div class="sr-gems" id="sr-gems" title="Tes graines"><span aria-hidden="true">🌱</span><b id="sr-gems-n">0</b><span class="sr-vh"> graines</span></div>
+        </header>
+
+        <section class="sr-hero" aria-label="Ta série">
+          <div class="sr-hero-row">
+            <div class="sr-count">
+              <div class="sr-num" id="sr-num" aria-hidden="true">0</div>
+              <div class="sr-unit" id="sr-unit" aria-hidden="true">jour sans achat impulsif</div>
+              <p class="sr-vh" id="sr-say">0 jour sans achat impulsif</p>
+              <div class="sr-record" id="sr-record"></div>
+            </div>
+            <div class="sr-art" aria-hidden="true">
+              <div class="sr-glow"></div>
+              <div class="sr-ground"></div>
+              <div class="sr-flame" id="sr-flame"></div>
+              <div class="sr-sparks"><i></i><i></i><i></i></div>
+              <img class="sr-comp" id="sr-comp" src="assets/comp-foxy.png" alt="">
+              <div class="sr-art-shield" id="sr-art-shield"></div>
+            </div>
+          </div>
+          <div class="sr-week" id="sr-week" role="list" aria-label="Cette semaine"></div>
+        </section>
+
+        <section class="sr-card sr-shield" id="sr-shield" aria-labelledby="sr-shield-title"></section>
+
+        <section class="sr-month" aria-labelledby="sr-month-title">
+          <div class="sr-month-head">
+            <h2 class="sr-h2" id="sr-month-title">Ce mois-ci</h2>
+            <div class="sr-month-nav">
+              <button class="sr-chev" type="button" id="sr-prev" onclick="serieMonth(-1)" aria-label="Mois précédent">
+                <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <button class="sr-chev" type="button" id="sr-next" onclick="serieMonth(1)" aria-label="Mois suivant">
+                <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="sr-card sr-cal" id="sr-cal" role="group"></div>
+          <div class="sr-legend" aria-hidden="true">
+            <span><i class="sr-lg-band"></i>Sans achat impulsif</span>
+            <span><i class="sr-lg-dot"></i>Jour actif</span>
+            <span><i class="sr-lg-ice"></i>Bouclier utilisé</span>
+          </div>
+          <div class="sr-tiles" id="sr-tiles"></div>
+        </section>
+      </div>
+      <div class="sr-toast" id="sr-toast" role="status" aria-live="polite"></div>
+    </div>
+  </div>
 
 
 
