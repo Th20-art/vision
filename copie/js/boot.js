@@ -52,6 +52,7 @@ if ('serviceWorker' in navigator) {
 (function bootVisionState(){
   if (typeof loadAmbitions === 'function') loadAmbitions();
   if (typeof restoreCapsule === 'function') restoreCapsule();
+  if (typeof renderProgress === 'function') renderProgress();
   if (typeof renderHomeAmbitions === 'function') renderHomeAmbitions();
   if (typeof renderHomeMetrics === 'function') renderHomeMetrics();
   if (typeof renderHomeJournal === 'function') renderHomeJournal();

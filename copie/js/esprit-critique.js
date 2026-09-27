@@ -214,8 +214,13 @@ function _norm(s){ return String(s||'').toLowerCase().normalize('NFD').replace(/
 /* Contrôle LOCAL (sans IA) : confronte les règles perso au produit de la démo.
    Donne un retour instantané même sans clé API ; l'IA affine ensuite si dispo. */
 function _localProductRuleCheck(){
-  // Descripteurs du produit de la page Amazon (Samsung Galaxy Fit 3 — montre connectée)
-  const product = 'montre connectee bracelet connecte samsung galaxy fit 3 gadget objet connecte technologie tech sante sport fitness electronique';
+  // Descripteurs du produit : ceux du scan IA s'il a eu lieu, sinon ceux de la page de démo
+  const scan = window._scanInfo || null;
+  const DEMO_PRODUCT = 'montre connectee bracelet connecte samsung galaxy fit 3 gadget objet connecte technologie tech sante sport fitness electronique';
+  const product = scan
+    ? _norm([scan.name, scan.brand, scan.category].filter(Boolean).join(' ')).replace(/[^a-z0-9\s]/g, ' ')
+    : DEMO_PRODUCT;
+  const productName = (scan && scan.name) ? scan.name : 'Samsung Galaxy Fit, montre connectée';
   const stop = new Set(['je','ne','veux','pas','plus','de','des','du','la','le','les','un','une','aucun','aucune','sans','que','qui','quel','mon','ma','mes','ce','cette','ces','sur','pour','avec','dans','avoir','vouloir','et','ou','au','aux']);
   const rules = [];
   if (typeof personalRules !== 'undefined') personalRules.forEach(r => rules.push(r));
@@ -233,7 +238,7 @@ function _localProductRuleCheck(){
   if (matchedRule){
     _alignScore = 1;
     if(i1t) i1t.textContent = '🚫 Va contre ta règle';
-    if(i1b) i1b.textContent = '« ' + matchedRule + ' » — ce produit (Samsung Galaxy Fit, montre connectée) entre en conflit direct avec une de tes règles personnelles.';
+    if(i1b) i1b.textContent = '« ' + matchedRule + ' » — ce produit (' + productName + ') entre en conflit direct avec une de tes règles personnelles.';
     if(i2t) i2t.textContent = '🤔 Vraiment nécessaire ?';
     if(i2b) i2b.textContent = DX0_DEFAULT.i2b;
   } else {

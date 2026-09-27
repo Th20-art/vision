@@ -84,11 +84,13 @@ function loadJournal(){
 }
 let journalLog = loadJournal();
 function saveJournal(){ try { localStorage.setItem('visioncopie_journal', JSON.stringify(journalLog.slice(0,40))); } catch(e){} }
-function addJournalLine(type, text){
+function addJournalLine(type, text, meta){
   if(!text) return;
   journalLog.unshift({ type: type || 'note', text: text, ts: Date.now() });
   saveJournal();
   renderHomeJournal();
+  // XP, série et historique des tentations (js/progression.js)
+  if (typeof onProgressEvent === 'function') onProgressEvent(type, meta);
 }
 function _journalTime(ts){
   const d = new Date(ts);
@@ -545,9 +547,10 @@ function buildNotifs() {
   const og = (getComputedStyle(document.documentElement).getPropertyValue('--og') || '#ff7e00').trim();
   const list = [];
   // Compagnon
-  list.push({ bar:'#63993d', ti:'Ton compagnon progresse', tx:"Renardo a gagné de l'XP grâce à ta dernière résistance. Plus que 4 200 XP avant le stade Maître.", tm:'Il y a 1 h' });
+  const pn = (typeof progressNotifs === 'function') ? progressNotifs() : null;
+  list.push({ bar:'#63993d', ti:'Ton compagnon progresse', tx: pn ? pn.comp : "Ton compagnon gagne de l'XP à chaque résistance.", tm:'Il y a 1 h' });
   // Série / streak
-  list.push({ bar:og, ti:'Série en cours 🔥', tx:'8 jours sans craquage ! Ton record est à 12 jours — tu peux le battre.', tm:"Aujourd'hui · 09:12" });
+  list.push({ bar:og, ti:'Série en cours 🔥', tx: pn ? pn.serie : 'Chaque jour sans craquage prolonge ta série.', tm:"Aujourd'hui · 09:12" });
   // Une notif par objectif choisi
   const tpl = {
     voyage:    { ti:'Objectif Voyage',        tx:"Il te manque 1 376 € pour ton voyage. En résistant à 2 achats/semaine, tu y es dans 3 mois." },
@@ -721,5 +724,6 @@ async function _journalApplyToObjective(desc, unit, isResist){
     if (typeof renderHomeMetrics === 'function') renderHomeMetrics();
     if (typeof renderHomeAmbitions === 'function') renderHomeAmbitions();
     updateDynIsland();
+    if (typeof checkMilestones === 'function') checkMilestones();
   }
 }

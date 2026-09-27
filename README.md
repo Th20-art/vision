@@ -115,9 +115,18 @@ copie/
     ├── dynamic-island.js Îlot dynamique (5 états)
     ├── onboarding.js     Tutoriel, thèmes compagnon, prénom, passions
     ├── ambitions.js      Objectifs, journal, règles, accueil, notifications
+    ├── progression.js    XP, stades, série sans craquage, historique des tentations
     ├── ia-chat.js        API Claude, chat, objectifs SMART
     ├── capsule.js        Enregistrement, sauvegarde IndexedDB, relecture
     └── boot.js           Plein écran, service worker, démarrage
 ```
 
 Les scripts sont classiques (pas de modules ES) : les fonctions restent globales, donc les `onclick` du HTML fonctionnent sans changement. Les grosses images ont été réduites (assets de la copie : 10,3 → 5,7 Mo pour les 6 plus lourdes).
+
+### Étape 3 — Enrichir (fait dans `copie/`)
+
+- **Humeur en 2 niveaux** (écran émotion) : une humeur sur 5 (😣 → 😄), puis une ou plusieurs émotions.
+- **Série sans craquage** : compteur réel sur l'accueil ; un achat confirmé la remet à zéro et garde le record.
+- **XP liée aux actions** : +150 XP par résistance, +300 XP à chaque palier de 25 % d'un objectif chiffré, +20 XP par jour de série. Stades : Sauvage (0), Dompter (1 000), Maître (4 000), Légendaire (10 000). Cœurs, barre, popup et notifications affichent les vraies valeurs.
+- **Règles sur tout produit** : le contrôle local compare les règles au nom, à la marque et à la catégorie du produit scanné par l'IA (sinon, au produit de la démo).
+- **Historique des tentations** (`visioncopie_events`) : chaque résistance ou achat garde humeur, émotions, raison, produit et prix — base du futur bilan des déclencheurs.

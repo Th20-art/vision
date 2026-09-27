@@ -1,7 +1,7 @@
 /* ════════════════════════════════════════════════════════════
    AMAZON FLOW — capsule → impact → emo → slip
 ════════════════════════════════════════════════════════════ */
-const AMZN = { emotion:null, reason:null, capT:null, cdT:null, cdLeft:30 };
+const AMZN = { emotion:null, emotions:[], mood:null, reason:null, capT:null, cdT:null, cdLeft:30 };
 const EMO_CIRC = 2 * Math.PI * 38;  // r=38 → ~238.76
 let capSubT = null;  // timer des sous-titres de la capsule
 
@@ -14,6 +14,8 @@ async function _updateDIFromScan() {
     if (nameEl && info.name) nameEl.textContent = info.name + (info.brand ? ' · ' + info.brand : '');
     if (priceEl && info.price) priceEl.textContent = info.price;
     window._scanInfo = info;
+    // Les règles perso sont revérifiées sur le produit réellement scanné
+    if (typeof _localProductRuleCheck === 'function') _localProductRuleCheck();
     // NB : le scan produit est automatique (arrière-plan) → on NE journalise PAS ici.
     // Seules les ACTIONS de l'utilisateur sont journalisées (résistance, analyse critique déclenchée).
   }
@@ -309,8 +311,8 @@ function impactReflect(){
 /* Start the 30s countdown ring + label */
 function startEmoCountdown(){
   AMZN.cdLeft = 30;
-  AMZN.emotion = null;
-  document.querySelectorAll('.dk-em-c').forEach(c => c.classList.remove('on'));
+  AMZN.emotion = null; AMZN.emotions = []; AMZN.mood = null;
+  document.querySelectorAll('.dk-em-c, .dk-md-c').forEach(c => c.classList.remove('on'));
   const arc = document.getElementById('emo-arc');
   const num = document.getElementById('emo-num');
   const skip = document.getElementById('emo-skip');
@@ -342,10 +344,34 @@ function skipFromEmo(){
   go('s-slip');
 }
 
-function pickEmo(el, name){
-  document.querySelectorAll('.dk-em-c').forEach(c => c.classList.remove('on'));
+/* Humeur (niveau 1) : un seul choix, de 1 (très mal) à 5 (très bien) */
+function pickMood(el, level){
+  document.querySelectorAll('.dk-md-c').forEach(c => c.classList.remove('on'));
   el.classList.add('on');
-  AMZN.emotion = name;
+  AMZN.mood = level;
+}
+
+/* Émotions (niveau 2) : sélection multiple */
+function pickEmo(el, name){
+  const on = el.classList.toggle('on');
+  AMZN.emotions = AMZN.emotions.filter(e => e !== name);
+  if (on) AMZN.emotions.push(name);
+  AMZN.emotion = AMZN.emotions[0] || null;   // compat : première émotion choisie
+}
+
+/* Produit et prix affichés dans l'overlay d'impact (repli : 39 €) */
+function _amznProduct(){
+  const priceEl = document.querySelector('.imp-pd-p');
+  const raw = priceEl ? priceEl.textContent.replace(/[^\d,]/g,'').replace(',','.') : '';
+  const price = parseFloat(raw) || 39;
+  const product = (window._scanInfo && window._scanInfo.name)
+    || (document.querySelector('.imp-pd-n') ? document.querySelector('.imp-pd-n').textContent.split('·')[0].trim() : '')
+    || 'cet achat';
+  return { product, price };
+}
+function _amznMeta(){
+  const p = _amznProduct();
+  return { product: p.product, price: p.price, mood: AMZN.mood, emotions: AMZN.emotions.slice(), reason: AMZN.reason, site: 'amazon.fr' };
 }
 
 function pickReason(el){
@@ -362,21 +388,18 @@ function resistFromEmo(){
 
 function confirmPay(){
   if(AMZN.cdT){ clearInterval(AMZN.cdT); AMZN.cdT = null; }
-  AMZN.emotion = null; AMZN.reason = null;
+  // Craquage : journalisé (remet la série à zéro) avec humeur, émotions et raison
+  const meta = _amznMeta();
+  addJournalLine('craq', 'Acheté ' + meta.product + ' — ' + Math.round(meta.price) + ' €' + (meta.reason ? ' (' + meta.reason + ')' : ''), meta);
+  AMZN.emotion = null; AMZN.emotions = []; AMZN.mood = null; AMZN.reason = null;
   document.querySelectorAll('.dk-ch').forEach(c => c.classList.remove('on'));
   go('s-home');
 }
 
 /* Hook: log resistance — ajoute le prix évité à l'épargne de l'objectif principal */
 function logAmznResist(){
-  // Capture le prix depuis l'overlay d'impact (fallback 39 €)
-  const priceEl = document.querySelector('.imp-pd-p');
-  const raw = priceEl ? priceEl.textContent.replace(/[^\d,]/g,'').replace(',','.') : '';
-  const priceNum = parseFloat(raw) || 39;
-  // Nom du produit (depuis le scan IA si dispo, sinon l'overlay)
-  const prodName = (window._scanInfo && window._scanInfo.name)
-    || (document.querySelector('.imp-pd-n') ? document.querySelector('.imp-pd-n').textContent.split('·')[0].trim() : '')
-    || 'cet achat';
+  const meta = _amznMeta();
+  const priceNum = meta.price, prodName = meta.product;
 
   if (typeof userAmbitions !== 'undefined' && userAmbitions.length > 0) {
     const label = userAmbitions[0].label;
@@ -385,7 +408,7 @@ function logAmznResist(){
     localStorage.setItem(key, String(+(current + priceNum).toFixed(2)));
   }
   // Journalise + actualise la home (objectifs, impact CO₂, journal)
-  addJournalLine('resist', 'Résisté à ' + prodName + ' — +' + Math.round(priceNum) + ' €');
+  addJournalLine('resist', 'Résisté à ' + prodName + ' — +' + Math.round(priceNum) + ' €', meta);
   updateDynIsland();
   if (typeof renderHomeMetrics === 'function') renderHomeMetrics();
   if (typeof renderHomeAmbitions === 'function') renderHomeAmbitions();

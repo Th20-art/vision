@@ -1267,6 +1267,10 @@
 .dk-tt{font-size:21px;font-weight:700;color:#fff;text-align:center;margin-top:14px;line-height:1.35;font-family:'Work Sans','Inter',sans-serif;padding:0 30px}
 .dk-st{font-size:13px;color:#8c8c8c;text-align:center;margin-top:5px;font-family:'Work Sans','Inter',sans-serif}
 .dk-em-wr{flex:1;padding:18px 18px 12px;min-height:0;overflow-y:auto}
+.dk-md-lbl{font-size:10px;font-weight:600;letter-spacing:.08em;color:#8c8c8c;margin:0 2px 8px;font-family:'Inter',sans-serif}
+.dk-md{display:flex;justify-content:space-between;gap:8px;margin-bottom:16px}
+.dk-md-c{flex:1;height:48px;border:none;border-radius:13px;background:#30302e;font-size:24px;line-height:1;cursor:pointer;transition:background .15s,outline .15s,transform .15s}
+.dk-md-c.on{background:color-mix(in srgb, var(--og) 22%, transparent);outline:1.5px solid var(--og);transform:scale(1.06)}
 .dk-em{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
 .dk-em-c{background:#30302e;border-radius:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;height:78px;transition:background .15s,outline .15s;-webkit-user-select:none;user-select:none}
 .dk-em-c.on{background:color-mix(in srgb, var(--og) 22%, transparent);outline:1.5px solid var(--og)}
