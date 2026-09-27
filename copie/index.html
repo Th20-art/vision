@@ -2238,6 +2238,31 @@
 
 
   <!-- GANTELET:boutique — écrans/calques du morceau « boutique » (insérer juste sous cette ligne) -->
+  <div class="screen" id="s-boutique">
+    <div class="bq">
+      <div class="bq-nav">
+        <button class="bq-back" type="button" onclick="go('s-home')" aria-label="Retour à l'accueil">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 L8 12 L15 19"/></svg>
+        </button>
+        <h1 class="bq-title">Boutique</h1>
+        <div class="bq-wallet" id="bq-wallet" role="status" aria-live="polite">
+          <span class="bq-ic bq-ic-seed" data-pix="seed" aria-hidden="true"></span>
+          <span class="bq-wallet-n" id="bq-balance">0</span>
+          <span class="bq-sr" id="bq-balance-sr">graines</span>
+        </div>
+      </div>
+      <div class="bq-scroll" id="bq-scroll"></div>
+
+      <!-- Feuille de confirmation d'échange (graines → bouclier) -->
+      <div class="bq-sheet-wrap" id="bq-sheet" hidden>
+        <div class="bq-dim" id="bq-dim"></div>
+        <div class="bq-sheet" role="dialog" aria-modal="true" aria-labelledby="bq-sheet-title">
+          <div class="bq-grab" aria-hidden="true"></div>
+          <div id="bq-sheet-body"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
 
 
