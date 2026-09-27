@@ -125,8 +125,9 @@ function renderProgress(){
   const days = streakDays();
   const fmt = n => Math.round(n).toLocaleString('fr-FR');
 
+  // Accueil : la flamme de la barre de statut affiche le nombre de jours (g-accueil.js)
   const streakEl = document.getElementById('home-streak');
-  if (streakEl) streakEl.textContent = '🔥 ' + days + (days > 1 ? ' jours' : ' jour') + ' sans craquage';
+  if (streakEl) streakEl.textContent = days.toLocaleString('fr-FR');
 
   const homeHearts = document.getElementById('home-hearts');
   if (homeHearts) {
@@ -138,6 +139,7 @@ function renderProgress(){
       homeHearts.appendChild(img);
     }
   }
+  if (typeof renderAccueil === 'function') renderAccueil();
 
   const xpEl = document.getElementById('comp-xp');
   if (xpEl) xpEl.textContent = 'XP ' + fmt(progress.xp) + (st.next ? ' / ' + fmt(st.next.min) : '');
