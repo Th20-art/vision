@@ -2234,6 +2234,26 @@
 
 
   <!-- GANTELET:ligue — écrans/calques du morceau « ligue » (insérer juste sous cette ligne) -->
+  <div class="screen" id="s-ligue">
+    <div class="lg">
+      <div class="lg-head">
+        <button class="lg-back" type="button" onclick="go('s-home')" aria-label="Retour à l'accueil">
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="lg-titles">
+          <h1 class="lg-title" id="lg-title">Ligue Graine</h1>
+          <div class="lg-time">
+            <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 4.6V8l2.4 1.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span id="lg-time">7 jours restants</span>
+          </div>
+        </div>
+      </div>
+      <div class="lg-tiers" id="lg-tiers" role="list" aria-label="Les 7 ligues, de Graine à Forêt"></div>
+      <p class="lg-rule" id="lg-rule">Les 3 premiers montent, les 3 derniers descendent. L'XP se gagne en résistant.</p>
+      <div class="lg-list" id="lg-list"></div>
+      <div class="lg-coach" id="lg-coach" aria-live="polite"></div>
+    </div>
+  </div>
 
 
 
