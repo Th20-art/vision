@@ -1,7 +1,11 @@
 /* ════════════════════════════════════════════════════════════
    Morceau gantelet « rappels » — un petit signe par jour, jamais de pression
-   · showReminderPrimer() : amorce plein écran (compagnon + bulle,
-     choix matin / midi / soir, aperçu du vrai rappel, permission)
+   · showReminderPrimer() : amorce plein écran en 2 temps
+       1) demande unique : compagnon + bulle (le bénéfice), aperçu du
+          rappel, UN bouton principal + UN lien discret « Plus tard »
+       2) choix du moment (matin/midi/soir, soir pré-coché) affiché
+          seulement après acceptation, confirmé par « C'est parti »
+          (c'est là qu'on demande la permission de notification)
    · Coup de pouce doux sur l'accueil quand la journée n'est pas encore
      active (au plus une fois par jour) → pointe la prochaine quête
    · Rappel réel : notification système si autorisée (app en arrière-plan),
@@ -223,7 +227,9 @@
     });
     var bell = $('rp-bell'); if (bell) bell.innerHTML = bellSvg();
     var di = layer.querySelector('.rp-done-ic'); if (di) di.innerHTML = CHECK_BIG;
-    $('rp-x').addEventListener('click', function(){ closeReminderPrimer('fermer'); });
+    // Un seul choix de sortie discret (« Plus tard ») : plus de X dupliqué en haut à gauche.
+    // Échap reste le raccourci clavier pour fermer (géré plus bas).
+    var x = $('rp-x'); if (x && x.parentNode) x.parentNode.removeChild(x);
     $('rp-cta').addEventListener('click', onCta);
     $('rp-later').addEventListener('click', onLater);
     layer.addEventListener('keydown', function(e){
@@ -257,15 +263,59 @@
     $('rp-cd').innerHTML = CLOCK + '<span>Premier rappel dans ' + fmtDur(n.date.getTime() - Date.now()) + '</span>';
   }
 
+  /* Titre / sous-titre / choix du moment : uniquement à l'étape 2 (le choix).
+     À l'étape 1 (la demande), le dialogue garde un nom accessible via
+     aria-label puisque rp-title, qui le fournissait, est alors masqué. */
+  function setStepChrome(choose){
+    var layer = $('rp-primer');
+    var sub = layer.querySelector('.rp-ask > .rp-sub');
+    var moments = layer.querySelector('.rp-moments');
+    $('rp-title').hidden = !choose;
+    if (sub) sub.hidden = !choose;
+    if (moments) moments.hidden = !choose;
+    if (choose) { layer.removeAttribute('aria-label'); layer.setAttribute('aria-labelledby', 'rp-title'); }
+    else { layer.removeAttribute('aria-labelledby'); layer.setAttribute('aria-label', 'Rappel quotidien'); }
+  }
+
+  /* Étape 1 — une seule demande, comme Duolingo : compagnon + bulle (le
+     bénéfice), l'aperçu du rappel, un unique CTA principal et un lien
+     discret pour décliner. Pas de choix concurrent. */
   function renderAsk(){
+    var s = load();
+    if (isOn(s)) { pick(s.moment); renderChoose(true); return; }  // déjà réglé : direct sur le choix du moment
     phase = 'ask'; why = null;
+    $('rp-ask').hidden = false;
+    $('rp-done').hidden = true;
+    setStepChrome(false);
+    $('rp-bubble-tx').textContent = 'Un petit signe chaque jour, et penser à « ' + goal() + ' » devient une habitude !';
+    $('rp-cta').textContent = 'Rappelle-moi mon objectif';
+    $('rp-later').hidden = false;
+    $('rp-later').textContent = 'Plus tard';
+    pick(sel && MOMENTS[sel] ? sel : 'soir');
+  }
+
+  /* Étape 2 — affichée seulement après acceptation : choix matin / midi /
+     soir (soir pré-coché), confirmé par « C'est parti ». C'est ici,
+     à la confirmation, que la permission de notification est demandée. */
+  function renderChoose(silent){
+    phase = 'choose'; why = null;
     var s = load();
     $('rp-ask').hidden = false;
     $('rp-done').hidden = true;
+    setStepChrome(true);
     $('rp-bubble-tx').textContent = 'Un petit signe chaque jour, et penser à « ' + goal() + ' » devient une habitude !';
-    $('rp-cta').textContent = isOn(s) ? 'Garder ce moment' : 'Rappelle-moi mon objectif';
-    $('rp-later').textContent = isOn(s) ? 'Désactiver le rappel' : 'Plus tard';
+    if (isOn(s)) {
+      $('rp-cta').textContent = 'Garder ce moment';
+      $('rp-later').hidden = false;
+      $('rp-later').textContent = 'Désactiver le rappel';
+    } else {
+      $('rp-cta').textContent = 'C\'est parti';
+      $('rp-later').hidden = true;   // la sortie discrète a déjà été proposée à l'étape 1
+    }
     pick(isOn(s) ? s.moment : (sel && MOMENTS[sel] ? sel : 'soir'));
+    if (!silent) {
+      try { var b = $('rp-primer').querySelector('.rp-mo[aria-checked="true"]'); if (b) b.focus(); } catch(e){}
+    }
   }
 
   function renderDone(mode, reason){
@@ -284,8 +334,10 @@
       : reason === 'dismissed' ? 'Pas de notification pour l\'instant : je te ferai signe à l\'ouverture de Vision.'
       : 'Déjà fait un pas dans la journée ? Alors je ne te dérange pas. Tu peux changer le moment dans ton profil.';
     $('rp-cta').textContent = 'C\'est parti';
+    $('rp-later').hidden = false;
     $('rp-later').textContent = 'Changer le moment';
     var layer = $('rp-primer');
+    layer.removeAttribute('aria-labelledby'); layer.setAttribute('aria-label', 'Rappel activé');
     layer.classList.remove('rp-yay'); void layer.offsetWidth; layer.classList.add('rp-yay');
     try { $('rp-cta').focus(); } catch(e){}
     refreshProfil();
@@ -293,6 +345,7 @@
 
   function onCta(){
     if (phase === 'done') { closeReminderPrimer('ok'); return; }
+    if (phase === 'ask')  { renderChoose(); return; }   // étape 1 acceptée → étape 2 (choix du moment)
     var moment = sel, done = false;
     var finish = function(mode, reason){
       if (done) return; done = true;
@@ -310,8 +363,9 @@
   }
 
   function onLater(){
-    if (phase === 'done') { renderAsk(); return; }
-    closeReminderPrimer(isOn() ? 'off' : 'plus-tard');
+    if (phase === 'done')   { renderChoose(); return; }               // « Changer le moment »
+    if (phase === 'choose') { closeReminderPrimer('off'); return; }   // « Désactiver le rappel » (rappel déjà actif)
+    closeReminderPrimer('plus-tard');                                  // étape 1 : le seul déclin, discret
   }
 
   function startLife(){
