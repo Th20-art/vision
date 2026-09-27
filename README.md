@@ -96,3 +96,28 @@ Le dossier **`copie/`** est un duplicata complet de l'app, pour expérimenter sa
 - **Arrêt d'enregistrement** : une seule fonction `stopRecording`, qui coupe vraiment caméra et micro.
 - **Textes protégés** : saisies et réponses IA passent par `escHTML()` avant d'être affichées.
 - **Effacer mes données** : bouton en bas du Profil (objectifs, journal, règles, compagnon, capsule ; la clé API est gardée).
+
+### Étape 2 — Restructurer (fait dans `copie/`)
+
+`copie/index.html` ne contient plus que le HTML des écrans ; le style et le code sont dans des fichiers séparés, chargés dans cet ordre :
+
+```
+copie/
+├── index.html            HTML des 31 écrans
+├── css/
+│   ├── base.css          Intro, onboarding, formulaires, capsule
+│   ├── app.css           Accueil, navigation, historique, compagnon, profil
+│   └── demos.css         Bureau Android, esprit critique, Amazon, îlot, émotion
+└── js/
+    ├── core.js           escHTML(), go() : navigation entre écrans
+    ├── esprit-critique.js Démo article / YouTube + analyse IA
+    ├── amazon.js         Flux Amazon : scan, capsule, émotion, renoncement
+    ├── dynamic-island.js Îlot dynamique (5 états)
+    ├── onboarding.js     Tutoriel, thèmes compagnon, prénom, passions
+    ├── ambitions.js      Objectifs, journal, règles, accueil, notifications
+    ├── ia-chat.js        API Claude, chat, objectifs SMART
+    ├── capsule.js        Enregistrement, sauvegarde IndexedDB, relecture
+    └── boot.js           Plein écran, service worker, démarrage
+```
+
+Les scripts sont classiques (pas de modules ES) : les fonctions restent globales, donc les `onclick` du HTML fonctionnent sans changement. Les grosses images ont été réduites (assets de la copie : 10,3 → 5,7 Mo pour les 6 plus lourdes).

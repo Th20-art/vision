@@ -1,10 +1,13 @@
 /* Service worker — Vision (PWA)
    - manifest.json + navigations HTML : network-first (toujours à jour)
    - autres ressources (images, svg…) : cache-first avec mise à jour en arrière-plan */
-const CACHE = 'vision-copie-v2';
+const CACHE = 'vision-copie-v3';
 const CORE = [
   './',
-  'index.html'
+  'index.html',
+  'css/base.css', 'css/app.css', 'css/demos.css',
+  'js/core.js', 'js/esprit-critique.js', 'js/amazon.js', 'js/dynamic-island.js',
+  'js/onboarding.js', 'js/ambitions.js', 'js/ia-chat.js', 'js/capsule.js', 'js/boot.js'
 ];
 
 self.addEventListener('install', event => {

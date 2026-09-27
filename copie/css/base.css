@@ -1,0 +1,673 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* Masquer les barres de scroll partout (Chrome/Safari/Firefox/Edge) */
+* { scrollbar-width: none; -ms-overflow-style: none; }
+*::-webkit-scrollbar { display: none; width: 0; height: 0; }
+
+:root {
+  --og: #ff7e00;
+  --og2: #e8563a;
+  --green: #42c47e;
+  --green-dark: #63993d;
+  --blue: #38bdf8;
+  --bg: #fafafa;
+  --muted: #6b6475;
+  --dark: #1a1a1a;
+  --bg-filter: none;
+  --icon-active-filter: none;
+}
+
+body {
+  background: #e8e8e8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+}
+
+.phone {
+  width: 360px;
+  height: 780px;
+  border-radius: 40px;
+  overflow: hidden;
+  position: relative;
+  background: #fff;
+  box-shadow: none;
+}
+
+/* ─── MOBILE : la maquette remplit tout l'écran (plus de cadre/marges) ─── */
+@media (max-width: 480px) {
+  /* Verrouille le scroll de la page : seules les zones internes défilent */
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+  body {
+    background: var(--bg);
+    display: block;
+    position: fixed;
+    inset: 0;
+  }
+  .phone {
+    width: 100vw;
+    height: 100vh;            /* fallback */
+    height: 100dvh;           /* hauteur réelle visible (barres navigateur incluses) */
+    border-radius: 0;
+    box-shadow: none;
+    overflow: hidden;
+  }
+}
+/* Mode app installée (PWA plein écran) */
+@media (display-mode: standalone), (display-mode: fullscreen) {
+  html, body { height: 100%; overflow: hidden; overscroll-behavior: none; }
+  body { background: var(--bg); position: fixed; inset: 0; }
+  .phone { width: 100vw; height: 100dvh; border-radius: 0; box-shadow: none; overflow: hidden; }
+}
+
+.screen {
+  position: absolute;
+  inset: 0;
+  display: none;
+  overflow: hidden;
+}
+.screen.active { display: block; }
+
+/* ─── PIXEL MOSAIC ─────────────────────────────────────── */
+.mosaic {
+  position: absolute;
+  top: 0; left: 0;
+  width: 270px; height: 150px;
+  pointer-events: none;
+  z-index: 2;
+}
+.mosaic-br {
+  position: absolute;
+  bottom: 0; right: 0;
+  width: 270px; height: 150px;
+  pointer-events: none;
+  z-index: 2;
+  transform: rotate(180deg);
+}
+.mx {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  border-radius: 0;             /* sharp, no rounding (Figma) */
+}
+
+/* ════════════════════════════════════════════════════════════
+   ASSETS BASÉS SUR IMAGES (Welcome + 4 splashes orange)
+   · Fond dégradé orange/jaune blurry
+   · Mosaïque pixel orange (carrés sans arrondi)
+   · Logo blanc 8 formes (cercle dashed)
+════════════════════════════════════════════════════════════ */
+.bg-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  pointer-events: none;
+  filter: var(--bg-filter, none);     /* hue-rotate selon compagnon */
+  transition: filter .35s ease;
+}
+.mosaic-img {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  object-fit: contain;
+  filter: var(--bg-filter, none);     /* hue-rotate selon compagnon */
+  transition: filter .35s ease;
+}
+.mosaic-img.tl {
+  top: 0; left: 0;
+  width: 230px;
+  height: auto;
+}
+.mosaic-img.br {
+  bottom: 0; right: 0;
+  width: 230px;
+  height: auto;
+  transform: rotate(180deg);
+}
+.welcome-logo {
+  position: absolute;
+  top: 33.3%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 125px;
+  height: 125px;
+  object-fit: contain;
+  z-index: 3;
+  pointer-events: none;
+}
+/* Masque les anciennes mosaïques CSS sur les 5 écrans concernés
+   (on utilise maintenant les images PNG fournies) */
+#s-splash > .splash-screen > .mosaic,
+#s-splash > .splash-screen > .mosaic-br,
+#s-intro-1 > .og-screen > .mosaic,
+#s-intro-1 > .og-screen > .mosaic-br,
+#s-intro-2 > .og-screen > .mosaic,
+#s-intro-2 > .og-screen > .mosaic-br,
+#s-intro-3 > .og-screen > .mosaic,
+#s-intro-3 > .og-screen > .mosaic-br,
+#s-intro-5 > .og-screen > .mosaic,
+#s-intro-5 > .og-screen > .mosaic-br {
+  display: none;
+}
+/* Texte/bouton au-dessus des images de fond */
+#s-splash .splash-title,
+#s-splash .splash-sub,
+#s-splash .splash-btn-primary,
+#s-splash .splash-btn-login,
+#s-intro-1 .og-content,
+#s-intro-2 .og-content,
+#s-intro-3 .og-content,
+#s-intro-5 .og-content {
+  z-index: 4;
+}
+
+/* ─── ORANGE INTRO SCREENS ──────────────────────────────── */
+/* ════════════════════════════════════════════════════════════
+   ORANGE INTRO SPLASHES (Figma 158:2, 158:45, 158:389, 158:732)
+   Phone 360×780 · bg #ff5c1a · layout ABSOLU pixel-perfect
+════════════════════════════════════════════════════════════ */
+.og-screen {
+  background: var(--og);           /* utilise la couleur du thème compagnon (auto-tinté) */
+  position: relative;
+  width: 100%; height: 100%;
+  overflow: hidden;
+  transition: background-color .35s ease;
+}
+.og-radial {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 70% 35%, rgba(255,200,80,0.18) 0%, transparent 60%);
+  z-index: 1;
+}
+/* Bloc texte en flux, ancré dans la moitié basse → plus de chevauchement
+   quel que soit le nombre de lignes du titre */
+.og-content {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 24px 155px;
+}
+/* Caption "01 - PARTENAIRE" : Work Sans Regular 14px blanc */
+.og-step {
+  position: static;
+  font-family: 'Work Sans', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  color: #ffffff;
+  letter-spacing: 0;
+  margin: 0 0 8px;
+  line-height: 1.4;
+}
+/* Titre : Work Sans Bold 36px blanc */
+.og-title {
+  position: static;
+  max-width: 84%;
+  font-family: 'Work Sans', sans-serif;
+  font-weight: 700;
+  font-size: 34px;
+  line-height: 1.12;
+  color: #ffffff;
+  margin: 0 0 14px;
+  word-break: normal;
+  overflow-wrap: break-word;   /* ne coupe un mot que s'il dépasse vraiment */
+  hyphens: none;
+}
+/* Description : Inter Regular 16px blanc */
+.og-desc {
+  position: static;
+  max-width: 73%;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  color: #ffffff;
+  line-height: 1.35;
+  margin: 0;
+  word-break: break-word;
+}
+/* Bouton : bg #f5f5f5 + border #e8e8e8, radius 12, h:45, texte noir Inter Bold 16
+   Position bottom-right (top:88.6%, right:23) */
+.og-btn {
+  position: absolute;
+  top: 88.6%;                      /* 691 / 780 */
+  right: 23px;
+  height: 45px;
+  background: #f5f5f5;
+  border: 1px solid #e8e8e8;
+  border-radius: 12px;
+  color: #000000;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  padding: 0 36px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  white-space: nowrap;
+  transition: transform .12s, opacity .12s;
+}
+.og-btn:active { transform: scale(0.97); opacity: 0.9; }
+
+/* ─── STEP BAR ──────────────────────────────────────────── */
+.step-bar {
+  display: flex;
+  gap: 5px;
+  padding: 44px 22px 0;
+}
+.seg {
+  flex: 1;
+  height: 5px;
+  background: #e0e0e0;
+  border-radius: 3px;
+}
+/* Les segments actifs forment ENSEMBLE un seul dégradé continu :
+   chaque segment affiche sa tranche du dégradé global (4 segments). */
+.seg.on {
+  background-image: linear-gradient(90deg, var(--og), var(--og2));
+  background-repeat: no-repeat;
+  background-size: 400% 100%;
+}
+.step-bar .seg:nth-child(1) { background-position: 0%   0; }
+.step-bar .seg:nth-child(2) { background-position: 33.333% 0; }
+.step-bar .seg:nth-child(3) { background-position: 66.666% 0; }
+.step-bar .seg:nth-child(4) { background-position: 100% 0; }
+
+/* ─── FORM SCREENS (WHITE) ──────────────────────────────── */
+.form-screen {
+  background: white;
+  background-image: url('../assets/dots-bg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%; height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+.step-hdr {
+  padding: 14px 22px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.step-dot { display: none; }
+.step-lbl {
+  font-family: 'Work Sans', sans-serif;
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, var(--og), var(--og2));
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+          color: transparent;
+}
+.form-title {
+  font-family: 'Work Sans', sans-serif;
+  font-weight: 700;
+  font-size: 24px;
+  color: var(--dark);
+  padding: 12px 22px 4px;
+  line-height: 1.2;
+}
+.form-sub {
+  font-family: 'Work Sans', sans-serif;
+  font-style: normal;
+  font-size: 14px;
+  color: #1a1a1a;
+  padding: 0 22px 14px;
+}
+
+/* ─── CONTINUE BUTTON ───────────────────────────────────── */
+.cont-btn {
+  position: absolute;
+  bottom: 20px; right: 20px;
+  background: linear-gradient(90deg, var(--og), var(--og2));
+  color: white;
+  font-family: 'Work Sans', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  padding: 14px 26px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform 0.1s;
+  z-index: 10;
+}
+.cont-btn:active { transform: scale(0.97); }
+
+/* ─── FOX WRAP ──────────────────────────────────────────── */
+.fox-mini {
+  width: 94px;
+  height: 83px;
+  overflow: hidden;
+  position: relative;
+  image-rendering: pixelated;
+}
+.fox-mini img {
+  position: relative;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+/* ─── COMPANION GRID ────────────────────────────────────── */
+.comp-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 0 22px;
+  margin-top: 8px;
+}
+.comp-card {
+  border-radius: 14px;
+  border: none;
+  padding: 14px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+.comp-card:active { transform: scale(0.96); }
+.comp-card .fox-mini { width: 90px; height: 80px; }
+.comp-card > img { width: 90px !important; height: 80px !important; object-fit: contain; image-rendering: pixelated; }
+/* Grise les compagnons non-sélectionnés, full color quand .active */
+.comp-card img {
+  transition: filter .25s ease, opacity .25s ease;
+}
+.comp-card:not(.active) img {
+  filter: grayscale(100%);
+  opacity: 0.45;
+}
+.comp-card.active img {
+  filter: none;
+  opacity: 1;
+}
+.comp-name {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  color: rgba(0,0,0,0.25);
+  transition: color .25s ease;
+}
+.comp-card.active .comp-name { color: #000; }
+.comp-trait { display: none; }
+
+.comp-input-area {
+  background: #2a2a28;
+  border-radius: 14px;
+  margin: 14px 20px 0;
+  padding: 16px 18px;
+}
+.comp-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: #fff;
+  line-height: 1.4;
+  margin-bottom: 14px;
+}
+.dark-input {
+  background: #40403e;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 14px;
+  height: 36px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: white;
+  width: 100%;
+  outline: none;
+}
+.dark-input::placeholder { color: #888; }
+
+/* ─── PASSION CHIPS ─────────────────────────────────────── */
+.chip-area {
+  padding: 0 22px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 8px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+.chip {
+  padding: 7px 14px;
+  border-radius: 20px;
+  border: 1.5px solid #e0e0e0;
+  font-size: 12px;
+  font-family: 'Inter', sans-serif;
+  color: #444;
+  cursor: pointer;
+  background: white;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.chip.on {
+  background: linear-gradient(90deg, var(--og), var(--og2));
+  border-color: transparent;
+  color: white;
+}
+.chip-add {
+  padding: 7px 14px;
+  border-radius: 20px;
+  border: 1.5px dashed #ccc;
+  font-size: 18px;
+  color: #aaa;
+  cursor: pointer;
+  background: white;
+  line-height: 1;
+}
+.passion-count {
+  padding: 0 22px;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.passion-fox {
+  position: absolute;
+  right: 18px; top: 90px;
+}
+
+/* ─── VISION GRID ───────────────────────────────────────── */
+.vision-scroll {
+  padding: 0 22px;
+  margin-top: 8px;
+  overflow-y: auto;
+  max-height: 500px;
+}
+.vision-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.vision-card {
+  border-radius: 14px;
+  border: 2px solid #e8e8e8;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.vision-card.active { border-color: var(--og); }
+.vision-thumb {
+  height: 64px;
+  overflow: hidden;
+  position: relative;
+  background: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.35;
+}
+.vision-card.active .vision-thumb { opacity: 1; }
+.vision-thumb .fox-mini { width: 60px; height: 52px; }
+.vision-label {
+  padding: 8px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--dark);
+  line-height: 1.3;
+}
+.vision-input-area,.vision-input { display:none }
+
+.vision-footer {
+  position: absolute;
+  bottom: 70px; left: 22px; right: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.vision-footer-txt {
+  font-size: 11px;
+  color: var(--muted);
+  flex: 1;
+}
+.foxy-btn {
+  background: linear-gradient(90deg, var(--og), var(--og2));
+  color: white;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* ─── ANALYSE SCREEN ────────────────────────────────────── */
+.analyse-screen {
+  background: white;
+  width: 100%; height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80px 28px 30px;
+}
+.analyse-title {
+  font-family: 'Work Sans', sans-serif;
+  font-weight: 700;
+  font-size: 26px;
+  color: var(--dark);
+  text-align: center;
+  line-height: 1.25;
+  margin-bottom: 10px;
+}
+.analyse-sub {
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
+  margin-bottom: 28px;
+}
+.site-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+.site-item {
+  background: #f5f5f5;
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.site-icon {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--og), var(--og2));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.site-name {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--dark);
+}
+.site-cat {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* ─── CAMERA / CAPSULE ──────────────────────────────────── */
+.cam-area {
+  margin: 8px 22px 0;
+  height: 340px;
+  background: #2a2a28;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.cam-placeholder {
+  color: rgba(255,255,255,0.25);
+  font-size: 13px;
+  text-align: center;
+  padding: 20px;
+}
+.cam-example {
+  position: absolute;
+  bottom: 14px; left: 14px; right: 14px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+.cam-example-txt {
+  font-size: 11px;
+  color: rgba(255,255,255,0.7);
+  font-style: italic;
+  line-height: 1.4;
+}
+.record-btn-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+.record-btn {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: none;
+}
+.record-dot {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--og), var(--og2));
+}
+.record-alt {
+  font-size: 11px;
+  color: var(--muted);
+  text-align: center;
+}
