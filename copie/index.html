@@ -580,19 +580,53 @@
         <div class="android-back-pill">⌂ Android</div>
       </div>
       <div class="app-scroll" style="height:100%;">
-        <!-- Header centré + bell (Figma 510:1136) -->
-        <div style="position:relative;padding:36px 20px 0;text-align:center;">
-          <div style="font-family:'Work Sans',sans-serif;font-weight:700;font-size:22px;color:#000;">Bonsoir, <span class="user-name">Léa</span> 👋</div>
-          <button class="bell-btn has-notif" onclick="openNotifs()" style="position:absolute;right:20px;top:34px;"><img src="assets/bell.svg" alt="notifications"></button>
-        </div>
-
-        <!-- Fox centré + 2 cœurs + streak -->
-        <div style="display:flex;flex-direction:column;align-items:center;margin-top:14px;">
-          <div class="fox-mini" style="width:91px;height:81px;"><img src="assets/comp-foxy.png" class="dyn-comp" alt="fox"></div>
-          <div id="home-hearts" style="display:flex;gap:6px;justify-content:center;margin-top:8px;">
-            <img src="assets/heart.png" class="home-heart" alt="" style="width:16px;height:14px;">
+        <!-- Accueil : barre de statut + compagnon + carte du jour (js/g-accueil.js, css/g-accueil.css) -->
+        <div class="acc-top" id="acc-top">
+          <div class="acc-bar">
+            <button type="button" class="acc-stat acc-league" id="acc-league" onclick="accGo('s-ligue')" aria-label="Ligue">
+              <span class="acc-ico acc-ico-medal" data-px="medal"></span><span class="acc-num" id="acc-league-name">Graine</span>
+            </button>
+            <button type="button" class="acc-stat acc-flame is-off" id="acc-flame" onclick="accGo('s-serie')" aria-label="Série">
+              <span class="acc-ico acc-ico-flame" data-px="flame"></span><span class="acc-num" id="home-streak">0</span>
+            </button>
+            <button type="button" class="acc-stat acc-gems" id="acc-gems-btn" onclick="accGo('s-boutique')" aria-label="Graines">
+              <span class="acc-ico" data-px="seed"></span><span class="acc-num" id="acc-gems">0</span>
+            </button>
+            <button type="button" class="acc-stat acc-freeze" id="acc-freezes-btn" onclick="accGo('s-boutique')" aria-label="Boucliers de série">
+              <span class="acc-ico" data-px="shield"></span><span class="acc-num" id="acc-freezes">0</span>
+            </button>
+            <button type="button" class="bell-btn has-notif acc-bell" onclick="openNotifs()" aria-label="Notifications"><img src="assets/bell.svg" alt="notifications"></button>
           </div>
-          <div id="home-streak" style="font-size:12px;color:#6b6475;margin-top:8px;">🔥 0 jour sans craquage</div>
+
+          <div class="acc-stage">
+            <div class="acc-comp">
+              <div class="acc-sparks" aria-hidden="true"><i></i><i></i><i></i></div>
+              <div class="acc-comp-sprite"><img src="assets/comp-foxy.png" class="dyn-comp" alt="Ton compagnon"></div>
+              <div class="acc-floor" aria-hidden="true"></div>
+              <div class="acc-level" id="acc-level" role="img" aria-label="Stade du compagnon"><div id="home-hearts" class="acc-hearts"></div><span id="acc-stage-name">Sauvage</span></div>
+            </div>
+            <div class="acc-bubble">
+              <div class="acc-hello"><span id="acc-hello-word">Bonsoir</span>, <span class="user-name">Léa</span>&#8239;!</div>
+              <div class="acc-say" id="acc-say">Une petite action et ta flamme s’allume.</div>
+            </div>
+          </div>
+
+          <div class="acc-today" id="acc-today">
+            <div class="acc-today-top">
+              <span class="acc-tag" id="acc-tag">À suivre</span>
+              <span class="acc-count" id="acc-count-wrap" role="img" aria-label="Quêtes du jour"><span class="acc-dots" id="acc-dots"></span><span id="acc-count">0 / 3</span></span>
+            </div>
+            <div class="acc-title" id="acc-title">Résiste à 1 tentation</div>
+            <div class="acc-rewards">
+              <span class="acc-chip acc-chip-xp" id="acc-xp-chip"><span class="acc-ico" data-px="bolt"></span><span class="acc-chip-txt"><span id="acc-xp">+40</span> XP</span></span>
+              <span class="acc-chip acc-chip-gems"><span class="acc-ico" data-px="seed"></span><span class="acc-chip-txt"><span id="acc-gain">+15</span> graines</span></span>
+            </div>
+            <div class="acc-progress">
+              <div class="acc-pbar" id="acc-pbar" role="img" aria-label="Progression"><div class="acc-pfill" id="acc-pfill"></div><span class="acc-ptxt" id="acc-ptxt">0 / 1</span></div>
+              <span class="acc-ico acc-chest" data-px="chest"></span>
+            </div>
+            <button type="button" class="acc-cta" id="acc-cta" onclick="accTodayTap()">Allumer ma flamme</button>
+          </div>
         </div>
 
         <!-- Chips dynamiques (varient selon objectifs) -->
