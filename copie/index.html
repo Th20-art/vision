@@ -3607,6 +3607,14 @@
           </div>
           <div onclick="go('s-param-ec')" style="margin-top:10px;font-size:12px;font-weight:600;color:#7c5cdb;cursor:pointer;">Modifier ›</div>
         </div>
+        <!-- Effacer toutes les données locales (objectifs, journal, règles, capsule…) -->
+        <div style="margin:14px 20px 0;">
+          <button type="button" onclick="resetAllData()"
+            style="width:100%;background:#fff;border:1.5px solid #e5484d;color:#e5484d;border-radius:14px;padding:12px 16px;font-size:13px;font-family:'Inter',sans-serif;font-weight:600;cursor:pointer;">
+            Effacer mes données
+          </button>
+          <div style="font-size:10px;color:var(--muted);margin-top:6px;text-align:center;">Objectifs, journal, règles, compagnon et capsule. La clé API est conservée.</div>
+        </div>
         <div style="height:20px;"></div>
       </div>
       <div class="b-nav">
@@ -4921,6 +4929,11 @@
 </div><!-- .phone -->
 
 <script>
+  /* ── Échappe un texte avant de l'insérer en HTML (saisies utilisateur, réponses IA) ── */
+  function escHTML(v){
+    return String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
   /* ── Navigation ── */
   function go(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -5297,7 +5310,7 @@
     if (st2 && alts.alt_smart) {
       const n = st2.querySelector('.dyn-alt-n'); if (n) n.textContent = alts.alt_smart.name || n.textContent;
       const b = st2.querySelector('.dyn-badge');  if (b) b.textContent = alts.alt_smart.saving || b.textContent;
-      const pn = document.getElementById('dx2-prod-name'); if (pn && info.name) pn.innerHTML = info.name + (info.brand ? '<br>' + info.brand : '');
+      const pn = document.getElementById('dx2-prod-name'); if (pn && info.name) pn.innerHTML = escHTML(info.name) + (info.brand ? '<br>' + escHTML(info.brand) : '');
       const pr = document.getElementById('dx2-price'); if (pr && alts.alt_smart.price) pr.textContent = alts.alt_smart.price;
       const lk = document.getElementById('dx2-link');  if (lk && alts.alt_smart.url) lk.textContent = '↗ ' + alts.alt_smart.url;
       // Image réelle : logo de la marque (repli marchand → démo)
@@ -5675,7 +5688,7 @@
     if (note) {
       const catNames = [...cats].map(c => CAT_LABELS[c]).filter(Boolean);
       note.innerHTML = objs.length
-        ? '🎯 <b>Sélection adaptée à tes objectifs</b> (' + objs.join(', ') + ') : Vision surveille en priorité ' + catNames.join(', ') + '.'
+        ? '🎯 <b>Sélection adaptée à tes objectifs</b> (' + escHTML(objs.join(', ')) + ') : Vision surveille en priorité ' + catNames.join(', ') + '.'
         : 'Définis un objectif pour personnaliser les catégories surveillées.';
     }
     // Résumé sur la page Profil
@@ -6418,7 +6431,7 @@
         '<div class="jfi-bar" style="background:' + barColor + ';"></div>' +
         '<div class="jfi-content">' +
           '<div class="jfi-time">' + _journalTime(e.ts) + '</div>' +
-          '<div class="jfi-text" style="' + txtStyle + '">' + e.text + '</div>' +
+          '<div class="jfi-text" style="' + txtStyle + '">' + escHTML(e.text) + '</div>' +
         '</div>';
       list.appendChild(item);
     });
@@ -6447,14 +6460,14 @@
         const lbl = isPrincipal ? 'OBJECTIF PRINCIPAL' : ('OBJECTIF ' + (idx + 1));
         const ctaText = refined ? 'Appuie pour modifier →' : 'Appuie pour affiner →';
         const descLine = refined
-          ? `<div style="font-size:13px;color:var(--dark);margin-bottom:6px;line-height:1.45;">${amb.smartLabel}</div>`
+          ? `<div style="font-size:13px;color:var(--dark);margin-bottom:6px;line-height:1.45;">${escHTML(amb.smartLabel)}</div>`
           : `<div style="font-size:12px;color:var(--muted);margin-bottom:6px;">Pas encore précisé.</div>`;
         card.innerHTML = `
           <div style="${headerBg}padding:8px 14px;display:flex;align-items:center;justify-content:space-between;">
             <span style="font-family:'Work Sans',sans-serif;font-weight:600;font-size:10px;letter-spacing:0.08em;">${lbl}</span>
           </div>
           <div style="padding:14px 16px;">
-            <div style="font-family:'Work Sans',sans-serif;font-weight:700;font-size:18px;color:var(--dark);margin-bottom:6px;">${amb.label}</div>
+            <div style="font-family:'Work Sans',sans-serif;font-weight:700;font-size:18px;color:var(--dark);margin-bottom:6px;">${escHTML(amb.label)}</div>
             ${descLine}
             <div style="font-size:12px;color:var(--og);font-weight:500;">${ctaText}</div>
           </div>`;
@@ -6503,7 +6516,7 @@
       row.style.cssText = 'display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #ececec;border-radius:12px;padding:10px 12px;';
       row.innerHTML = `
         <span style="color:var(--og);font-size:14px;">⚠</span>
-        <span style="flex:1;font-size:13px;color:var(--dark);">${rule}</span>
+        <span style="flex:1;font-size:13px;color:var(--dark);">${escHTML(rule)}</span>
         <button onclick="removeRule(${i})" aria-label="Retirer" style="background:none;border:none;cursor:pointer;font-size:16px;line-height:1;color:var(--muted);padding:2px 4px;font-family:inherit;">✕</button>`;
       box.appendChild(row);
     });
@@ -6574,7 +6587,7 @@
             const kg = computeImpactKg();
             const km = Math.round(kg / 0.12);   // ~0,12 kg CO₂ / km en voiture
             block.innerHTML = `
-              <div class="ho-label">${(amb.label || '').toUpperCase()}</div>
+              <div class="ho-label">${escHTML((amb.label || '').toUpperCase())}</div>
               <div class="ho-value">${kg} KG</div>
               <div class="ho-sub">CO₂ évités grâce à tes résistances</div>
               <div class="ho-sub2">${kg > 0 ? ('Soit ' + km.toLocaleString('fr-FR') + ' km en voiture non parcourus.') : 'Résiste à un achat pour commencer à réduire ton impact.'}</div>`;
@@ -6588,10 +6601,10 @@
               ? savedStr + ' € économisés · ' + pct + ' % de ' + target.toLocaleString('fr-FR') + ' €'
               : (saved > 0 ? savedStr + ' € économisés' : sub);
             block.innerHTML = `
-              <div class="ho-label">${(amb.label || '').toUpperCase()}</div>
+              <div class="ho-label">${escHTML((amb.label || '').toUpperCase())}</div>
               <div class="ho-value">${savedStr} €</div>
               <div class="ho-bar"><div class="ho-fill" style="width:${pct}%"></div></div>
-              <div class="ho-sub2">${subTxt}</div>`;
+              <div class="ho-sub2">${escHTML(subTxt)}</div>`;
           }
           list.appendChild(block);
         });
@@ -6907,7 +6920,7 @@
     const nn = buildNewNotif();
     const card = document.createElement('div');
     card.className = 'notif-new';
-    card.innerHTML = `<div class="nn-lbl">${nn.lbl} · NOUVEAU</div><div class="nn-tx">${nn.tx}</div>`;
+    card.innerHTML = `<div class="nn-lbl">${escHTML(nn.lbl)} · NOUVEAU</div><div class="nn-tx">${escHTML(nn.tx)}</div>`;
     box.appendChild(card);
     // 2) Séparateur
     const sec = document.createElement('div');
@@ -6919,7 +6932,7 @@
       const row = document.createElement('div');
       row.className = 'notif-row read';
       row.innerHTML = `<div class="notif-bar" style="background:${n.bar}"></div>
-        <div class="notif-bd"><div class="notif-ti">${n.ti}</div><div class="notif-tx">${n.tx}</div><div class="notif-tm">${n.tm}</div></div>`;
+        <div class="notif-bd"><div class="notif-ti">${escHTML(n.ti)}</div><div class="notif-tx">${escHTML(n.tx)}</div><div class="notif-tm">${escHTML(n.tm)}</div></div>`;
       box.appendChild(row);
     });
   }
@@ -6951,7 +6964,7 @@
       row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;';
       row.innerHTML = `
         <span style="color:var(--og);">▪</span>
-        <span style="flex:1;font-size:13px;color:var(--dark);">${name}</span>
+        <span style="flex:1;font-size:13px;color:var(--dark);">${escHTML(name)}</span>
         <button onclick="removeExclSite(${i})" aria-label="Retirer" style="background:none;border:none;cursor:pointer;font-size:18px;line-height:1;color:var(--muted);padding:2px 6px;font-family:inherit;">✕</button>`;
       list.appendChild(row);
     });
@@ -7091,7 +7104,7 @@ Règles ABSOLUES : max 3 phrases courtes · toujours en français · 1 seule que
     const t = themes[currentTheme];
     const el = document.createElement('div');
     el.style.cssText = 'display:flex;gap:8px;align-items:flex-end;';
-    el.innerHTML = `<div style="width:28px;height:28px;border-radius:50%;overflow:hidden;position:relative;flex-shrink:0;background:#ffe5cc;"><img src="${t.img}" style="width:100%;height:100%;object-fit:contain;image-rendering:pixelated;" alt=""></div><div style="background:white;border-radius:16px 16px 16px 4px;padding:12px 14px;max-width:230px;box-shadow:none;"><p style="font-size:13px;color:#1a1a1a;line-height:1.5;margin:0;">${text}</p></div>`;
+    el.innerHTML = `<div style="width:28px;height:28px;border-radius:50%;overflow:hidden;position:relative;flex-shrink:0;background:#ffe5cc;"><img src="${t.img}" style="width:100%;height:100%;object-fit:contain;image-rendering:pixelated;" alt=""></div><div style="background:white;border-radius:16px 16px 16px 4px;padding:12px 14px;max-width:230px;box-shadow:none;"><p style="font-size:13px;color:#1a1a1a;line-height:1.5;margin:0;">${escHTML(text)}</p></div>`;
     msgs.appendChild(el);
     msgs.scrollTop = msgs.scrollHeight;
   }
@@ -7113,7 +7126,7 @@ Règles ABSOLUES : max 3 phrases courtes · toujours en français · 1 seule que
     const msgs = document.getElementById('chatMessages');
     const userMsg = document.createElement('div');
     userMsg.style.cssText = 'display:flex;justify-content:flex-end;';
-    userMsg.innerHTML = `<div style="background:linear-gradient(90deg,var(--og),var(--og2));color:white;border-radius:16px 16px 4px 16px;padding:10px 14px;max-width:230px;font-size:13px;line-height:1.4;">${text}</div>`;
+    userMsg.innerHTML = `<div style="background:linear-gradient(90deg,var(--og),var(--og2));color:white;border-radius:16px 16px 4px 16px;padding:10px 14px;max-width:230px;font-size:13px;line-height:1.4;">${escHTML(text)}</div>`;
     msgs.appendChild(userMsg);
     msgs.scrollTop = msgs.scrollHeight;
     const dots = _appendTypingDots();
@@ -7404,6 +7417,57 @@ Règles ABSOLUES : max 3 phrases courtes · toujours en français · 1 seule que
   let capsuleRecorder = null, capsuleChunks = [], capsuleVideoURL = null;
   let capsuleAudioURL = null, capsuleMode = null;  // 'video' | 'audio'
   let capsuleTranscript = '';          // texte retranscrit (Web Speech + Claude)
+
+  /* ── Persistance de la capsule (IndexedDB) : elle survit au rechargement ── */
+  const CAPSULE_DB = 'visioncopie_capsule';
+  function _capsuleStore(fn, mode){
+    return new Promise((resolve, reject) => {
+      if (!window.indexedDB) return reject(new Error('IndexedDB indisponible'));
+      const open = indexedDB.open(CAPSULE_DB, 1);
+      open.onupgradeneeded = () => open.result.createObjectStore('capsule');
+      open.onerror = () => reject(open.error);
+      open.onsuccess = () => {
+        const db = open.result;
+        const tx = db.transaction('capsule', mode);
+        const req = fn(tx.objectStore('capsule'));
+        tx.oncomplete = () => { db.close(); resolve(req && req.result); };
+        tx.onerror = () => { db.close(); reject(tx.error); };
+      };
+    });
+  }
+  function saveCapsule(blob){
+    return _capsuleStore(st => st.put({ mode: capsuleMode, blob, transcript: capsuleTranscript, ts: Date.now() }, 'current'), 'readwrite')
+      .catch(e => console.warn('[Capsule] sauvegarde impossible', e));
+  }
+  function saveCapsuleTranscript(){
+    return _capsuleStore(st => st.get('current'), 'readonly')
+      .then(c => c ? _capsuleStore(st => st.put(Object.assign(c, { transcript: capsuleTranscript }), 'current'), 'readwrite') : null)
+      .catch(() => {});
+  }
+  function restoreCapsule(){
+    return _capsuleStore(st => st.get('current'), 'readonly').then(c => {
+      if (!c || !c.blob) return;
+      capsuleMode = c.mode === 'audio' ? 'audio' : 'video';
+      capsuleTranscript = c.transcript || '';
+      const url = URL.createObjectURL(c.blob);
+      if (capsuleMode === 'audio') capsuleAudioURL = url; else capsuleVideoURL = url;
+    }).catch(() => {});
+  }
+  function clearCapsule(){
+    return _capsuleStore(st => st.delete('current'), 'readwrite').catch(() => {});
+  }
+
+  /* Efface toutes les données de cette version (clés visioncopie*), puis recharge */
+  async function resetAllData(){
+    if (!confirm('Effacer tes objectifs, ton journal, tes règles et ta capsule ? Cette action est définitive.')) return;
+    try {
+      Object.keys(localStorage)
+        .filter(k => k.startsWith('visioncopie'))
+        .forEach(k => localStorage.removeItem(k));
+    } catch(e) {}
+    await clearCapsule();
+    location.reload();
+  }
   let _capsuleSpeechRec = null;
 
   /* Appel Claude one-shot (sans historique chat) — pour enhancement transcript */
@@ -7449,7 +7513,7 @@ Règles ABSOLUES : max 3 phrases courtes · toujours en français · 1 seule que
       // Affiche la vraie transcription dans la box d'enregistrement
       const box = document.getElementById('rec-transcript-text');
       if (box) {
-        box.innerHTML = capsuleTranscript + '<span class="rec-cursor"></span>';
+        box.innerHTML = escHTML(capsuleTranscript) + '<span class="rec-cursor"></span>';
         if (box.parentElement) box.parentElement.scrollTop = box.parentElement.scrollHeight;
       }
     };
@@ -7467,7 +7531,7 @@ Règles ABSOLUES : max 3 phrases courtes · toujours en français · 1 seule que
       `Tu améliores des messages vocaux motivants. Réécris le texte fourni en 1-2 phrases naturelles et percutantes à la 1ère personne du singulier. Renvoie uniquement le texte amélioré, sans guillemets ni commentaire.`,
       capsuleTranscript
     );
-    if (enhanced) capsuleTranscript = enhanced;
+    if (enhanced) { capsuleTranscript = enhanced; saveCapsuleTranscript(); }
   }
 
   /* Click sur le bouton record principal : démarre (idle) ou arrête (recording) */
@@ -7590,7 +7654,9 @@ Règles ABSOLUES : max 3 phrases courtes · toujours en français · 1 seule que
           capsuleRecorder.onstop = () => {
             if (capsuleChunks.length) {
               if (capsuleVideoURL) URL.revokeObjectURL(capsuleVideoURL);
-              capsuleVideoURL = URL.createObjectURL(new Blob(capsuleChunks, { type: 'video/webm' }));
+              const blob = new Blob(capsuleChunks, { type: 'video/webm' });
+              capsuleVideoURL = URL.createObjectURL(blob);
+              saveCapsule(blob);
             }
           };
           capsuleRecorder.start();
@@ -7617,7 +7683,9 @@ Règles ABSOLUES : max 3 phrases courtes · toujours en français · 1 seule que
           capsuleRecorder.onstop = () => {
             if (capsuleChunks.length) {
               if (capsuleAudioURL) URL.revokeObjectURL(capsuleAudioURL);
-              capsuleAudioURL = URL.createObjectURL(new Blob(capsuleChunks, { type: 'audio/webm' }));
+              const blob = new Blob(capsuleChunks, { type: 'audio/webm' });
+              capsuleAudioURL = URL.createObjectURL(blob);
+              saveCapsule(blob);
             }
           };
           capsuleRecorder.start();
@@ -7695,7 +7763,12 @@ Règles ABSOLUES : max 3 phrases courtes · toujours en français · 1 seule que
     const altText = document.getElementById('record-alt-text');
     if (altText) altText.textContent = 'Sinon enregistrer un vocal';
   }
-  function stopRecording() { stopRecordingInline(); }
+  function stopRecording() {
+    stopRecordingInline();
+    // Depuis l'ancien écran plein cadre (s-record) → retour à l'étape capsule
+    const rec = document.getElementById('s-record');
+    if (rec && rec.classList.contains('active')) go('s-step4');
+  }
 
   /* Reset → retour à l'idle pour réenregistrer */
   function resetRecording() {
@@ -7723,11 +7796,6 @@ Règles ABSOLUES : max 3 phrases courtes · toujours en français · 1 seule que
     box.parentElement.scrollTop = box.parentElement.scrollHeight;
   }
 
-  function stopRecording() {
-    if (recState.timer) { clearInterval(recState.timer); recState.timer = null; }
-    // Retour à s-step4 (onboarding) ou s-param-video selon contexte
-    go('s-step4');
-  }
 
   /* ─── PLAYBACK in s-param-video ─── */
   let playState = { timer: null, playing: false, secs: 0, total: 24 };
@@ -7909,6 +7977,7 @@ Règles ABSOLUES : max 3 phrases courtes · toujours en français · 1 seule que
   /* Charge l'état persistant (objectifs) et rafraîchit toute l'UI au démarrage */
   (function bootVisionState(){
     if (typeof loadAmbitions === 'function') loadAmbitions();
+    if (typeof restoreCapsule === 'function') restoreCapsule();
     if (typeof renderHomeAmbitions === 'function') renderHomeAmbitions();
     if (typeof renderHomeMetrics === 'function') renderHomeMetrics();
     if (typeof renderHomeJournal === 'function') renderHomeJournal();

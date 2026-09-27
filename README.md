@@ -89,3 +89,10 @@ Le dossier **`copie/`** est un duplicata complet de l'app, pour expérimenter sa
 - En local : `python -m http.server 8080` puis `http://localhost:8080/copie/`
 - Elle a ses **propres données** (clés `visioncopie_*` dans le localStorage) et son propre cache hors-ligne, donc elle ne mélange rien avec l'app principale. Seule la clé API Claude est partagée.
 - Installable séparément sous le nom « Vision copie ».
+
+### Étape 1 — Fiabiliser (fait dans `copie/`)
+
+- **Capsule conservée** : la vidéo ou l'audio est stocké dans IndexedDB et revient après rechargement.
+- **Arrêt d'enregistrement** : une seule fonction `stopRecording`, qui coupe vraiment caméra et micro.
+- **Textes protégés** : saisies et réponses IA passent par `escHTML()` avant d'être affichées.
+- **Effacer mes données** : bouton en bas du Profil (objectifs, journal, règles, compagnon, capsule ; la clé API est gardée).
