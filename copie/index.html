@@ -18,14 +18,6 @@
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/app.css">
 <link rel="stylesheet" href="css/demos.css">
-<link rel="stylesheet" href="css/g-accueil.css">
-<link rel="stylesheet" href="css/g-celebration.css">
-<link rel="stylesheet" href="css/g-serie.css">
-<link rel="stylesheet" href="css/g-quetes.css">
-<link rel="stylesheet" href="css/g-ligue.css">
-<link rel="stylesheet" href="css/g-boutique.css">
-<link rel="stylesheet" href="css/g-mascotte.css">
-<link rel="stylesheet" href="css/g-rappels.css">
 <style>
 /* Reste dans la page : les url() passées via --m (style en ligne) doivent se résoudre par rapport au document */
 .nav-mask { -webkit-mask: var(--m) center / contain no-repeat; mask: var(--m) center / contain no-repeat; }
@@ -580,53 +572,19 @@
         <div class="android-back-pill">⌂ Android</div>
       </div>
       <div class="app-scroll" style="height:100%;">
-        <!-- Accueil : barre de statut + compagnon + carte du jour (js/g-accueil.js, css/g-accueil.css) -->
-        <div class="acc-top" id="acc-top">
-          <div class="acc-bar">
-            <button type="button" class="acc-stat acc-league" id="acc-league" onclick="accGo('s-ligue')" aria-label="Ligue">
-              <span class="acc-ico acc-ico-medal" data-px="medal"></span><span class="acc-num" id="acc-league-name">Graine</span>
-            </button>
-            <button type="button" class="acc-stat acc-flame is-off" id="acc-flame" onclick="accGo('s-serie')" aria-label="Série">
-              <span class="acc-ico acc-ico-flame" data-px="flame"></span><span class="acc-num" id="home-streak">0</span>
-            </button>
-            <button type="button" class="acc-stat acc-gems" id="acc-gems-btn" onclick="accGo('s-boutique')" aria-label="Graines">
-              <span class="acc-ico" data-px="seed"></span><span class="acc-num" id="acc-gems">0</span>
-            </button>
-            <button type="button" class="acc-stat acc-freeze" id="acc-freezes-btn" onclick="accGo('s-boutique')" aria-label="Boucliers de série">
-              <span class="acc-ico" data-px="shield"></span><span class="acc-num" id="acc-freezes">0</span>
-            </button>
-            <button type="button" class="bell-btn has-notif acc-bell" onclick="openNotifs()" aria-label="Notifications"><img src="assets/bell.svg" alt="notifications"></button>
-          </div>
+        <!-- Header centré + bell (Figma 510:1136) -->
+        <div style="position:relative;padding:36px 20px 0;text-align:center;">
+          <div style="font-family:'Work Sans',sans-serif;font-weight:700;font-size:22px;color:#000;">Bonsoir, <span class="user-name">Léa</span> 👋</div>
+          <button class="bell-btn has-notif" onclick="openNotifs()" style="position:absolute;right:20px;top:34px;"><img src="assets/bell.svg" alt="notifications"></button>
+        </div>
 
-          <div class="acc-stage">
-            <div class="acc-comp">
-              <div class="acc-sparks" aria-hidden="true"><i></i><i></i><i></i></div>
-              <div class="acc-comp-sprite"><img src="assets/comp-foxy.png" class="dyn-comp" alt="Ton compagnon"></div>
-              <div class="acc-floor" aria-hidden="true"></div>
-              <div class="acc-level" id="acc-level" role="img" aria-label="Stade du compagnon"><div id="home-hearts" class="acc-hearts"></div><span id="acc-stage-name">Sauvage</span></div>
-            </div>
-            <div class="acc-bubble">
-              <div class="acc-hello"><span id="acc-hello-word">Bonsoir</span>, <span class="user-name">Léa</span>&#8239;!</div>
-              <div class="acc-say" id="acc-say">Une petite action et ta flamme s’allume.</div>
-            </div>
+        <!-- Fox centré + 2 cœurs + streak -->
+        <div style="display:flex;flex-direction:column;align-items:center;margin-top:14px;">
+          <div class="fox-mini" style="width:91px;height:81px;"><img src="assets/comp-foxy.png" class="dyn-comp" alt="fox"></div>
+          <div id="home-hearts" style="display:flex;gap:6px;justify-content:center;margin-top:8px;">
+            <img src="assets/heart.png" class="home-heart" alt="" style="width:16px;height:14px;">
           </div>
-
-          <div class="acc-today" id="acc-today">
-            <div class="acc-today-top">
-              <span class="acc-tag" id="acc-tag">À suivre</span>
-              <span class="acc-count" id="acc-count-wrap" role="img" aria-label="Quêtes du jour"><span class="acc-dots" id="acc-dots"></span><span id="acc-count">0 / 3</span></span>
-            </div>
-            <div class="acc-title" id="acc-title">Résiste à 1 tentation</div>
-            <div class="acc-rewards">
-              <span class="acc-chip acc-chip-xp" id="acc-xp-chip"><span class="acc-ico" data-px="bolt"></span><span class="acc-chip-txt"><span id="acc-xp">+40</span> XP</span></span>
-              <span class="acc-chip acc-chip-gems"><span class="acc-ico" data-px="seed"></span><span class="acc-chip-txt"><span id="acc-gain">+15</span> graines</span></span>
-            </div>
-            <div class="acc-progress">
-              <div class="acc-pbar" id="acc-pbar" role="img" aria-label="Progression"><div class="acc-pfill" id="acc-pfill"></div><span class="acc-ptxt" id="acc-ptxt">0 / 1</span></div>
-              <span class="acc-ico acc-chest" data-px="chest"></span>
-            </div>
-            <button type="button" class="acc-cta" id="acc-cta" onclick="accTodayTap()">Allumer ma flamme</button>
-          </div>
+          <div id="home-streak" style="font-size:12px;color:#6b6475;margin-top:8px;">🔥 0 jour sans craquage</div>
         </div>
 
         <!-- Chips dynamiques (varient selon objectifs) -->
@@ -893,13 +851,6 @@
             <div>
               <span class="param-lbl">MES AMBITIONS</span>
               <div style="font-size:10px;color:var(--muted);margin-top:3px;">3 objectifs actifs</div>
-            </div>
-            <span class="param-chevron">›</span>
-          </div>
-          <div class="param-item" id="rp-param" onclick="showReminderPrimer()" style="cursor:pointer;" role="button" tabindex="0">
-            <div>
-              <span class="param-lbl">RAPPEL QUOTIDIEN</span>
-              <div id="rp-param-sum" style="font-size:10px;color:var(--muted);margin-top:3px;">Un petit signe par jour pour ton objectif</div>
             </div>
             <span class="param-chevron">›</span>
           </div>
@@ -2258,215 +2209,6 @@
     </div>
   </div>
 
-  <!-- GANTELET:accueil — écrans/calques du morceau « accueil » (insérer juste sous cette ligne) -->
-
-
-
-  <!-- GANTELET:celebration — écrans/calques du morceau « celebration » (insérer juste sous cette ligne) -->
-
-
-
-  <!-- GANTELET:serie — écrans/calques du morceau « serie » (insérer juste sous cette ligne) -->
-  <div class="screen" id="s-serie">
-    <div class="sr" data-state="fire">
-      <div class="sr-scroll" id="sr-scroll">
-        <header class="sr-top">
-          <button class="sr-back" type="button" onclick="go('s-home')" aria-label="Retour à l'accueil">
-            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
-          <h1 class="sr-title">Ma série</h1>
-          <div class="sr-gems" id="sr-gems" title="Tes graines"><span aria-hidden="true">🌱</span><b id="sr-gems-n">0</b><span class="sr-vh"> graines</span></div>
-        </header>
-
-        <section class="sr-hero" aria-label="Ta série">
-          <div class="sr-hero-row">
-            <div class="sr-count">
-              <div class="sr-num" id="sr-num" aria-hidden="true">0</div>
-              <div class="sr-unit" id="sr-unit" aria-hidden="true">jour sans achat impulsif</div>
-              <p class="sr-vh" id="sr-say">0 jour sans achat impulsif</p>
-              <div class="sr-record" id="sr-record"></div>
-            </div>
-            <div class="sr-art" aria-hidden="true">
-              <div class="sr-glow"></div>
-              <div class="sr-ground"></div>
-              <div class="sr-flame" id="sr-flame"></div>
-              <div class="sr-sparks"><i></i><i></i><i></i></div>
-              <img class="sr-comp" id="sr-comp" src="assets/comp-foxy.png" alt="">
-              <div class="sr-art-shield" id="sr-art-shield"></div>
-            </div>
-          </div>
-          <div class="sr-week" id="sr-week" role="list" aria-label="Cette semaine"></div>
-        </section>
-
-        <section class="sr-card sr-shield" id="sr-shield" aria-labelledby="sr-shield-title"></section>
-
-        <section class="sr-month" aria-labelledby="sr-month-title">
-          <div class="sr-month-head">
-            <h2 class="sr-h2" id="sr-month-title">Ce mois-ci</h2>
-            <div class="sr-month-nav">
-              <button class="sr-chev" type="button" id="sr-prev" onclick="serieMonth(-1)" aria-label="Mois précédent">
-                <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </button>
-              <button class="sr-chev" type="button" id="sr-next" onclick="serieMonth(1)" aria-label="Mois suivant">
-                <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </button>
-            </div>
-          </div>
-          <div class="sr-card sr-cal" id="sr-cal" role="group"></div>
-          <div class="sr-legend" aria-hidden="true">
-            <span><i class="sr-lg-band"></i>Sans achat impulsif</span>
-            <span><i class="sr-lg-dot"></i>Jour actif</span>
-            <span><i class="sr-lg-ice"></i>Bouclier utilisé</span>
-          </div>
-          <div class="sr-tiles" id="sr-tiles"></div>
-        </section>
-      </div>
-      <div class="sr-toast" id="sr-toast" role="status" aria-live="polite"></div>
-    </div>
-  </div>
-
-
-
-  <!-- GANTELET:quetes — écrans/calques du morceau « quetes » (insérer juste sous cette ligne) -->
-  <div class="screen" id="s-quetes" aria-label="Quêtes du jour">
-    <div class="vq-scroll" id="vq-root"></div>
-  </div>
-
-
-
-  <!-- GANTELET:ligue — écrans/calques du morceau « ligue » (insérer juste sous cette ligne) -->
-  <div class="screen" id="s-ligue">
-    <div class="lg">
-      <div class="lg-head">
-        <button class="lg-back" type="button" onclick="go('s-home')" aria-label="Retour à l'accueil">
-          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <div class="lg-titles">
-          <h1 class="lg-title" id="lg-title">Ligue Graine</h1>
-          <div class="lg-time">
-            <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 4.6V8l2.4 1.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span id="lg-time">7 jours restants</span>
-          </div>
-        </div>
-      </div>
-      <div class="lg-tiers" id="lg-tiers" role="list" aria-label="Les 7 ligues, de Graine à Forêt"></div>
-      <p class="lg-rule" id="lg-rule">Les 3 premiers montent, les 3 derniers descendent. L'XP se gagne en résistant.</p>
-      <div class="lg-list" id="lg-list"></div>
-      <div class="lg-coach" id="lg-coach" aria-live="polite"></div>
-    </div>
-  </div>
-
-
-
-  <!-- GANTELET:boutique — écrans/calques du morceau « boutique » (insérer juste sous cette ligne) -->
-  <div class="screen" id="s-boutique">
-    <div class="bq">
-      <div class="bq-nav">
-        <button class="bq-back" type="button" onclick="go('s-home')" aria-label="Retour à l'accueil">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 L8 12 L15 19"/></svg>
-        </button>
-        <h1 class="bq-title">Boutique</h1>
-        <div class="bq-wallet" id="bq-wallet" role="status" aria-live="polite">
-          <span class="bq-ic bq-ic-seed" data-pix="seed" aria-hidden="true"></span>
-          <span class="bq-wallet-n" id="bq-balance">0</span>
-          <span class="bq-sr" id="bq-balance-sr">graines</span>
-        </div>
-      </div>
-      <div class="bq-scroll" id="bq-scroll"></div>
-
-      <!-- Feuille de confirmation d'échange (graines → bouclier) -->
-      <div class="bq-sheet-wrap" id="bq-sheet" hidden>
-        <div class="bq-dim" id="bq-dim"></div>
-        <div class="bq-sheet" role="dialog" aria-modal="true" aria-labelledby="bq-sheet-title">
-          <div class="bq-grab" aria-hidden="true"></div>
-          <div id="bq-sheet-body"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-
-  <!-- GANTELET:mascotte — écrans/calques du morceau « mascotte » (insérer juste sous cette ligne) -->
-  <!-- Calque plein écran du compagnon (rempli par js/g-mascotte.js : showMascot(kind, detail)) -->
-  <div id="g-mascotte" class="gm" hidden></div>
-
-
-
-  <!-- GANTELET:rappels — écrans/calques du morceau « rappels » (insérer juste sous cette ligne) -->
-  <!-- Rappel quotidien : amorce (compagnon + bulle, choix du moment). Rempli par js/g-rappels.js -->
-  <div id="rp-primer" class="rp-layer" role="dialog" aria-modal="true" aria-labelledby="rp-title" aria-describedby="rp-bubble-tx" tabindex="-1" hidden>
-    <div class="rp-top">
-      <button type="button" class="rp-x" id="rp-x" aria-label="Fermer">
-        <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg>
-      </button>
-      <div class="rp-top-lbl" aria-hidden="true">Rappel quotidien</div>
-    </div>
-    <div class="rp-body">
-      <div class="rp-hero">
-        <div class="rp-comp" aria-hidden="true">
-          <img id="rp-comp-img" src="assets/comp-foxy.png" alt="">
-          <span class="rp-bell" id="rp-bell"></span>
-        </div>
-        <div class="rp-bubble"><p id="rp-bubble-tx">Je te ferai un petit signe chaque jour pour penser à ton objectif. C'est comme ça qu'on en fait une habitude&nbsp;!</p></div>
-      </div>
-
-      <div class="rp-ask" id="rp-ask">
-        <h2 class="rp-h" id="rp-title">Quel moment te va&nbsp;?</h2>
-        <p class="rp-sub">Un seul rappel par jour, jamais plus.</p>
-        <div class="rp-moments" role="radiogroup" aria-labelledby="rp-title">
-          <button type="button" role="radio" class="rp-mo" data-m="matin" aria-checked="false"><span class="rp-mo-ck" aria-hidden="true"></span><span class="rp-mo-ic" data-ic="matin" aria-hidden="true"></span><span class="rp-mo-lb">Matin</span><span class="rp-mo-tm">8 h 30</span></button>
-          <button type="button" role="radio" class="rp-mo" data-m="midi" aria-checked="false"><span class="rp-mo-ck" aria-hidden="true"></span><span class="rp-mo-ic" data-ic="midi" aria-hidden="true"></span><span class="rp-mo-lb">Midi</span><span class="rp-mo-tm">12 h 30</span></button>
-          <button type="button" role="radio" class="rp-mo" data-m="soir" aria-checked="true"><span class="rp-mo-ck" aria-hidden="true"></span><span class="rp-mo-ic" data-ic="soir" aria-hidden="true"></span><span class="rp-mo-lb">Soir</span><span class="rp-mo-tm">20 h</span></button>
-        </div>
-        <div class="rp-prev">
-          <div class="rp-prev-hd"><span>Aperçu</span><span class="rp-prev-cd" id="rp-cd">Premier rappel ce soir</span></div>
-          <div class="rp-notif">
-            <img src="assets/icon-192.png" alt="" class="rp-notif-ic">
-            <div class="rp-notif-bd">
-              <div class="rp-notif-meta"><span>Vision</span><span id="rp-notif-tm">20:00</span></div>
-              <div class="rp-notif-ti" id="rp-notif-ti">Foxy passe te voir</div>
-              <div class="rp-notif-tx" id="rp-notif-tx">On regarde ton objectif ensemble&nbsp;?</div>
-            </div>
-          </div>
-          <p class="rp-promise"><img src="assets/heart.png" alt="" class="rp-promise-ic"><span>Déjà fait un pas dans la journée&nbsp;? Alors je ne te dérange pas. Et tu changes d'avis quand tu veux.</span></p>
-        </div>
-      </div>
-
-      <div class="rp-done" id="rp-done" hidden>
-        <div class="rp-done-card">
-          <span class="rp-done-ic" aria-hidden="true"></span>
-          <div>
-            <div class="rp-done-ti" id="rp-done-ti">Rappel activé</div>
-            <div class="rp-done-tx" id="rp-done-tx">Chaque soir vers 20 h</div>
-          </div>
-        </div>
-        <p class="rp-done-note" id="rp-done-note"></p>
-      </div>
-    </div>
-    <div class="rp-foot">
-      <button type="button" class="rp-cta" id="rp-cta">Rappelle-moi mon objectif</button>
-      <button type="button" class="rp-later" id="rp-later">Plus tard</button>
-    </div>
-  </div>
-
-  <!-- Petit coup de pouce sur l'accueil (non bloquant, une fois par jour) -->
-  <div id="rp-nudge" class="rp-nudge" role="status" aria-live="polite" hidden>
-    <div class="rp-nudge-comp" aria-hidden="true"><img id="rp-nudge-img" src="assets/comp-foxy.png" alt=""></div>
-    <div class="rp-nudge-bd">
-      <div class="rp-nudge-hi" id="rp-nudge-hi">Coucou, c'est Foxy&nbsp;!</div>
-      <div class="rp-nudge-ti" id="rp-nudge-ti">Résiste à 1 tentation</div>
-      <div class="rp-nudge-tx" id="rp-nudge-tx">Une envie repoussée&nbsp;? Note-la · +40 XP</div>
-    </div>
-    <button type="button" class="rp-nudge-go" id="rp-nudge-go" aria-label="Voir la quête du jour">
-      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </button>
-    <button type="button" class="rp-nudge-x" id="rp-nudge-x" aria-label="Masquer ce rappel">
-      <svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/></svg>
-    </button>
-  </div>
-
-
   <!-- ════════════════════════════════════════════════════ -->
   <!-- FEATURE TOUR OVERLAY                                  -->
   <!-- ════════════════════════════════════════════════════ -->
@@ -2509,15 +2251,6 @@
 <script src="js/onboarding.js"></script>
 <script src="js/ambitions.js"></script>
 <script src="js/progression.js"></script>
-<script src="js/game.js"></script>
-<script src="js/g-accueil.js"></script>
-<script src="js/g-celebration.js"></script>
-<script src="js/g-serie.js"></script>
-<script src="js/g-quetes.js"></script>
-<script src="js/g-ligue.js"></script>
-<script src="js/g-boutique.js"></script>
-<script src="js/g-mascotte.js"></script>
-<script src="js/g-rappels.js"></script>
 <script src="js/affiner.js"></script>
 <script src="js/ia-chat.js"></script>
 <script src="js/capsule.js"></script>

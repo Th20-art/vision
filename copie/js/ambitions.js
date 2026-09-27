@@ -542,88 +542,60 @@ function closeJournal() {
 function openXpHelp() { document.getElementById('xp-help-modal').style.display = 'block'; }
 function closeXpHelp() { document.getElementById('xp-help-modal').style.display = 'none'; }
 
-/* ── Notifications : vraies données, ton bienveillant (jamais de culpabilité) ── */
-function _notifCtx() {
-  const name = (typeof themes !== 'undefined' && themes[currentTheme]) ? themes[currentTheme].name : 'Ton compagnon';
-  const days = (typeof streakDays === 'function') ? streakDays() : 0;
-  const best = (typeof progress !== 'undefined' && progress) ? Math.max(progress.best || 0, days) : days;
-  const quests = (typeof dailyQuests === 'function') ? dailyQuests() : [];
-  const next = quests.find(q => !q.done) || null;
-  const doneN = quests.filter(q => q.done).length;
-  const active = (typeof isActiveDay === 'function' && typeof dayKey === 'function') ? isActiveDay(dayKey()) : false;
-  const weekAgo = Date.now() - 7 * 24 * 3600e3;
-  const recent = (typeof journalLog !== 'undefined' ? journalLog : []).filter(e => e.ts >= weekAgo);
-  const lastOf = type => (typeof journalLog !== 'undefined' ? journalLog : []).find(e => e.type === type) || null;
-  const nowLbl = _journalTime(Date.now());
-  return { name, days, best, quests, next, doneN, active, recent, lastOf, nowLbl };
-}
-function _jours(n) { return n + ' jour' + (n > 1 ? 's' : ''); }
-function _eur(n) { return Math.round(n).toLocaleString('fr-FR') + ' €'; }
-
+/* ── Notifications liées aux objectifs ── */
 function buildNotifs() {
   const og = (getComputedStyle(document.documentElement).getPropertyValue('--og') || '#ff7e00').trim();
-  const c = _notifCtx();
   const list = [];
-  // Compagnon (XP réelle)
+  // Compagnon
   const pn = (typeof progressNotifs === 'function') ? progressNotifs() : null;
-  const lastResist = c.lastOf('resist');
-  list.push({ bar:'#63993d', ti:c.name + ' progresse avec toi', tx: pn ? pn.comp : c.name + ' gagne de l\'XP à chaque tentation repoussée.', tm: lastResist ? _journalTime(lastResist.ts) : c.nowLbl });
-  // Série : on célèbre, on ne menace jamais
-  list.push({ bar:og, ti:'Ta série', tm:c.nowLbl, tx: c.days >= 1
-    ? _jours(c.days) + ' sans achat impulsif. Ton record : ' + _jours(c.best) + '. Chaque jour compte, et tu le prouves.'
-    : 'Nouvelle série, nouveau départ : aujourd\'hui compte déjà.' + (c.best ? ' Ton record (' + _jours(c.best) + ') reste à toi.' : '') });
-  // Quêtes du jour
-  if (c.quests.length) list.push({ bar:'#7c5cdb', ti:'Quêtes du jour', tm:c.nowLbl, tx: c.next
-    ? c.doneN + '/' + c.quests.length + ' faites. Prochaine : « ' + c.next.label + ' » (+' + c.next.xp + ' XP), si tu en as envie.'
-    : 'Les ' + c.quests.length + ' quêtes sont faites. Profite, tu as bien avancé aujourd\'hui !' });
-  // Une notification par objectif, à partir des montants réellement mis de côté
-  const titles = { voyage:'Objectif Voyage', liberte:'Liberté financière', impact:'Impact écologique', sante:'Prendre soin de toi',
-    projet:'Lancer un projet', formation:'Me former', logement:'Premier logement', societal:"Avoir de l'impact" };
-  const resistWeek = c.recent.filter(e => e.type === 'resist').length;
-  userAmbitions.forEach(a => {
-    const ti = titles[a.key] || a.label;
-    const target = parseFloat(a.amount || 0);
-    const saved = parseFloat(localStorage.getItem('visioncopie_saved_' + a.label) || '0');
-    let tx;
-    if (target > 0) {
-      const pct = Math.min(100, Math.round(saved / target * 100));
-      tx = _eur(saved) + ' mis de côté sur ' + _eur(target) + ' (' + pct + ' %). ' + (pct >= 100 ? 'Objectif atteint, bravo !' : 'Il reste ' + _eur(target - saved) + ', à ton rythme.');
-    } else if (a.key === 'impact' && typeof computeImpactKg === 'function') {
-      const kg = computeImpactKg();
-      tx = kg > 0 ? kg + ' kg de CO₂ évités grâce à tes résistances. Merci pour la planète !' : 'Chaque achat évité compte pour la planète. Ton premier kilo de CO₂ évité arrive vite.';
-    } else {
-      tx = resistWeek
-        ? resistWeek + ' tentation' + (resistWeek > 1 ? 's repoussées' : ' repoussée') + ' cette semaine. Chacune te rapproche de « ' + a.label + ' ».'
-        : 'Chaque tentation repoussée te rapprochera de « ' + a.label + ' ». Tu peux fixer un montant dans Mes Ambitions.';
-    }
-    list.push({ bar:og, ti, tx, tm: lastResist ? _journalTime(lastResist.ts) : c.nowLbl });
+  list.push({ bar:'#63993d', ti:'Ton compagnon progresse', tx: pn ? pn.comp : "Ton compagnon gagne de l'XP à chaque résistance.", tm:'Il y a 1 h' });
+  // Série / streak
+  list.push({ bar:og, ti:'Série en cours 🔥', tx: pn ? pn.serie : 'Chaque jour sans craquage prolonge ta série.', tm:"Aujourd'hui · 09:12" });
+  // Une notif par objectif choisi
+  const tpl = {
+    voyage:    { ti:'Objectif Voyage',        tx:"Il te manque 1 376 € pour ton voyage. En résistant à 2 achats/semaine, tu y es dans 3 mois." },
+    liberte:   { ti:'Liberté financière',     tx:"Tu as résisté à 3 achats cette semaine — +96 € mis de côté pour ton objectif." },
+    impact:    { ti:'Impact écologique',      tx:"36 kg de CO₂ évités cette semaine, soit 288 km en voiture non parcourus." },
+    sante:     { ti:'Prendre soin de toi',    tx:"3 jours d'affilée sans commande de livraison. Ton corps te dit merci." },
+    projet:    { ti:'Lancer un projet',       tx:"Tu as mis de côté l'équivalent de 2 mois d'abonnement pour financer ton projet." },
+    formation: { ti:'Me former',              tx:"L'argent économisé cette semaine couvre une session de ta formation." },
+    logement:  { ti:'Premier logement',       tx:"+120 € vers ton apport ce mois-ci. Chaque résistance te rapproche des clés." },
+    societal:  { ti:"Avoir de l'impact",      tx:"Tes choix de la semaine ont évité 4 achats à fort impact." }
+  };
+  userAmbitions.forEach((a, i) => {
+    const t = tpl[a.key];
+    if (t) list.push({ bar:og, ti:t.ti, tx:t.tx, tm: i === 0 ? 'Il y a 3 h' : 'Hier · 19:30' });
   });
-  // Esprit critique (si activé) : vraies analyses de la semaine
+  // Esprit critique (si activé)
   if (typeof espritCritiqueOn !== 'undefined' && espritCritiqueOn) {
-    const n = c.recent.filter(e => e.type === 'analyse').length;
-    const lastA = c.lastOf('analyse');
-    list.push({ bar:'#7c5cdb', ti:'Esprit critique', tm: lastA ? _journalTime(lastA.ts) : c.nowLbl, tx: n
-      ? n + ' contenu' + (n > 1 ? 's analysés' : ' analysé') + ' avec ton esprit critique cette semaine. Bien vu !'
-      : 'Un doute sur un article ou une vidéo ? Je t\'aide à croiser les sources.' });
+    list.push({ bar:'#7c5cdb', ti:'Esprit critique', tx:"Un article que tu consultes semble généré par IA. Croise tes sources avant de le partager.", tm:'Hier · 21:40' });
   }
   // Règle personnelle (si définie)
   if (typeof personalRules !== 'undefined' && personalRules.length) {
-    list.push({ bar:'#e8563a', ti:'Ta règle', tm:c.nowLbl, tx:'« ' + personalRules[0] + ' ». Je te la rappellerai si un achat s\'en approche.' });
+    list.push({ bar:'#e8563a', ti:'Rappel de ta règle', tx:'« ' + personalRules[0] + ' » — on t\'alertera si un achat va à son encontre.', tm:'Hier · 18:05' });
   }
   return list;
 }
-/* La notification « qui vient d'arriver » : un petit signe du compagnon, tiré des vraies données */
+/* La notification "qui vient d'arriver" — comparaison sociale liée à l'objectif principal */
 function buildNewNotif() {
-  const c = _notifCtx();
   const first = userAmbitions[0];
-  const goal = first ? first.label : 'ton objectif';
-  const lbl = c.name.toUpperCase();
-  if (c.quests.length && !c.next)
-    return { lbl, ti:'Journée bouclée', tx:'Tes ' + c.quests.length + ' quêtes du jour sont faites. Profite de ta soirée, ' + c.name + ' veille sur ta série.' };
-  const serie = c.days >= 2 ? ' ' + _jours(c.days) + ' sans achat impulsif, bravo !' : '';
-  if (c.active && c.next)
-    return { lbl, ti:'Belle lancée', tx: c.doneN + '/' + c.quests.length + ' quêtes faites aujourd\'hui. Il reste « ' + c.next.label + ' » (+' + c.next.xp + ' XP) si tu en as envie.' + serie };
-  return { lbl, ti: c.name + ' pense à toi', tx:'Un coup d\'œil à « ' + goal + ' » ?' + serie + (c.next ? ' Prochaine quête : ' + c.next.label + ' (+' + c.next.xp + ' XP).' : '') };
+  const k = first ? first.key : 'liberte';
+  const label = first ? first.label : 'Liberté financière';
+  const data = {
+    voyage:    { amount:'240', obj:'vêtements jamais portés' },
+    liberte:   { amount:'180', obj:"appareils qu'ils n'utilisaient plus" },
+    impact:    { amount:'150', obj:'objets en double' },
+    sante:     { amount:'90',  obj:'équipements de sport oubliés' },
+    projet:    { amount:'320', obj:'affaires qui dormaient dans un placard' },
+    formation: { amount:'200', obj:'vieux livres et matériel' },
+    logement:  { amount:'410', obj:'meubles inutilisés' },
+    societal:  { amount:'130', obj:'objets du quotidien en trop' }
+  };
+  const d = data[k] || data.liberte;
+  return {
+    lbl: 'LA COMMUNAUTÉ',
+    tx: `Plusieurs personnes ont économisé ${d.amount} € en revendant leurs ${d.obj}. Pourquoi pas toi ? Aide ton objectif ${label}.`
+  };
 }
 
 function renderNotifs() {
@@ -634,7 +606,7 @@ function renderNotifs() {
   const nn = buildNewNotif();
   const card = document.createElement('div');
   card.className = 'notif-new';
-  card.innerHTML = `<div class="nn-lbl">${escHTML(nn.lbl)} · NOUVEAU</div>${nn.ti ? `<div class="nn-ti">${escHTML(nn.ti)}</div>` : ''}<div class="nn-tx">${escHTML(nn.tx)}</div>`;
+  card.innerHTML = `<div class="nn-lbl">${escHTML(nn.lbl)} · NOUVEAU</div><div class="nn-tx">${escHTML(nn.tx)}</div>`;
   box.appendChild(card);
   // 2) Séparateur
   const sec = document.createElement('div');
@@ -714,7 +686,6 @@ async function saveJournalEntry() {
   const amountStr = unit ? ` — ${isResist ? '+' : '-'}${unit}` : '';
   // Journal persistant (résistance = vert, craquage = gris)
   addJournalLine(isResist ? 'resist' : 'craq', desc + amountStr);
-  if (typeof questEvent === 'function') questEvent('journal');
   closeJournal();
   go('s-home');
   // L'IA rattache l'entrée à un objectif et ajuste l'épargne (+ ou −)

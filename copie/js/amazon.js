@@ -365,7 +365,6 @@ function pickMood(el, level){
   document.querySelectorAll('.dk-md-c').forEach(c => c.classList.remove('on'));
   el.classList.add('on');
   AMZN.mood = level;
-  if (typeof questEvent === 'function') questEvent('checkin');
 }
 
 /* Émotions (niveau 2) : sélection multiple */

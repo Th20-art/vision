@@ -50,9 +50,8 @@ function streakDays(){ return Math.max(0, Math.floor((Date.now() - progress.sinc
 function _payStreakDays(){
   const d = streakDays();
   if (d > progress.daysPaid) {
-    const n = (d - progress.daysPaid) * XP_RULES.streakDay;
+    progress.xp += (d - progress.daysPaid) * XP_RULES.streakDay;
     progress.daysPaid = d;
-    if (typeof addXp === 'function') addXp(n, 'serie', { quiet: true, passive: true }); else progress.xp += n;
   }
   if (d > progress.best) progress.best = d;
 }
@@ -68,7 +67,7 @@ function stageInfo(xp){
 
 /* ── Paliers d'objectifs : +XP à chaque 25 % atteint (une seule fois par palier) ── */
 function checkMilestones(){
-  let gained = 0, steps = 0;
+  let gained = 0;
   (typeof userAmbitions !== 'undefined' ? userAmbitions : []).forEach(a => {
     const target = parseFloat(a.amount || 0);
     if (!(target > 0)) return;
@@ -76,14 +75,10 @@ function checkMilestones(){
     const pct = saved / target * 100;
     const done = progress.milestones[a.label] || 0;
     MILESTONE_STEPS.forEach(step => {
-      if (step > done && pct >= step) { gained += XP_RULES.milestone; steps++; progress.milestones[a.label] = step; }
+      if (step > done && pct >= step) { gained += XP_RULES.milestone; progress.milestones[a.label] = step; }
     });
   });
-  if (gained) {
-    if (typeof addXp === 'function') addXp(gained, 'palier'); else progress.xp += gained;
-    if (typeof addGems === 'function') addGems(steps * GAME.gems.milestone, 'palier');
-    _saveProgress(); renderProgress();
-  }
+  if (gained) { progress.xp += gained; _saveProgress(); renderProgress(); }
   return gained;
 }
 
@@ -92,24 +87,13 @@ function onProgressEvent(type, meta){
   meta = meta || {};
   _payStreakDays();
   if (type === 'resist') {
+    progress.xp += XP_RULES.resist;
     _addEvent(Object.assign({ type: 'resist' }, meta));
-    if (typeof addXp === 'function') addXp(XP_RULES.resist, 'resist'); else progress.xp += XP_RULES.resist;
-    if (typeof addGems === 'function') addGems(GAME.gems.resist, 'resist');
-    if (typeof questEvent === 'function') questEvent('resist');
   } else if (type === 'craq') {
+    if (streakDays() > progress.best) progress.best = streakDays();
+    progress.since = Date.now();
+    progress.daysPaid = 0;
     _addEvent(Object.assign({ type: 'craq' }, meta));
-    // Un bouclier de série absorbe l'achat : la série continue
-    const saved = (typeof useFreezeIfAny === 'function') && useFreezeIfAny();
-    if (!saved) {
-      const lost = streakDays();
-      if (lost > progress.best) progress.best = lost;
-      progress.since = Date.now();
-      progress.daysPaid = 0;
-      if (typeof emitGame === 'function') emitGame('streak-broken', { days: lost });
-    }
-    if (typeof markActiveDay === 'function') markActiveDay();
-  } else if (type === 'analyse') {
-    if (typeof questEvent === 'function') questEvent('analyse');
   } else {
     return;
   }
@@ -125,9 +109,8 @@ function renderProgress(){
   const days = streakDays();
   const fmt = n => Math.round(n).toLocaleString('fr-FR');
 
-  // Accueil : la flamme de la barre de statut affiche le nombre de jours (g-accueil.js)
   const streakEl = document.getElementById('home-streak');
-  if (streakEl) streakEl.textContent = days.toLocaleString('fr-FR');
+  if (streakEl) streakEl.textContent = '🔥 ' + days + (days > 1 ? ' jours' : ' jour') + ' sans craquage';
 
   const homeHearts = document.getElementById('home-hearts');
   if (homeHearts) {
@@ -139,7 +122,6 @@ function renderProgress(){
       homeHearts.appendChild(img);
     }
   }
-  if (typeof renderAccueil === 'function') renderAccueil();
 
   const xpEl = document.getElementById('comp-xp');
   if (xpEl) xpEl.textContent = 'XP ' + fmt(progress.xp) + (st.next ? ' / ' + fmt(st.next.min) : '');
